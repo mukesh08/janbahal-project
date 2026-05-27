@@ -2,219 +2,214 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import grapesjs from 'grapesjs';
 import 'grapesjs/dist/css/grapes.min.css';
+import './Editor.css';
 import axios from 'axios';
 
-/* ─── Custom blocks definition ─────────────────────────────── */
+/* ─── Blocks ──────────────────────────────────────────────── */
 const BLOCKS = [
-  /* Layout */
+  // ── Layout ──
   {
-    id: 'section', category: 'Layout', label: 'Section',
-    content: `<section class="gjs-section" style="padding:60px 20px;width:100%;">
-      <div class="container" style="max-width:1100px;margin:0 auto;"></div>
-    </section>`,
+    id: 'section', category: 'Layout',
+    label: `<div class="blk-wrap"><span class="blk-ico">⬛</span><span>Section</span></div>`,
+    content: `<section data-gjs-type="default" style="padding:60px 20px;min-height:80px;width:100%;box-sizing:border-box;"></section>`,
   },
   {
-    id: 'col-1', category: 'Layout', label: '1 Column',
-    content: `<div style="padding:20px;width:100%;box-sizing:border-box;"></div>`,
+    id: 'row', category: 'Layout',
+    label: `<div class="blk-wrap"><span class="blk-ico">⬜</span><span>Row</span></div>`,
+    content: `<div data-gjs-type="default" style="display:flex;flex-wrap:wrap;gap:16px;width:100%;box-sizing:border-box;padding:10px;"></div>`,
   },
   {
-    id: 'col-2', category: 'Layout', label: '2 Columns',
-    content: `<div style="display:flex;gap:20px;flex-wrap:wrap;">
-      <div style="flex:1;min-width:200px;padding:20px;box-sizing:border-box;"></div>
-      <div style="flex:1;min-width:200px;padding:20px;box-sizing:border-box;"></div>
+    id: 'col-1', category: 'Layout',
+    label: `<div class="blk-wrap"><span class="blk-ico">▬</span><span>Column</span></div>`,
+    content: `<div data-gjs-type="default" style="flex:1;min-width:120px;padding:16px;box-sizing:border-box;"></div>`,
+  },
+  {
+    id: 'col-2', category: 'Layout',
+    label: `<div class="blk-wrap"><span class="blk-ico">▬▬</span><span>2 Cols</span></div>`,
+    content: `<div data-gjs-type="default" style="display:flex;flex-wrap:wrap;gap:16px;">
+      <div style="flex:1;min-width:200px;padding:16px;box-sizing:border-box;"></div>
+      <div style="flex:1;min-width:200px;padding:16px;box-sizing:border-box;"></div>
     </div>`,
   },
   {
-    id: 'col-3', category: 'Layout', label: '3 Columns',
-    content: `<div style="display:flex;gap:20px;flex-wrap:wrap;">
-      <div style="flex:1;min-width:150px;padding:20px;box-sizing:border-box;"></div>
-      <div style="flex:1;min-width:150px;padding:20px;box-sizing:border-box;"></div>
-      <div style="flex:1;min-width:150px;padding:20px;box-sizing:border-box;"></div>
+    id: 'col-3', category: 'Layout',
+    label: `<div class="blk-wrap"><span class="blk-ico">▬▬▬</span><span>3 Cols</span></div>`,
+    content: `<div data-gjs-type="default" style="display:flex;flex-wrap:wrap;gap:16px;">
+      <div style="flex:1;min-width:150px;padding:16px;box-sizing:border-box;"></div>
+      <div style="flex:1;min-width:150px;padding:16px;box-sizing:border-box;"></div>
+      <div style="flex:1;min-width:150px;padding:16px;box-sizing:border-box;"></div>
     </div>`,
   },
   {
-    id: 'col-4', category: 'Layout', label: '4 Columns',
-    content: `<div style="display:flex;gap:16px;flex-wrap:wrap;">
-      <div style="flex:1;min-width:120px;padding:16px;box-sizing:border-box;"></div>
-      <div style="flex:1;min-width:120px;padding:16px;box-sizing:border-box;"></div>
-      <div style="flex:1;min-width:120px;padding:16px;box-sizing:border-box;"></div>
-      <div style="flex:1;min-width:120px;padding:16px;box-sizing:border-box;"></div>
+    id: 'col-4', category: 'Layout',
+    label: `<div class="blk-wrap"><span class="blk-ico">▬▬▬▬</span><span>4 Cols</span></div>`,
+    content: `<div data-gjs-type="default" style="display:flex;flex-wrap:wrap;gap:12px;">
+      <div style="flex:1;min-width:120px;padding:12px;box-sizing:border-box;"></div>
+      <div style="flex:1;min-width:120px;padding:12px;box-sizing:border-box;"></div>
+      <div style="flex:1;min-width:120px;padding:12px;box-sizing:border-box;"></div>
+      <div style="flex:1;min-width:120px;padding:12px;box-sizing:border-box;"></div>
     </div>`,
   },
+
+  // ── Content ──
   {
-    id: 'col-70-30', category: 'Layout', label: '70 / 30',
-    content: `<div style="display:flex;gap:20px;flex-wrap:wrap;">
-      <div style="flex:7;min-width:200px;padding:20px;box-sizing:border-box;"></div>
-      <div style="flex:3;min-width:150px;padding:20px;box-sizing:border-box;"></div>
-    </div>`,
-  },
-  /* Basic */
-  {
-    id: 'text', category: 'Basic', label: 'Text',
-    content: '<p style="font-size:1rem;line-height:1.7;color:#333;">Insert your text here. Click to edit.</p>',
+    id: 'text', category: 'Content',
+    label: `<div class="blk-wrap"><span class="blk-ico">¶</span><span>Text</span></div>`,
+    content: `<p style="font-size:1rem;line-height:1.7;color:#333;margin:0;">Your text goes here. Click to edit.</p>`,
   },
   {
-    id: 'h1', category: 'Basic', label: 'Heading 1',
-    content: '<h1 style="font-size:2.5rem;font-weight:800;color:#0f172a;margin:0 0 1rem;">Your Main Heading</h1>',
+    id: 'h1', category: 'Content',
+    label: `<div class="blk-wrap"><span class="blk-ico">H1</span><span>Heading 1</span></div>`,
+    content: `<h1 style="font-size:2.5rem;font-weight:800;color:#0f172a;margin:0 0 1rem;">Main Heading</h1>`,
   },
   {
-    id: 'h2', category: 'Basic', label: 'Heading 2',
-    content: '<h2 style="font-size:1.8rem;font-weight:700;color:#1e293b;margin:0 0 0.75rem;">Your Sub Heading</h2>',
+    id: 'h2', category: 'Content',
+    label: `<div class="blk-wrap"><span class="blk-ico">H2</span><span>Heading 2</span></div>`,
+    content: `<h2 style="font-size:1.8rem;font-weight:700;color:#1e293b;margin:0 0 0.75rem;">Sub Heading</h2>`,
   },
   {
-    id: 'h3', category: 'Basic', label: 'Heading 3',
-    content: '<h3 style="font-size:1.3rem;font-weight:700;color:#334155;margin:0 0 0.5rem;">Section Title</h3>',
+    id: 'h3', category: 'Content',
+    label: `<div class="blk-wrap"><span class="blk-ico">H3</span><span>Heading 3</span></div>`,
+    content: `<h3 style="font-size:1.3rem;font-weight:700;color:#334155;margin:0 0 0.5rem;">Section Title</h3>`,
   },
   {
-    id: 'image', category: 'Basic', label: 'Image',
+    id: 'image', category: 'Content',
+    label: `<div class="blk-wrap"><span class="blk-ico">🖼</span><span>Image</span></div>`,
     content: { type: 'image' },
     activate: true,
   },
   {
-    id: 'button', category: 'Basic', label: 'Button',
+    id: 'button', category: 'Content',
+    label: `<div class="blk-wrap"><span class="blk-ico">▶</span><span>Button</span></div>`,
     content: `<a href="#" style="display:inline-block;padding:12px 28px;background:#4f46e5;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:1rem;">Click Me</a>`,
   },
   {
-    id: 'divider', category: 'Basic', label: 'Divider',
-    content: '<hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;" />',
+    id: 'list', category: 'Content',
+    label: `<div class="blk-wrap"><span class="blk-ico">≡</span><span>List</span></div>`,
+    content: `<ul style="padding-left:1.5rem;line-height:2;color:#334155;margin:0;"><li>First item</li><li>Second item</li><li>Third item</li></ul>`,
   },
   {
-    id: 'spacer', category: 'Basic', label: 'Spacer',
-    content: '<div style="height:60px;"></div>',
+    id: 'divider', category: 'Content',
+    label: `<div class="blk-wrap"><span class="blk-ico">─</span><span>Divider</span></div>`,
+    content: `<hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;" />`,
   },
   {
-    id: 'list', category: 'Basic', label: 'List',
-    content: `<ul style="padding-left:1.5rem;line-height:2;color:#334155;">
-      <li>First item</li><li>Second item</li><li>Third item</li>
-    </ul>`,
+    id: 'spacer', category: 'Content',
+    label: `<div class="blk-wrap"><span class="blk-ico">↕</span><span>Spacer</span></div>`,
+    content: `<div style="height:60px;width:100%;"></div>`,
   },
-  /* Sections */
+
+  // ── Sections ──
   {
-    id: 'hero', category: 'Sections', label: 'Hero',
+    id: 'hero', category: 'Sections',
+    label: `<div class="blk-wrap"><span class="blk-ico">★</span><span>Hero</span></div>`,
     content: `<section style="padding:80px 40px;text-align:center;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;">
       <h1 style="font-size:3rem;font-weight:800;margin:0 0 1rem;">Welcome to Our Site</h1>
-      <p style="font-size:1.2rem;margin:0 0 2rem;opacity:0.9;max-width:600px;margin-left:auto;margin-right:auto;">
-        A short description that explains what your site is about.
-      </p>
-      <a href="#" style="display:inline-block;padding:14px 32px;background:#fff;color:#4f46e5;border-radius:8px;text-decoration:none;font-weight:700;font-size:1rem;">
-        Get Started
-      </a>
+      <p style="font-size:1.2rem;margin:0 auto 2rem;max-width:600px;opacity:0.9;">A short description of your product or service.</p>
+      <a href="#" style="display:inline-block;padding:14px 32px;background:#fff;color:#4f46e5;border-radius:8px;text-decoration:none;font-weight:700;">Get Started</a>
     </section>`,
   },
   {
-    id: 'features', category: 'Sections', label: 'Features',
+    id: 'features', category: 'Sections',
+    label: `<div class="blk-wrap"><span class="blk-ico">⊞</span><span>Features</span></div>`,
     content: `<section style="padding:60px 40px;background:#f8fafc;">
       <h2 style="text-align:center;font-size:2rem;font-weight:800;color:#0f172a;margin:0 0 2.5rem;">Our Features</h2>
       <div style="display:flex;gap:24px;flex-wrap:wrap;max-width:1100px;margin:0 auto;">
         <div style="flex:1;min-width:200px;background:#fff;border-radius:12px;padding:24px;text-align:center;border:1px solid #e2e8f0;">
           <div style="font-size:2rem;margin-bottom:12px;">⚡</div>
-          <h3 style="font-size:1.1rem;font-weight:700;margin:0 0 8px;color:#1e293b;">Fast</h3>
-          <p style="color:#64748b;font-size:0.9rem;margin:0;">Lightning-fast performance you can count on.</p>
+          <h3 style="font-size:1.1rem;font-weight:700;margin:0 0 8px;color:#1e293b;">Feature One</h3>
+          <p style="color:#64748b;font-size:0.9rem;margin:0;">Describe your first feature here.</p>
         </div>
         <div style="flex:1;min-width:200px;background:#fff;border-radius:12px;padding:24px;text-align:center;border:1px solid #e2e8f0;">
           <div style="font-size:2rem;margin-bottom:12px;">🔒</div>
-          <h3 style="font-size:1.1rem;font-weight:700;margin:0 0 8px;color:#1e293b;">Secure</h3>
-          <p style="color:#64748b;font-size:0.9rem;margin:0;">Enterprise-grade security for your peace of mind.</p>
+          <h3 style="font-size:1.1rem;font-weight:700;margin:0 0 8px;color:#1e293b;">Feature Two</h3>
+          <p style="color:#64748b;font-size:0.9rem;margin:0;">Describe your second feature here.</p>
         </div>
         <div style="flex:1;min-width:200px;background:#fff;border-radius:12px;padding:24px;text-align:center;border:1px solid #e2e8f0;">
           <div style="font-size:2rem;margin-bottom:12px;">🎯</div>
-          <h3 style="font-size:1.1rem;font-weight:700;margin:0 0 8px;color:#1e293b;">Accurate</h3>
-          <p style="color:#64748b;font-size:0.9rem;margin:0;">Precise results tailored to your needs.</p>
+          <h3 style="font-size:1.1rem;font-weight:700;margin:0 0 8px;color:#1e293b;">Feature Three</h3>
+          <p style="color:#64748b;font-size:0.9rem;margin:0;">Describe your third feature here.</p>
         </div>
       </div>
     </section>`,
   },
   {
-    id: 'cta', category: 'Sections', label: 'Call to Action',
+    id: 'cta', category: 'Sections',
+    label: `<div class="blk-wrap"><span class="blk-ico">📢</span><span>CTA</span></div>`,
     content: `<section style="padding:60px 40px;text-align:center;background:#1e293b;color:#fff;">
       <h2 style="font-size:2rem;font-weight:800;margin:0 0 1rem;">Ready to get started?</h2>
       <p style="margin:0 0 2rem;opacity:0.75;font-size:1.05rem;">Join thousands of users today.</p>
       <a href="#" style="display:inline-block;padding:14px 32px;background:#4f46e5;color:#fff;border-radius:8px;text-decoration:none;font-weight:700;">Start Now</a>
     </section>`,
   },
-  {
-    id: 'text-image', category: 'Sections', label: 'Text + Image',
-    content: `<section style="padding:60px 40px;">
-      <div style="display:flex;gap:40px;align-items:center;flex-wrap:wrap;max-width:1100px;margin:0 auto;">
-        <div style="flex:1;min-width:250px;">
-          <h2 style="font-size:2rem;font-weight:800;color:#0f172a;margin:0 0 1rem;">Your Headline Here</h2>
-          <p style="color:#64748b;line-height:1.75;margin:0 0 1.5rem;">Describe your product or service in detail. Add what makes it special and why users should care.</p>
-          <a href="#" style="display:inline-block;padding:12px 24px;background:#4f46e5;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">Learn More</a>
-        </div>
-        <div style="flex:1;min-width:250px;background:#e2e8f0;border-radius:12px;height:280px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:0.9rem;">
-          Drop image here
-        </div>
-      </div>
-    </section>`,
-  },
-  {
-    id: 'card-grid', category: 'Sections', label: 'Card Grid',
-    content: `<section style="padding:60px 40px;">
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;max-width:1100px;margin:0 auto;">
-        ${[1,2,3].map(n => `
-        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
-          <div style="height:140px;background:#e2e8f0;"></div>
-          <div style="padding:20px;">
-            <h3 style="font-size:1rem;font-weight:700;margin:0 0 8px;color:#1e293b;">Card Title ${n}</h3>
-            <p style="font-size:0.9rem;color:#64748b;margin:0;">Short description for this card.</p>
-          </div>
-        </div>`).join('')}
-      </div>
-    </section>`,
-  },
 ];
 
-/* ─── Style manager sectors ─────────────────────────────────── */
-const STYLE_SECTORS = [
+/* ─── Style sectors ───────────────────────────────────────── */
+const SECTORS = [
   {
-    name: 'Dimension',
+    name: 'Spacing',
     open: true,
     properties: [
-      { property: 'width', type: 'integer', units: ['px', '%', 'vw', 'auto'], label: 'Width' },
-      { property: 'height', type: 'integer', units: ['px', '%', 'vh', 'auto'], label: 'Height' },
-      { property: 'min-height', type: 'integer', units: ['px', '%', 'vh'], label: 'Min Height' },
-      { property: 'max-width', type: 'integer', units: ['px', '%'], label: 'Max Width' },
-      { extend: 'margin', id: 'margin', label: 'Margin' },
-      { extend: 'padding', id: 'padding', label: 'Padding' },
+      {
+        name: 'Padding', property: 'padding', type: 'composite', detached: true,
+        properties: [
+          { name: 'Top',    property: 'padding-top',    type: 'integer', units: ['px','%','em','rem'], defaults: '0' },
+          { name: 'Right',  property: 'padding-right',  type: 'integer', units: ['px','%','em','rem'], defaults: '0' },
+          { name: 'Bottom', property: 'padding-bottom', type: 'integer', units: ['px','%','em','rem'], defaults: '0' },
+          { name: 'Left',   property: 'padding-left',   type: 'integer', units: ['px','%','em','rem'], defaults: '0' },
+        ],
+      },
+      {
+        name: 'Margin', property: 'margin', type: 'composite', detached: true,
+        properties: [
+          { name: 'Top',    property: 'margin-top',    type: 'integer', units: ['px','%','em','rem','auto'], defaults: '0' },
+          { name: 'Right',  property: 'margin-right',  type: 'integer', units: ['px','%','em','rem','auto'], defaults: '0' },
+          { name: 'Bottom', property: 'margin-bottom', type: 'integer', units: ['px','%','em','rem','auto'], defaults: '0' },
+          { name: 'Left',   property: 'margin-left',   type: 'integer', units: ['px','%','em','rem','auto'], defaults: '0' },
+        ],
+      },
+    ],
+  },
+  {
+    name: 'Size',
+    open: false,
+    properties: [
+      { name: 'Width',      property: 'width',      type: 'integer', units: ['px','%','vw','auto'] },
+      { name: 'Height',     property: 'height',     type: 'integer', units: ['px','%','vh','auto'] },
+      { name: 'Min Height', property: 'min-height', type: 'integer', units: ['px','%','vh'] },
+      { name: 'Max Width',  property: 'max-width',  type: 'integer', units: ['px','%'] },
     ],
   },
   {
     name: 'Typography',
     open: false,
     properties: [
+      { name: 'Color',          property: 'color',          type: 'color' },
+      { name: 'Font Size',      property: 'font-size',      type: 'integer', units: ['px','rem','em','%'] },
       {
-        property: 'font-family', type: 'select', label: 'Font',
+        name: 'Font Weight', property: 'font-weight', type: 'select',
         options: [
-          { value: 'inherit', name: 'Default' },
-          { value: 'system-ui, sans-serif', name: 'System UI' },
-          { value: 'Georgia, serif', name: 'Georgia' },
-          { value: '"Courier New", monospace', name: 'Courier' },
+          { id: '300', label: 'Light' }, { id: '400', label: 'Normal' },
+          { id: '500', label: 'Medium' }, { id: '600', label: 'Semi Bold' },
+          { id: '700', label: 'Bold' }, { id: '800', label: 'Extra Bold' },
         ],
       },
-      { property: 'font-size', type: 'integer', units: ['px', 'rem', 'em', '%'], label: 'Size' },
+      { name: 'Line Height',   property: 'line-height',    type: 'integer', units: ['','px','em'] },
+      { name: 'Letter Spacing',property: 'letter-spacing', type: 'integer', units: ['px','em'] },
       {
-        property: 'font-weight', type: 'select', label: 'Weight',
+        name: 'Text Align', property: 'text-align', type: 'radio',
         options: [
-          { value: '400', name: 'Normal' }, { value: '500', name: 'Medium' },
-          { value: '600', name: 'Semi Bold' }, { value: '700', name: 'Bold' },
-          { value: '800', name: 'Extra Bold' },
-        ],
-      },
-      { property: 'line-height', type: 'integer', units: ['', 'px', 'em'], label: 'Line Height' },
-      { property: 'letter-spacing', type: 'integer', units: ['px', 'em'], label: 'Letter Spacing' },
-      { property: 'color', type: 'color', label: 'Color' },
-      {
-        property: 'text-align', type: 'radio', label: 'Align',
-        options: [
-          { value: 'left', name: 'Left' }, { value: 'center', name: 'Center' },
-          { value: 'right', name: 'Right' }, { value: 'justify', name: 'Justify' },
+          { id: 'left', label: '←' }, { id: 'center', label: '↔' },
+          { id: 'right', label: '→' }, { id: 'justify', label: '≡' },
         ],
       },
       {
-        property: 'text-decoration', type: 'select', label: 'Decoration',
+        name: 'Font Family', property: 'font-family', type: 'select',
         options: [
-          { value: 'none', name: 'None' }, { value: 'underline', name: 'Underline' },
-          { value: 'line-through', name: 'Strikethrough' },
+          { id: 'inherit', label: 'Default' },
+          { id: 'system-ui, sans-serif', label: 'System UI' },
+          { id: 'Georgia, serif', label: 'Georgia' },
+          { id: '"Courier New", monospace', label: 'Courier New' },
         ],
       },
     ],
@@ -223,20 +218,29 @@ const STYLE_SECTORS = [
     name: 'Background',
     open: false,
     properties: [
-      { property: 'background-color', type: 'color', label: 'Background Color' },
-      { property: 'background-image', type: 'file', label: 'Background Image' },
+      { name: 'Background Color', property: 'background-color', type: 'color' },
+      { name: 'Background Image', property: 'background-image', type: 'file',
+        functionName: 'url', full: true },
       {
-        property: 'background-size', type: 'select', label: 'BG Size',
+        name: 'BG Size', property: 'background-size', type: 'select',
         options: [
-          { value: 'auto', name: 'Auto' }, { value: 'cover', name: 'Cover' },
-          { value: 'contain', name: 'Contain' },
+          { id: 'auto', label: 'Auto' }, { id: 'cover', label: 'Cover' },
+          { id: 'contain', label: 'Contain' },
         ],
       },
       {
-        property: 'background-position', type: 'select', label: 'BG Position',
+        name: 'BG Repeat', property: 'background-repeat', type: 'select',
         options: [
-          { value: 'center center', name: 'Center' }, { value: 'top center', name: 'Top' },
-          { value: 'bottom center', name: 'Bottom' },
+          { id: 'no-repeat', label: 'No Repeat' }, { id: 'repeat', label: 'Repeat' },
+          { id: 'repeat-x', label: 'Repeat X' }, { id: 'repeat-y', label: 'Repeat Y' },
+        ],
+      },
+      {
+        name: 'BG Position', property: 'background-position', type: 'select',
+        options: [
+          { id: 'center center', label: 'Center' }, { id: 'top center', label: 'Top' },
+          { id: 'bottom center', label: 'Bottom' }, { id: 'left center', label: 'Left' },
+          { id: 'right center', label: 'Right' },
         ],
       },
     ],
@@ -245,160 +249,148 @@ const STYLE_SECTORS = [
     name: 'Border',
     open: false,
     properties: [
-      { property: 'border-radius', type: 'integer', units: ['px', '%'], label: 'Radius' },
-      { property: 'border-width', type: 'integer', units: ['px'], label: 'Width' },
+      { name: 'Border Radius', property: 'border-radius', type: 'integer', units: ['px','%'] },
+      { name: 'Border Width',  property: 'border-width',  type: 'integer', units: ['px'] },
       {
-        property: 'border-style', type: 'select', label: 'Style',
+        name: 'Border Style', property: 'border-style', type: 'select',
         options: [
-          { value: 'none', name: 'None' }, { value: 'solid', name: 'Solid' },
-          { value: 'dashed', name: 'Dashed' }, { value: 'dotted', name: 'Dotted' },
+          { id: 'none', label: 'None' }, { id: 'solid', label: 'Solid' },
+          { id: 'dashed', label: 'Dashed' }, { id: 'dotted', label: 'Dotted' },
         ],
       },
-      { property: 'border-color', type: 'color', label: 'Color' },
-      { property: 'box-shadow', type: 'shadow', label: 'Shadow' },
+      { name: 'Border Color', property: 'border-color', type: 'color' },
     ],
   },
   {
-    name: 'Extra',
+    name: 'Layout',
     open: false,
     properties: [
-      { property: 'opacity', type: 'slider', min: 0, max: 1, step: 0.01, label: 'Opacity' },
       {
-        property: 'overflow', type: 'select', label: 'Overflow',
+        name: 'Display', property: 'display', type: 'select',
         options: [
-          { value: 'visible', name: 'Visible' }, { value: 'hidden', name: 'Hidden' },
-          { value: 'auto', name: 'Auto' }, { value: 'scroll', name: 'Scroll' },
+          { id: 'block', label: 'Block' }, { id: 'flex', label: 'Flex' },
+          { id: 'grid', label: 'Grid' }, { id: 'inline-block', label: 'Inline Block' },
+          { id: 'none', label: 'None' },
         ],
       },
       {
-        property: 'display', type: 'select', label: 'Display',
+        name: 'Flex Direction', property: 'flex-direction', type: 'select',
         options: [
-          { value: 'block', name: 'Block' }, { value: 'flex', name: 'Flex' },
-          { value: 'grid', name: 'Grid' }, { value: 'inline-block', name: 'Inline Block' },
-          { value: 'none', name: 'None' },
+          { id: 'row', label: 'Row →' }, { id: 'column', label: 'Column ↓' },
+          { id: 'row-reverse', label: 'Row ←' }, { id: 'column-reverse', label: 'Column ↑' },
         ],
       },
       {
-        property: 'flex-direction', type: 'select', label: 'Flex Dir.',
+        name: 'Align Items', property: 'align-items', type: 'select',
         options: [
-          { value: 'row', name: 'Row' }, { value: 'column', name: 'Column' },
-          { value: 'row-reverse', name: 'Row Reverse' },
+          { id: 'stretch', label: 'Stretch' }, { id: 'flex-start', label: 'Start' },
+          { id: 'center', label: 'Center' }, { id: 'flex-end', label: 'End' },
         ],
       },
       {
-        property: 'align-items', type: 'select', label: 'Align Items',
+        name: 'Justify Content', property: 'justify-content', type: 'select',
         options: [
-          { value: 'stretch', name: 'Stretch' }, { value: 'flex-start', name: 'Start' },
-          { value: 'center', name: 'Center' }, { value: 'flex-end', name: 'End' },
+          { id: 'flex-start', label: 'Start' }, { id: 'center', label: 'Center' },
+          { id: 'flex-end', label: 'End' }, { id: 'space-between', label: 'Space Between' },
+          { id: 'space-around', label: 'Space Around' },
         ],
       },
+      { name: 'Gap', property: 'gap', type: 'integer', units: ['px','rem','em'] },
       {
-        property: 'justify-content', type: 'select', label: 'Justify',
+        name: 'Overflow', property: 'overflow', type: 'select',
         options: [
-          { value: 'flex-start', name: 'Start' }, { value: 'center', name: 'Center' },
-          { value: 'flex-end', name: 'End' }, { value: 'space-between', name: 'Space Between' },
-          { value: 'space-around', name: 'Space Around' },
+          { id: 'visible', label: 'Visible' }, { id: 'hidden', label: 'Hidden' },
+          { id: 'auto', label: 'Auto' }, { id: 'scroll', label: 'Scroll' },
         ],
       },
+      { name: 'Opacity', property: 'opacity', type: 'slider', min: 0, max: 1, step: 0.01 },
     ],
   },
 ];
 
-/* ─── Editor Component ──────────────────────────────────────── */
+/* ─── Editor ──────────────────────────────────────────────── */
 const Editor = () => {
-  const { id } = useParams();
+  const { id }   = useParams();
   const navigate = useNavigate();
+  const gjsRef   = useRef(null);
 
-  const canvasRef  = useRef(null);
-  const gjsRef     = useRef(null);
-
-  const blocksRef  = useRef(null);
-  const layersRef  = useRef(null);
-  const stylesRef  = useRef(null);
-  const traitsRef  = useRef(null);
-
-  const [page, setPage]       = useState(null);
-  const [saving, setSaving]   = useState(false);
+  const [page,      setPage]      = useState(null);
+  const [saving,    setSaving]    = useState(false);
   const [published, setPublished] = useState(false);
-  const [saveMsg, setSaveMsg] = useState('');
-  const [leftTab, setLeftTab] = useState('blocks');  // blocks | layers
-  const [rightTab, setRightTab] = useState('styles'); // styles | traits
-  const [device, setDevice]   = useState('desktop');
+  const [saveMsg,   setSaveMsg]   = useState('');
+  const [rightTab,  setRightTab]  = useState('styles');   // styles | layers | traits
+  const [device,    setDevice]    = useState('desktop');
 
-  /* ── Load page ── */
+  /* ── fetch page ── */
   useEffect(() => {
     axios.get(`/api/pages/${id}`)
       .then(({ data }) => { setPage(data); setPublished(data.published); })
-      .catch(() => { alert('Failed to load page'); navigate('/admin/pages'); });
+      .catch(() => { alert('Page not found'); navigate('/admin/pages'); });
   }, [id, navigate]);
 
-  /* ── Load assets from upload API ── */
-  const loadAssets = async () => {
-    try {
-      const { data } = await axios.get('/api/upload');
-      return data
-        .filter(f => f.mimetype?.startsWith('image/'))
-        .map(f => ({ src: f.url, name: f.originalName, type: 'image' }));
-    } catch { return []; }
-  };
-
-  /* ── Init GrapesJS ── */
+  /* ── init GrapesJS after page loaded ── */
   useEffect(() => {
     if (!page || gjsRef.current) return;
 
-    (async () => {
-      const assets = await loadAssets();
+    // Load uploaded images for asset manager
+    axios.get('/api/upload')
+      .then(({ data }) => initEditor(data.filter(f => f.mimetype?.startsWith('image/'))))
+      .catch(() => initEditor([]));
+
+    function initEditor(uploads) {
+      const assets = uploads.map(f => ({ src: f.url, name: f.originalName, type: 'image' }));
 
       const editor = grapesjs.init({
-        container: canvasRef.current,
+        container: document.getElementById('gjs-canvas'),
         height: '100%',
         width: 'auto',
         storageManager: false,
         undoManager: { trackChanges: true },
 
-        /* Devices */
+        /* Disable built-in panels — we draw our own */
+        panels: { defaults: [] },
+
+        /* Device manager */
         deviceManager: {
           devices: [
-            { id: 'desktop', name: 'Desktop', width: '' },
-            { id: 'tablet',  name: 'Tablet',  width: '768px', widthMedia: '992px' },
-            { id: 'mobile',  name: 'Mobile',  width: '375px', widthMedia: '480px' },
+            { id: 'desktop', name: 'Desktop',  width: '' },
+            { id: 'tablet',  name: 'Tablet',   width: '768px', widthMedia: '992px' },
+            { id: 'mobile',  name: 'Mobile',   width: '375px', widthMedia: '480px' },
           ],
         },
 
-        /* Asset manager — images from upload section */
+        /* Asset manager — shows uploaded images */
         assetManager: {
           assets,
           upload: false,
-          addBtnText: 'Upload Image',
-          noAssets: 'No images. Upload some in the Upload section.',
+          noAssets: 'No images yet — upload via the Upload section.',
         },
 
-        /* Panels — all disabled, we render our own UI */
-        panels: { defaults: [] },
-
-        /* Layers */
-        layerManager: { appendTo: layersRef.current },
-
-        /* Traits */
-        traitManager: { appendTo: traitsRef.current },
-
-        /* Style manager */
-        styleManager: {
-          appendTo: stylesRef.current,
-          sectors: STYLE_SECTORS,
-        },
-
-        /* Block manager */
+        /* Blocks */
         blockManager: {
-          appendTo: blocksRef.current,
+          appendTo: document.getElementById('gjs-blocks'),
           blocks: BLOCKS,
         },
 
-        /* Canvas styles for preview */
+        /* Style manager — right panel */
+        styleManager: {
+          appendTo: document.getElementById('gjs-styles'),
+          sectors: SECTORS,
+        },
+
+        /* Layers — component tree */
+        layerManager: {
+          appendTo: document.getElementById('gjs-layers'),
+        },
+
+        /* Traits — attributes */
+        traitManager: {
+          appendTo: document.getElementById('gjs-traits'),
+        },
+
+        /* Canvas keeps the inter-element highlight */
         canvas: {
-          styles: [
-            'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap',
-          ],
+          styles: ['https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'],
         },
       });
 
@@ -411,173 +403,145 @@ const Editor = () => {
         editor.setStyle(page.gjsCss || '');
       }
 
-      /* Sync device button */
+      /* Sync device state */
       editor.on('change:device', () => setDevice(editor.getDevice()));
 
       gjsRef.current = editor;
-    })();
+    }
 
     return () => {
       if (gjsRef.current) { gjsRef.current.destroy(); gjsRef.current = null; }
     };
   }, [page]);
 
-  /* ── Device switch ── */
-  const switchDevice = (d) => {
-    gjsRef.current?.setDevice(d);
-    setDevice(d);
-  };
+  /* ── device switch ── */
+  const switchDevice = (d) => { gjsRef.current?.setDevice(d); setDevice(d); };
 
-  /* ── Save / Publish ── */
+  /* ── save / publish ── */
   const handleSave = async (togglePublish = null) => {
     const editor = gjsRef.current;
     if (!editor) return;
     setSaving(true); setSaveMsg('');
     try {
       const payload = {
-        gjsHtml: editor.getHtml(),
-        gjsCss:  editor.getCss(),
+        gjsHtml:       editor.getHtml(),
+        gjsCss:        editor.getCss(),
         gjsComponents: editor.getComponents(),
         gjsStyles:     editor.getStyle(),
       };
       if (togglePublish !== null) { payload.published = togglePublish; setPublished(togglePublish); }
       await axios.put(`/api/pages/${id}`, payload);
-      setSaveMsg(togglePublish ? '✅ Published!' : togglePublish === false ? '✅ Unpublished' : '✅ Saved');
+      setSaveMsg(togglePublish === true ? '✅ Published!' : togglePublish === false ? '✅ Unpublished' : '✅ Saved');
       setTimeout(() => setSaveMsg(''), 2500);
-    } catch { setSaveMsg('❌ Failed'); }
+    } catch { setSaveMsg('❌ Save failed'); }
     finally { setSaving(false); }
   };
 
-  /* ── Undo / Redo ── */
-  const undo = () => gjsRef.current?.UndoManager.undo();
-  const redo = () => gjsRef.current?.UndoManager.redo();
-
   return (
-    <div style={s.shell}>
+    <div className="editor-shell">
 
-      {/* ── TOP TOOLBAR ── */}
-      <div style={s.toolbar}>
-        <div style={s.toolbarLeft}>
-          <span style={s.logo} onClick={() => navigate('/')}>Janbahal</span>
-          <button style={s.backBtn} onClick={() => navigate('/admin/pages')}>← Pages</button>
-          <span style={s.pageTitle}>{page?.title || '...'}</span>
+      {/* ── TOOLBAR ── */}
+      <div className="editor-toolbar">
+        <div className="editor-toolbar-left">
+          <span className="editor-logo" onClick={() => navigate('/')}>Janbahal</span>
+          <button className="editor-back-btn" onClick={() => navigate('/admin/pages')}>← Pages</button>
+          <span className="editor-page-title">{page?.title || '...'}</span>
         </div>
 
-        {/* Device switcher */}
-        <div style={s.devices}>
+        {/* Responsive device switcher */}
+        <div className="editor-devices">
           {[
-            { id: 'desktop', icon: '🖥' },
-            { id: 'tablet',  icon: '📱' },
-            { id: 'mobile',  icon: '📲' },
+            { id: 'desktop', icon: '🖥', label: 'Desktop' },
+            { id: 'tablet',  icon: '📱', label: 'Tablet'  },
+            { id: 'mobile',  icon: '📲', label: 'Mobile'  },
           ].map(d => (
             <button
               key={d.id}
-              style={{ ...s.deviceBtn, ...(device === d.id ? s.deviceBtnActive : {}) }}
+              className={`editor-device-btn ${device === d.id ? 'active' : ''}`}
               onClick={() => switchDevice(d.id)}
-              title={d.id}
+              title={d.label}
             >
-              {d.icon}
+              {d.icon} <span className="device-label">{d.label}</span>
             </button>
           ))}
         </div>
 
-        <div style={s.toolbarRight}>
-          <button style={s.iconBtn} onClick={undo} title="Undo">↩</button>
-          <button style={s.iconBtn} onClick={redo} title="Redo">↪</button>
-          {saveMsg && <span style={s.saveMsg}>{saveMsg}</span>}
-          <button style={s.saveBtn}  onClick={() => handleSave()} disabled={saving}>
-            {saving ? '...' : '💾 Save'}
+        <div className="editor-toolbar-right">
+          <button className="editor-icon-btn" title="Undo" onClick={() => gjsRef.current?.UndoManager.undo()}>↩ Undo</button>
+          <button className="editor-icon-btn" title="Redo" onClick={() => gjsRef.current?.UndoManager.redo()}>↪ Redo</button>
+          {saveMsg && <span className="editor-save-msg">{saveMsg}</span>}
+          <button className="editor-save-btn" onClick={() => handleSave()} disabled={saving}>
+            {saving ? 'Saving…' : '💾 Save'}
           </button>
           <button
-            style={{ ...s.publishBtn, background: published ? '#374151' : '#4f46e5' }}
-            onClick={() => handleSave(!published)} disabled={saving}
+            className={`editor-publish-btn ${published ? 'unpublish' : 'publish'}`}
+            onClick={() => handleSave(!published)}
+            disabled={saving}
           >
             {published ? '⬇ Unpublish' : '🚀 Publish'}
           </button>
         </div>
       </div>
 
-      {/* ── EDITOR BODY ── */}
-      <div style={s.body}>
+      {/* ── BODY ── */}
+      <div className="editor-body">
 
-        {/* LEFT PANEL */}
-        <div style={s.leftPanel}>
-          <div style={s.tabs}>
-            {[['blocks','🧩 Blocks'], ['layers','🗂 Layers']].map(([k, label]) => (
-              <button key={k} style={{ ...s.tab, ...(leftTab === k ? s.tabActive : {}) }}
-                onClick={() => setLeftTab(k)}>{label}</button>
-            ))}
-          </div>
-          <div style={{ display: leftTab === 'blocks' ? 'block' : 'none', flex: 1, overflow: 'auto' }}>
-            <div ref={blocksRef} style={s.blocksContainer} />
-          </div>
-          <div style={{ display: leftTab === 'layers' ? 'block' : 'none', flex: 1, overflow: 'auto' }}>
-            <div ref={layersRef} style={s.layersContainer} />
-          </div>
+        {/* LEFT — Blocks */}
+        <div className="editor-left">
+          <div className="panel-title">🧩 Blocks</div>
+          <div className="panel-hint">Drag a block onto the canvas →</div>
+          <div id="gjs-blocks" className="gjs-blocks-wrap" />
         </div>
 
-        {/* CANVAS */}
-        <div ref={canvasRef} style={s.canvas} />
+        {/* CENTER — Canvas */}
+        <div className="editor-center">
+          <div id="gjs-canvas" className="gjs-canvas-wrap" />
+        </div>
 
-        {/* RIGHT PANEL */}
-        <div style={s.rightPanel}>
-          <div style={s.tabs}>
-            {[['styles','🎨 Style'], ['traits','⚙️ Attributes']].map(([k, label]) => (
-              <button key={k} style={{ ...s.tab, ...(rightTab === k ? s.tabActive : {}) }}
-                onClick={() => setRightTab(k)}>{label}</button>
+        {/* RIGHT — Style / Layers / Traits */}
+        <div className="editor-right">
+          {/* Tab switcher */}
+          <div className="right-tabs">
+            {[
+              { id: 'styles', label: '🎨 Style'      },
+              { id: 'layers', label: '🗂 Layers'      },
+              { id: 'traits', label: '⚙️ Attributes'  },
+            ].map(t => (
+              <button
+                key={t.id}
+                className={`right-tab ${rightTab === t.id ? 'active' : ''}`}
+                onClick={() => setRightTab(t.id)}
+              >
+                {t.label}
+              </button>
             ))}
           </div>
-          <div style={{ display: rightTab === 'styles' ? 'block' : 'none', flex: 1, overflow: 'auto' }}>
-            <div ref={stylesRef} style={s.stylesContainer} />
-          </div>
-          <div style={{ display: rightTab === 'traits' ? 'block' : 'none', flex: 1, overflow: 'auto' }}>
-            <div ref={traitsRef} style={s.traitsContainer} />
-          </div>
+
+          {/* Style panel */}
+          <div
+            id="gjs-styles"
+            className="right-panel-content"
+            style={{ display: rightTab === 'styles' ? 'block' : 'none' }}
+          />
+
+          {/* Layers panel */}
+          <div
+            id="gjs-layers"
+            className="right-panel-content"
+            style={{ display: rightTab === 'layers' ? 'block' : 'none' }}
+          />
+
+          {/* Traits panel */}
+          <div
+            id="gjs-traits"
+            className="right-panel-content traits-wrap"
+            style={{ display: rightTab === 'traits' ? 'block' : 'none' }}
+          />
         </div>
 
       </div>
     </div>
   );
-};
-
-/* ─── Styles ─────────────────────────────────────────────────── */
-const s = {
-  shell: { display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', fontFamily: 'system-ui, sans-serif' },
-
-  toolbar: {
-    height: '52px', background: '#1e293b', display: 'flex', alignItems: 'center',
-    justifyContent: 'space-between', padding: '0 0.75rem', gap: '0.75rem', flexShrink: 0, zIndex: 10,
-  },
-  toolbarLeft: { display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, minWidth: 0 },
-  logo: { color: '#4f46e5', fontWeight: '800', fontSize: '1rem', cursor: 'pointer', flexShrink: 0 },
-  backBtn: { padding: '0.3rem 0.75rem', background: 'transparent', color: '#94a3b8', border: '1px solid #334155', borderRadius: '5px', cursor: 'pointer', fontSize: '0.8rem', flexShrink: 0 },
-  pageTitle: { color: '#f1f5f9', fontWeight: '600', fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-
-  devices: { display: 'flex', gap: '2px', background: '#0f172a', padding: '3px', borderRadius: '8px' },
-  deviceBtn: { padding: '0.3rem 0.6rem', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.9rem', borderRadius: '5px', opacity: 0.5 },
-  deviceBtnActive: { background: '#334155', opacity: 1 },
-
-  toolbarRight: { display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, justifyContent: 'flex-end' },
-  iconBtn: { padding: '0.3rem 0.6rem', background: '#334155', color: '#94a3b8', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '0.9rem' },
-  saveMsg: { color: '#94a3b8', fontSize: '0.8rem' },
-  saveBtn: { padding: '0.35rem 0.9rem', background: '#334155', color: '#f1f5f9', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' },
-  publishBtn: { padding: '0.35rem 0.9rem', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem', color: '#fff' },
-
-  body: { display: 'flex', flex: 1, overflow: 'hidden' },
-
-  leftPanel: { width: '220px', background: '#fff', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', flexShrink: 0, overflow: 'hidden' },
-  rightPanel: { width: '260px', background: '#fff', borderLeft: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', flexShrink: 0, overflow: 'hidden' },
-
-  tabs: { display: 'flex', borderBottom: '1px solid #e2e8f0', flexShrink: 0 },
-  tab: { flex: 1, padding: '0.55rem 0.25rem', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: '600', color: '#94a3b8' },
-  tabActive: { color: '#4f46e5', borderBottom: '2px solid #4f46e5' },
-
-  blocksContainer: { padding: '4px' },
-  layersContainer: { padding: '4px' },
-  stylesContainer: { padding: '4px' },
-  traitsContainer: { padding: '8px' },
-
-  canvas: { flex: 1, overflow: 'hidden' },
 };
 
 export default Editor;

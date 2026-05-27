@@ -44,7 +44,7 @@ const pageSchema = new mongoose.Schema(
 );
 
 // Auto-generate slug from title before saving
-pageSchema.pre('save', function (next) {
+pageSchema.pre('save', function () {
   if (this.isModified('title') && !this.slug) {
     this.slug = this.title
       .toLowerCase()
@@ -52,7 +52,6 @@ pageSchema.pre('save', function (next) {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-');
   }
-  next();
 });
 
 module.exports = mongoose.model('Page', pageSchema);
