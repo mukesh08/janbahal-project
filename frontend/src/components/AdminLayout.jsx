@@ -19,13 +19,20 @@ const AdminLayout = ({ children }) => {
 
       {/* ── SIDEBAR ── */}
       <aside style={s.sidebar}>
+
         {/* Logo */}
         <div style={s.logoWrap} onClick={() => navigate('/')}>
-          <span style={s.logo}>Janbahal</span>
-          <span style={s.logoBadge}>Admin</span>
+          <div style={s.logoMark}>J</div>
+          <div>
+            <div style={s.logoText}>Janbahal</div>
+            <div style={s.logoSub}>Admin Panel</div>
+          </div>
         </div>
 
-        {/* Nav */}
+        {/* Nav label */}
+        <div style={s.navLabel}>NAVIGATION</div>
+
+        {/* Nav items */}
         <nav style={s.nav}>
           {NAV_ITEMS.map(({ to, icon, label }) => (
             <NavLink
@@ -37,12 +44,12 @@ const AdminLayout = ({ children }) => {
               })}
             >
               <span style={s.navIcon}>{icon}</span>
-              <span>{label}</span>
+              <span style={s.navLabel2}>{label}</span>
             </NavLink>
           ))}
         </nav>
 
-        {/* User + Logout */}
+        {/* Bottom: user */}
         <div style={s.userSection}>
           <div style={s.avatar}>{user?.name?.[0]?.toUpperCase()}</div>
           <div style={s.userInfo}>
@@ -50,9 +57,14 @@ const AdminLayout = ({ children }) => {
             <span style={s.userRole}>Administrator</span>
           </div>
           <button style={s.logoutBtn} title="Logout" onClick={logout}>
-            ⏏
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
           </button>
         </div>
+
       </aside>
 
       {/* ── MAIN ── */}
@@ -68,89 +80,124 @@ const s = {
   shell: {
     display: 'flex',
     minHeight: '100vh',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamily: "'Poppins', sans-serif",
+    background: '#f8fafc',
   },
 
-  /* sidebar */
+  /* ── Sidebar ── */
   sidebar: {
-    width: '220px',
+    width: '240px',
     minHeight: '100vh',
-    background: '#1e1b4b',
+    background: '#ffffff',
+    borderRight: '1px solid #e8ecf0',
     display: 'flex',
     flexDirection: 'column',
     flexShrink: 0,
     position: 'sticky',
     top: 0,
     height: '100vh',
+    boxShadow: '2px 0 12px rgba(0,0,0,0.04)',
   },
 
+  /* Logo */
   logoWrap: {
-    padding: '1.5rem 1.25rem 1rem',
+    padding: '1.5rem 1.25rem 1.25rem',
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem',
+    gap: '0.75rem',
     cursor: 'pointer',
-    borderBottom: '1px solid rgba(255,255,255,0.08)',
-    marginBottom: '0.5rem',
+    borderBottom: '1px solid #f1f4f8',
+    marginBottom: '0.75rem',
   },
-  logo: {
+  logoMark: {
+    width: '36px',
+    height: '36px',
+    borderRadius: '10px',
+    background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
     color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     fontWeight: '800',
-    fontSize: '1.2rem',
-    letterSpacing: '-0.3px',
+    fontSize: '1.1rem',
+    flexShrink: 0,
+    fontFamily: "'Poppins', sans-serif",
   },
-  logoBadge: {
-    fontSize: '0.65rem',
-    background: '#4f46e5',
-    color: '#fff',
-    padding: '0.15rem 0.45rem',
-    borderRadius: '999px',
-    fontWeight: '600',
-    letterSpacing: '0.5px',
+  logoText: {
+    fontWeight: '700',
+    fontSize: '1rem',
+    color: '#0f172a',
+    lineHeight: 1.2,
+    fontFamily: "'Poppins', sans-serif",
+  },
+  logoSub: {
+    fontSize: '0.68rem',
+    color: '#94a3b8',
+    fontWeight: '500',
+    fontFamily: "'Poppins', sans-serif",
   },
 
+  /* Nav */
+  navLabel: {
+    padding: '0 1.25rem 0.4rem',
+    fontSize: '0.65rem',
+    fontWeight: '600',
+    color: '#b0bcc8',
+    letterSpacing: '1px',
+    fontFamily: "'Poppins', sans-serif",
+  },
   nav: {
     flex: 1,
-    padding: '0.5rem 0.75rem',
+    padding: '0 0.75rem',
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.2rem',
+    gap: '2px',
+    overflowY: 'auto',
   },
   navItem: {
     display: 'flex',
     alignItems: 'center',
     gap: '0.75rem',
-    padding: '0.65rem 0.85rem',
-    borderRadius: '8px',
-    color: 'rgba(255,255,255,0.6)',
+    padding: '0.6rem 0.85rem',
+    borderRadius: '10px',
+    color: '#64748b',
     textDecoration: 'none',
-    fontSize: '0.92rem',
+    fontSize: '0.88rem',
     fontWeight: '500',
-    transition: 'all 0.15s',
+    transition: 'all 0.15s ease',
+    fontFamily: "'Poppins', sans-serif",
   },
   navItemActive: {
-    background: 'rgba(255,255,255,0.12)',
-    color: '#fff',
+    background: '#eef2ff',
+    color: '#4f46e5',
+    fontWeight: '600',
   },
   navIcon: {
     fontSize: '1rem',
-    width: '20px',
+    width: '22px',
     textAlign: 'center',
+    flexShrink: 0,
+  },
+  navLabel2: {
+    flex: 1,
   },
 
-  /* user */
+  /* User section */
   userSection: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.6rem',
-    padding: '1rem 1rem',
-    borderTop: '1px solid rgba(255,255,255,0.08)',
+    gap: '0.65rem',
+    padding: '0.85rem 1rem',
+    margin: '0.5rem 0.75rem 0.75rem',
+    borderRadius: '12px',
+    background: '#f8fafc',
+    border: '1px solid #f1f4f8',
   },
   avatar: {
-    width: '32px',
-    height: '32px',
+    width: '34px',
+    height: '34px',
     borderRadius: '50%',
-    background: '#4f46e5',
+    background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
     color: '#fff',
     display: 'flex',
     alignItems: 'center',
@@ -158,41 +205,48 @@ const s = {
     fontWeight: '700',
     fontSize: '0.85rem',
     flexShrink: 0,
+    fontFamily: "'Poppins', sans-serif",
   },
   userInfo: {
     flex: 1,
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.1rem',
+    gap: '1px',
   },
   userName: {
-    color: '#fff',
-    fontSize: '0.82rem',
+    color: '#1e293b',
+    fontSize: '0.8rem',
     fontWeight: '600',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    fontFamily: "'Poppins', sans-serif",
   },
   userRole: {
-    color: 'rgba(255,255,255,0.4)',
-    fontSize: '0.72rem',
+    color: '#94a3b8',
+    fontSize: '0.7rem',
+    fontFamily: "'Poppins', sans-serif",
   },
   logoutBtn: {
     background: 'transparent',
     border: 'none',
-    color: 'rgba(255,255,255,0.4)',
+    color: '#94a3b8',
     cursor: 'pointer',
-    fontSize: '1rem',
-    padding: '0.25rem',
+    padding: '4px',
+    display: 'flex',
+    alignItems: 'center',
+    borderRadius: '6px',
     flexShrink: 0,
+    transition: 'color 0.15s',
   },
 
-  /* main */
+  /* Main content */
   main: {
     flex: 1,
     background: '#f8fafc',
     overflow: 'auto',
+    fontFamily: "'Poppins', sans-serif",
   },
 };
 
