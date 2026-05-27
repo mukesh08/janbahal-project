@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^1.16.1",
     "grapesjs": "^0.23.1",
+    "grapesjs-blocks-basic": "^1.0.2",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.15.1"

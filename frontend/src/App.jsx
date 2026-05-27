@@ -1,41 +1,44 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import Landing from './pages/Landing';
-import Login from './pages/Login';
+
+import Landing        from './pages/Landing';
+import Login          from './pages/Login';
+import PublicViewer   from './pages/PublicViewer';
+
 import AdminDashboard from './pages/AdminDashboard';
-import Editor from './pages/Editor';
-import PublicViewer from './pages/PublicViewer';
+import Editor         from './pages/Editor';
+import MenuManager    from './pages/admin/MenuManager';
+import FooterManager  from './pages/admin/FooterManager';
+import BlogManager    from './pages/admin/BlogManager';
+import PostsManager   from './pages/admin/PostsManager';
+import UploadManager  from './pages/admin/UploadManager';
+
+const Guard = ({ children }) => (
+  <ProtectedRoute>{children}</ProtectedRoute>
+);
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/page/:slug" element={<PublicViewer />} />
+          {/* ── Public ── */}
+          <Route path="/"            element={<Landing />} />
+          <Route path="/login"       element={<Login />} />
+          <Route path="/page/:slug"  element={<PublicViewer />} />
 
-          {/* Admin routes (protected) */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/editor/:id"
-            element={
-              <ProtectedRoute>
-                <Editor />
-              </ProtectedRoute>
-            }
-          />
+          {/* ── Admin (protected) ── */}
+          <Route path="/admin"               element={<Guard><AdminDashboard /></Guard>} />
+          <Route path="/admin/pages"         element={<Guard><AdminDashboard /></Guard>} />
+          <Route path="/admin/editor/:id"    element={<Guard><Editor /></Guard>} />
+          <Route path="/admin/menu"          element={<Guard><MenuManager /></Guard>} />
+          <Route path="/admin/footer"        element={<Guard><FooterManager /></Guard>} />
+          <Route path="/admin/blog"          element={<Guard><BlogManager /></Guard>} />
+          <Route path="/admin/posts"         element={<Guard><PostsManager /></Guard>} />
+          <Route path="/admin/upload"        element={<Guard><UploadManager /></Guard>} />
 
-          {/* Fallback */}
+          {/* ── Fallback ── */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

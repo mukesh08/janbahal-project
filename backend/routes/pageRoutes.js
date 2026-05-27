@@ -19,6 +19,26 @@ router.get('/', async (req, res) => {
   }
 });
 
+// @route  GET /api/pages/ensure-home
+// @desc   Get or create the home/landing page (admin)
+// @access Private
+router.get('/ensure-home', protect, adminOnly, async (req, res) => {
+  try {
+    let page = await Page.findOne({ slug: 'home' });
+    if (!page) {
+      page = await Page.create({
+        title: 'Home',
+        slug: 'home',
+        published: true,
+        createdBy: req.user._id,
+      });
+    }
+    res.json(page);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // @route  GET /api/pages/slug/:slug
 // @desc   Get a published page by slug (for viewers)
 // @access Public

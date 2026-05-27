@@ -4,12 +4,34 @@ import axios from 'axios';
 
 const Landing = () => {
   const navigate = useNavigate();
-  const [pages, setPages] = useState([]);
+  const [pages, setPages]       = useState([]);
+  const [homePage, setHomePage] = useState(null);   // DB-managed home page
+  const [homeCSS, setHomeCSS]   = useState('');
 
-  // Load published pages to showcase
   useEffect(() => {
+    // Load published pages
     axios.get('/api/pages').then(({ data }) => setPages(data)).catch(() => {});
+
+    // Check if "home" page exists and is published — render it instead
+    axios.get('/api/pages/slug/home')
+      .then(({ data }) => { setHomePage(data); setHomeCSS(data.gjsCss || ''); })
+      .catch(() => {}); // no home page yet — show default layout
   }, []);
+
+  // Inject GrapesJS CSS for home page
+  useEffect(() => {
+    if (!homeCSS) return;
+    const tag = document.createElement('style');
+    tag.id = 'home-page-css';
+    tag.innerHTML = homeCSS;
+    document.head.appendChild(tag);
+    return () => { document.getElementById('home-page-css')?.remove(); };
+  }, [homeCSS]);
+
+  // If a published home page exists in DB, render it directly
+  if (homePage?.gjsHtml) {
+    return <div dangerouslySetInnerHTML={{ __html: homePage.gjsHtml }} style={{ minHeight: '100vh' }} />;
+  }
 
   return (
     <div style={s.root}>
@@ -17,9 +39,6 @@ const Landing = () => {
       {/* ── NAV ── */}
       <nav style={s.nav}>
         <span style={s.navLogo}>Janbahal</span>
-        <button style={s.navBtn} onClick={() => navigate('/login')}>
-          Admin Login →
-        </button>
       </nav>
 
       {/* ── HERO ── */}
@@ -34,18 +53,15 @@ const Landing = () => {
             Drag, drop and design beautiful web pages. Let AI generate content,
             layouts and copy — publish in minutes.
           </p>
-          <div style={s.heroBtns}>
-            <button style={s.btnPrimary} onClick={() => navigate('/login')}>
-              Get Started Free
-            </button>
-            {pages.length > 0 && (
+          {pages.length > 0 && (
+            <div style={s.heroBtns}>
               <button style={s.btnGhost} onClick={() => {
                 document.getElementById('pages-section')?.scrollIntoView({ behavior: 'smooth' });
               }}>
                 View Published Pages ↓
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* decorative blobs */}
@@ -97,10 +113,7 @@ const Landing = () => {
       {/* ── CTA BANNER ── */}
       <section style={s.cta}>
         <h2 style={s.ctaTitle}>Ready to build something beautiful?</h2>
-        <p style={s.ctaSub}>Login to the admin panel and start creating pages.</p>
-        <button style={s.btnWhite} onClick={() => navigate('/login')}>
-          Go to Admin Panel →
-        </button>
+        <p style={s.ctaSub}>Drag, drop and publish stunning pages — no code needed.</p>
       </section>
 
       {/* ── FOOTER ── */}

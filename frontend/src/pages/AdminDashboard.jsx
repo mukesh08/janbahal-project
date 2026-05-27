@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import AdminLayout from '../components/AdminLayout';
 
 const AdminDashboard = () => {
   const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [newTitle, setNewTitle] = useState('');
-
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const fetchPages = async () => {
@@ -23,9 +21,14 @@ const AdminDashboard = () => {
     }
   };
 
-  useEffect(() => {
-    fetchPages();
-  }, []);
+  useEffect(() => { fetchPages(); }, []);
+
+  const editLandingPage = async () => {
+    try {
+      const { data } = await axios.get('/api/pages/ensure-home');
+      navigate(`/admin/editor/${data._id}`);
+    } catch { alert('Failed to open landing page editor'); }
+  };
 
   const createPage = async (e) => {
     e.preventDefault();
@@ -45,157 +48,123 @@ const AdminDashboard = () => {
     try {
       await axios.delete(`/api/pages/${id}`);
       setPages(pages.filter((p) => p._id !== id));
-    } catch (err) {
+    } catch {
       alert('Failed to delete page');
     }
   };
 
   return (
-    <div style={styles.container}>
-      {/* Header */}
-      <header style={styles.header}>
-        <h1 style={styles.logo}>Janbahal</h1>
-        <div style={styles.headerRight}>
-          <span style={styles.username}>👤 {user?.name}</span>
-          <button style={styles.logoutBtn} onClick={logout}>Logout</button>
+    <AdminLayout>
+      <div style={s.container}>
+        {/* Header */}
+        <div style={s.header}>
+          <div>
+            <h1 style={s.title}>Pages</h1>
+            <p style={s.sub}>Create and manage your website pages</p>
+          </div>
+          <button style={s.newBtn} onClick={() => setCreating(true)}>+ New Page</button>
         </div>
-      </header>
 
-      {/* Main */}
-      <main style={styles.main}>
-        <div style={styles.titleRow}>
-          <h2 style={styles.sectionTitle}>My Pages</h2>
-          <button style={styles.newBtn} onClick={() => setCreating(true)}>+ New Page</button>
+        {/* Landing page pinned card */}
+        <div style={s.landingCard}>
+          <div>
+            <span style={s.landingBadge}>🏠 Landing Page</span>
+            <p style={s.landingSub}>Edit the public homepage visible at <code style={s.code}>/</code></p>
+          </div>
+          <button style={s.landingBtn} onClick={editLandingPage}>✏️ Edit Landing Page</button>
         </div>
 
         {/* New page form */}
         {creating && (
-          <form onSubmit={createPage} style={styles.createForm}>
+          <form onSubmit={createPage} style={s.createForm}>
             <input
-              style={styles.input}
+              style={s.input}
               type="text"
-              placeholder="Page title..."
+              placeholder="Enter page title..."
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               autoFocus
             />
-            <button style={styles.createBtn} type="submit">Create</button>
-            <button style={styles.cancelBtn} type="button" onClick={() => setCreating(false)}>Cancel</button>
+            <button style={s.createBtn} type="submit">Create</button>
+            <button style={s.cancelBtn} type="button" onClick={() => setCreating(false)}>Cancel</button>
           </form>
         )}
 
-        {/* Pages grid */}
+        {/* Pages list */}
         {loading ? (
-          <p style={styles.empty}>Loading pages...</p>
+          <p style={s.empty}>Loading pages...</p>
         ) : pages.length === 0 ? (
-          <div style={styles.emptyState}>
-            <p style={styles.emptyText}>No pages yet. Create your first page!</p>
+          <div style={s.emptyState}>
+            <span style={s.emptyIcon}>📄</span>
+            <p style={s.emptyTitle}>No pages yet</p>
+            <p style={s.emptySub}>Click "+ New Page" to create your first page.</p>
           </div>
         ) : (
-          <div style={styles.grid}>
+          <div style={s.grid}>
             {pages.map((page) => (
-              <div key={page._id} style={styles.card}>
-                <div style={styles.cardHeader}>
+              <div key={page._id} style={s.card}>
+                <div style={s.cardTop}>
                   <span
                     style={{
-                      ...styles.badge,
+                      ...s.badge,
                       background: page.published ? '#d1fae5' : '#fef3c7',
                       color: page.published ? '#065f46' : '#92400e',
                     }}
                   >
-                    {page.published ? 'Published' : 'Draft'}
+                    {page.published ? '● Published' : '○ Draft'}
                   </span>
                 </div>
-                <h3 style={styles.cardTitle}>{page.title}</h3>
-                <p style={styles.cardSlug}>/{page.slug}</p>
-                <div style={styles.cardActions}>
-                  <button
-                    style={styles.editBtn}
-                    onClick={() => navigate(`/admin/editor/${page._id}`)}
-                  >
-                    ✏️ Edit
-                  </button>
+                <h3 style={s.cardTitle}>{page.title}</h3>
+                <p style={s.cardSlug}>/{page.slug}</p>
+                <div style={s.cardActions}>
+                  <button style={s.editBtn} onClick={() => navigate(`/admin/editor/${page._id}`)}>✏️ Edit</button>
                   {page.published && (
-                    <button
-                      style={styles.viewBtn}
-                      onClick={() => navigate(`/page/${page.slug}`)}
-                    >
-                      👁 View
-                    </button>
+                    <button style={s.viewBtn} onClick={() => navigate(`/page/${page.slug}`)}>👁 View</button>
                   )}
-                  <button
-                    style={styles.deleteBtn}
-                    onClick={() => deletePage(page._id)}
-                  >
-                    🗑 Delete
-                  </button>
+                  <button style={s.deleteBtn} onClick={() => deletePage(page._id)}>🗑</button>
                 </div>
               </div>
             ))}
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </AdminLayout>
   );
 };
 
-const styles = {
-  container: { minHeight: '100vh', background: '#f8fafc', fontFamily: 'sans-serif' },
-  header: {
-    background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '1rem 2rem',
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-  },
-  logo: { color: '#4f46e5', fontSize: '1.5rem', fontWeight: '800', margin: 0 },
-  headerRight: { display: 'flex', alignItems: 'center', gap: '1rem' },
-  username: { color: '#555', fontSize: '0.95rem' },
-  logoutBtn: {
-    padding: '0.4rem 1rem', background: '#f1f5f9', border: '1px solid #e2e8f0',
-    borderRadius: '6px', cursor: 'pointer', fontSize: '0.9rem',
-  },
-  main: { maxWidth: '1100px', margin: '0 auto', padding: '2rem' },
-  titleRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' },
-  sectionTitle: { fontSize: '1.5rem', fontWeight: '700', color: '#1e293b', margin: 0 },
-  newBtn: {
-    padding: '0.6rem 1.2rem', background: '#4f46e5', color: '#fff', border: 'none',
-    borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.95rem',
-  },
-  createForm: { display: 'flex', gap: '0.75rem', marginBottom: '1.5rem', alignItems: 'center' },
-  input: {
-    padding: '0.65rem 1rem', fontSize: '1rem', border: '1px solid #ddd',
-    borderRadius: '8px', flex: 1, outline: 'none',
-  },
-  createBtn: {
-    padding: '0.65rem 1.2rem', background: '#4f46e5', color: '#fff',
-    border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600',
-  },
-  cancelBtn: {
-    padding: '0.65rem 1rem', background: '#f1f5f9', border: '1px solid #e2e8f0',
-    borderRadius: '8px', cursor: 'pointer',
-  },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.25rem' },
-  card: {
-    background: '#fff', borderRadius: '12px', padding: '1.25rem',
-    boxShadow: '0 1px 8px rgba(0,0,0,0.07)', border: '1px solid #e2e8f0',
-  },
-  cardHeader: { marginBottom: '0.75rem' },
-  badge: { padding: '0.25rem 0.65rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: '600' },
-  cardTitle: { fontSize: '1.1rem', fontWeight: '700', color: '#1e293b', marginBottom: '0.25rem' },
-  cardSlug: { fontSize: '0.8rem', color: '#94a3b8', marginBottom: '1rem' },
-  cardActions: { display: 'flex', gap: '0.5rem', flexWrap: 'wrap' },
-  editBtn: {
-    padding: '0.4rem 0.8rem', background: '#eff6ff', color: '#3b82f6',
-    border: '1px solid #bfdbfe', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem',
-  },
-  viewBtn: {
-    padding: '0.4rem 0.8rem', background: '#f0fdf4', color: '#16a34a',
-    border: '1px solid #bbf7d0', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem',
-  },
-  deleteBtn: {
-    padding: '0.4rem 0.8rem', background: '#fff5f5', color: '#e53e3e',
-    border: '1px solid #fecaca', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem',
-  },
-  emptyState: { textAlign: 'center', padding: '4rem 2rem' },
-  emptyText: { color: '#94a3b8', fontSize: '1.1rem' },
+const s = {
+  container: { padding: '2rem' },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.75rem' },
+  title: { fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: '0 0 0.25rem' },
+  sub: { color: '#64748b', fontSize: '0.9rem', margin: 0 },
+  newBtn: { padding: '0.6rem 1.25rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.9rem', flexShrink: 0 },
+
+  createForm: { display: 'flex', gap: '0.75rem', marginBottom: '1.75rem', alignItems: 'center' },
+  input: { padding: '0.65rem 1rem', fontSize: '0.95rem', border: '1px solid #e2e8f0', borderRadius: '8px', flex: 1, outline: 'none' },
+  createBtn: { padding: '0.65rem 1.25rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' },
+  cancelBtn: { padding: '0.65rem 1rem', background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer' },
+
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.25rem' },
+  card: { background: '#fff', borderRadius: '12px', padding: '1.25rem', border: '1px solid #e2e8f0', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
+  cardTop: { marginBottom: '0.75rem' },
+  badge: { padding: '0.2rem 0.6rem', borderRadius: '999px', fontSize: '0.72rem', fontWeight: '600' },
+  cardTitle: { fontSize: '1rem', fontWeight: '700', color: '#1e293b', margin: '0 0 0.2rem' },
+  cardSlug: { fontSize: '0.78rem', color: '#94a3b8', margin: '0 0 1rem' },
+  cardActions: { display: 'flex', gap: '0.5rem' },
+  editBtn: { padding: '0.35rem 0.75rem', background: '#eff6ff', color: '#3b82f6', border: '1px solid #bfdbfe', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' },
+  viewBtn: { padding: '0.35rem 0.75rem', background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' },
+  deleteBtn: { padding: '0.35rem 0.6rem', background: '#fff5f5', color: '#e53e3e', border: '1px solid #fecaca', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem', marginLeft: 'auto' },
+
+  landingCard: { background: 'linear-gradient(135deg,#eef2ff,#e0e7ff)', border: '1px solid #c7d2fe', borderRadius: '12px', padding: '1.25rem 1.5rem', marginBottom: '1.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' },
+  landingBadge: { fontWeight: '700', color: '#3730a3', fontSize: '1rem', display: 'block', marginBottom: '0.25rem' },
+  landingSub: { color: '#4f46e5', fontSize: '0.85rem', margin: 0 },
+  code: { background: '#c7d2fe', padding: '0.1rem 0.4rem', borderRadius: '4px', fontFamily: 'monospace' },
+  landingBtn: { padding: '0.6rem 1.25rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.9rem', whiteSpace: 'nowrap' },
+
+  emptyState: { textAlign: 'center', padding: '5rem 2rem' },
+  emptyIcon: { fontSize: '3rem', display: 'block', marginBottom: '1rem' },
+  emptyTitle: { fontSize: '1.1rem', fontWeight: '700', color: '#1e293b', marginBottom: '0.4rem' },
+  emptySub: { color: '#94a3b8', fontSize: '0.9rem' },
   empty: { color: '#94a3b8' },
 };
 
