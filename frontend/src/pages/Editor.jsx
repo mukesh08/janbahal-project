@@ -211,6 +211,12 @@ const Editor = () => {
       .catch(() => init([]));
 
     function init(uploads) {
+      // Clear mount targets so GrapesJS doesn't double-append on StrictMode re-mount
+      ['gjs-blocks', 'gjs-styles', 'gjs-layers', 'gjs-traits'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '';
+      });
+
       const assets = uploads.map(f => ({ src: f.url, name: f.originalName, type: 'image' }));
 
       const editor = grapesjs.init({

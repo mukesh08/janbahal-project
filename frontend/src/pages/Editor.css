@@ -185,8 +185,8 @@
 .editor-body {
   display: flex;
   flex: 1;
-  /* NO overflow:hidden here — it clips the GrapesJS color picker popup */
   min-height: 0;
+  overflow-x: hidden; /* prevent horizontal bleed from GrapesJS elements */
 }
 
 /* ── Left panel ──────────────────────────────────────────── */
@@ -293,12 +293,82 @@
   z-index: 1;
 }
 
-/* Allow color picker to escape the active pane */
-.panel-pane.active .gjs-field-color-picker,
-.panel-pane.active .sp-container,
-.panel-pane.active .gjs-clr-picker {
-  z-index: 9999;
+/* ── Color field: outer container ───────────────────────────
+   GrapesJS structure:
+     .gjs-field-color (position relative)
+       input[type=text]  ← hex value
+       .gjs-field-colorp (position absolute, right)
+         .gjs-field-colorp-c
+           .gjs-checker-bg
+           .gjs-field-color-picker  ← the actual swatch button
+──────────────────────────────────────────────────────────── */
+.gjs-field-color {
+  position: relative !important;
+  display: block !important;
+  height: 34px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  overflow: visible !important;
+}
+
+/* Hex code input — visible, left-aligned, no own border */
+.gjs-field-color > input,
+.gjs-field-color input[type="text"] {
+  position: absolute !important;
+  inset: 0 !important;
+  width: calc(100% - 38px) !important;
+  height: 100% !important;
+  padding: 0 8px !important;
+  border: none !important;
+  background: transparent !important;
+  font-size: 0.78rem !important;
+  font-family: 'Courier New', monospace !important;
+  color: #1e293b !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+  border-radius: 8px 0 0 8px !important;
+}
+
+/* Swatch holder — right side strip */
+.gjs-field-colorp {
+  position: absolute !important;
+  right: 0 !important;
+  top: 0 !important;
+  width: 36px !important;
+  height: 100% !important;
+  padding: 5px !important;
+  border-left: 1px solid #e2e8f0 !important;
+  border-radius: 0 8px 8px 0 !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+}
+
+/* Inner checker + swatch fill the holder */
+.gjs-field-colorp .gjs-checker-bg,
+.gjs-field-colorp .gjs-field-colorp-c,
+.gjs-field-colorp-c {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 4px !important;
+}
+
+/* The swatch/color button — MUST stay absolute inside the holder */
+.gjs-field-color-picker {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.12) !important;
+}
+
+/* Popup color picker dropdowns — fixed so they escape scroll containers */
+.sp-container,
+.gjs-clr-picker {
   position: fixed !important;
+  z-index: 9999 !important;
 }
 
 /* ── Live CSS preview panel ─────────────────────────────── */
@@ -384,6 +454,11 @@
 /* ═══════════════════════════════════════════════════════════
    GrapesJS UI overrides
 ═══════════════════════════════════════════════════════════ */
+
+/* GrapesJS renders its own panel bar even with defaults:[].
+   Hide it — we use custom appendTo targets for all managers. */
+.gjs-pn-panels { display: none !important; }
+.gjs-pn-panel  { display: none !important; }
 
 /* Block categories */
 .gjs-block-category .gjs-title {
@@ -500,7 +575,7 @@
   font-family: 'Poppins', sans-serif !important;
 }
 .gjs-input-unit,
-.gjs-field input,
+.gjs-field:not(.gjs-field-color) input,
 .gjs-field select {
   background: #f8fafc !important;
   border: 1px solid #e2e8f0 !important;
@@ -510,7 +585,7 @@
   padding: 5px 8px !important;
   font-family: 'Poppins', sans-serif !important;
 }
-.gjs-field input:focus,
+.gjs-field:not(.gjs-field-color) input:focus,
 .gjs-field select:focus {
   outline: none !important;
   border-color: #4f46e5 !important;
@@ -523,13 +598,9 @@
   border-radius: 7px !important;
 }
 
-/* Color picker — must be able to overflow the panel */
+/* Spectrum color picker font */
 .sp-container {
-  z-index: 9999 !important;
   font-family: 'Poppins', sans-serif !important;
-}
-.gjs-clr-picker {
-  z-index: 9999 !important;
 }
 
 /* Layers */

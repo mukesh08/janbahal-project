@@ -105,6 +105,28 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
   }
 });
 
+// @route  POST /api/pages/:id/duplicate
+// @desc   Clone a page
+// @access Private (admin)
+router.post('/:id/duplicate', protect, adminOnly, async (req, res) => {
+  try {
+    const original = await Page.findById(req.params.id);
+    if (!original) return res.status(404).json({ message: 'Page not found' });
+    const copy = await Page.create({
+      title:         `${original.title} (Copy)`,
+      gjsHtml:       original.gjsHtml,
+      gjsCss:        original.gjsCss,
+      gjsComponents: original.gjsComponents,
+      gjsStyles:     original.gjsStyles,
+      published:     false,
+      createdBy:     req.user._id,
+    });
+    res.status(201).json(copy);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // @route  DELETE /api/pages/:id
 // @desc   Delete a page
 // @access Private (admin)
