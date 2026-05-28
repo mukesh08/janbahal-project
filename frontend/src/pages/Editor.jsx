@@ -15,16 +15,16 @@ const BLOCKS = [
     content: `<div style="display:flex;flex-wrap:wrap;gap:16px;width:100%;box-sizing:border-box;padding:10px;min-height:40px;"></div>` },
   { id: 'col-1', category: 'Layout',
     label: `<div class="blk-wrap"><span class="blk-ico">▬</span><span>Column</span></div>`,
-    content: `<div style="flex:1;min-width:120px;padding:16px;box-sizing:border-box;min-height:40px;"></div>` },
+    content: `<div style="flex:1;min-width:120px;padding:16px;box-sizing:border-box;min-height:60px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;"></div>` },
   { id: 'col-2', category: 'Layout',
     label: `<div class="blk-wrap"><span class="blk-ico">▬▬</span><span>2 Cols</span></div>`,
-    content: `<div style="display:flex;flex-wrap:wrap;gap:16px;"><div style="flex:1;min-width:200px;padding:16px;box-sizing:border-box;min-height:40px;"></div><div style="flex:1;min-width:200px;padding:16px;box-sizing:border-box;min-height:40px;"></div></div>` },
+    content: `<div style="display:flex;flex-wrap:wrap;gap:12px;"><div style="flex:1;min-width:200px;padding:16px;box-sizing:border-box;min-height:60px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;"></div><div style="flex:1;min-width:200px;padding:16px;box-sizing:border-box;min-height:60px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;"></div></div>` },
   { id: 'col-3', category: 'Layout',
     label: `<div class="blk-wrap"><span class="blk-ico">▬▬▬</span><span>3 Cols</span></div>`,
-    content: `<div style="display:flex;flex-wrap:wrap;gap:16px;"><div style="flex:1;min-width:150px;padding:16px;box-sizing:border-box;min-height:40px;"></div><div style="flex:1;min-width:150px;padding:16px;box-sizing:border-box;min-height:40px;"></div><div style="flex:1;min-width:150px;padding:16px;box-sizing:border-box;min-height:40px;"></div></div>` },
+    content: `<div style="display:flex;flex-wrap:wrap;gap:12px;"><div style="flex:1;min-width:150px;padding:16px;box-sizing:border-box;min-height:60px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;"></div><div style="flex:1;min-width:150px;padding:16px;box-sizing:border-box;min-height:60px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;"></div><div style="flex:1;min-width:150px;padding:16px;box-sizing:border-box;min-height:60px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;"></div></div>` },
   { id: 'col-4', category: 'Layout',
     label: `<div class="blk-wrap"><span class="blk-ico">▬▬▬▬</span><span>4 Cols</span></div>`,
-    content: `<div style="display:flex;flex-wrap:wrap;gap:12px;"><div style="flex:1;min-width:120px;padding:12px;box-sizing:border-box;min-height:40px;"></div><div style="flex:1;min-width:120px;padding:12px;box-sizing:border-box;min-height:40px;"></div><div style="flex:1;min-width:120px;padding:12px;box-sizing:border-box;min-height:40px;"></div><div style="flex:1;min-width:120px;padding:12px;box-sizing:border-box;min-height:40px;"></div></div>` },
+    content: `<div style="display:flex;flex-wrap:wrap;gap:12px;"><div style="flex:1;min-width:120px;padding:12px;box-sizing:border-box;min-height:60px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;"></div><div style="flex:1;min-width:120px;padding:12px;box-sizing:border-box;min-height:60px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;"></div><div style="flex:1;min-width:120px;padding:12px;box-sizing:border-box;min-height:60px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;"></div><div style="flex:1;min-width:120px;padding:12px;box-sizing:border-box;min-height:60px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;"></div></div>` },
   { id: 'text', category: 'Content',
     label: `<div class="blk-wrap"><span class="blk-ico">¶</span><span>Text</span></div>`,
     content: `<p style="font-size:1rem;line-height:1.7;color:#333;margin:0;">Your text goes here. Click to edit.</p>` },
@@ -147,6 +147,29 @@ const SECTORS = [
       { name: 'Border Style',  property: 'border-style',  type: 'select',
         options: [{ value: 'none', name: 'None' }, { value: 'solid', name: 'Solid' }, { value: 'dashed', name: 'Dashed' }, { value: 'dotted', name: 'Dotted' }] },
       { name: 'Border Color',  property: 'border-color',  type: 'color' },
+    ],
+  },
+  {
+    name: 'Box Shadow', open: false,
+    properties: [
+      { name: 'Box Shadow', property: 'box-shadow', type: 'select',
+        options: [
+          { value: 'none',                                                              name: 'None' },
+          { value: '0 1px 3px rgba(0,0,0,0.08)',                                       name: 'XS — subtle' },
+          { value: '0 2px 8px rgba(0,0,0,0.10)',                                       name: 'SM — soft' },
+          { value: '0 4px 16px rgba(0,0,0,0.12)',                                      name: 'MD — card' },
+          { value: '0 8px 24px rgba(0,0,0,0.14)',                                      name: 'LG — elevated' },
+          { value: '0 16px 48px rgba(0,0,0,0.18)',                                     name: 'XL — floating' },
+          { value: '0 4px 16px rgba(79,70,229,0.25)',                                  name: 'Indigo glow' },
+          { value: '0 4px 16px rgba(124,58,237,0.25)',                                 name: 'Purple glow' },
+          { value: '0 4px 16px rgba(16,163,74,0.22)',                                  name: 'Green glow' },
+          { value: 'inset 0 1px 3px rgba(0,0,0,0.10)',                                 name: 'Inset — pressed' },
+        ],
+      },
+      { name: 'Shadow X',     property: 'box-shadow', type: 'integer', units: ['px'], defaults: '0' },
+      { name: 'Shadow Y',     property: 'box-shadow', type: 'integer', units: ['px'], defaults: '4' },
+      { name: 'Shadow Blur',  property: 'box-shadow', type: 'integer', units: ['px'], defaults: '12' },
+      { name: 'Shadow Color', property: 'box-shadow', type: 'color' },
     ],
   },
   {
@@ -306,7 +329,7 @@ const Editor = () => {
       {/* ── TOOLBAR ── */}
       <div className="editor-toolbar">
         <div className="editor-toolbar-left">
-          <div className="editor-logo" onClick={() => navigate('/')}>J</div>
+          <div className="editor-logo" onClick={() => navigate('/')}>N</div>
           <button className="editor-back-btn" onClick={() => navigate('/admin/pages')}>← Pages</button>
           <span className="editor-page-title">{page?.title || '...'}</span>
         </div>
@@ -340,9 +363,10 @@ const Editor = () => {
 
         {/* LEFT — Blocks */}
         <div className="editor-left">
-          <div className="panel-title">🧩 Blocks</div>
-          <div className="panel-hint">Drag a block onto the canvas →</div>
-          <div id="gjs-blocks" className="gjs-blocks-wrap" />
+          <div className="side-card blocks-card">
+            <div className="side-card-title">Blocks</div>
+            <div id="gjs-blocks" className="gjs-blocks-wrap" />
+          </div>
         </div>
 
         {/* CENTER — Canvas */}
@@ -350,49 +374,66 @@ const Editor = () => {
           <div id="gjs-canvas" className="gjs-canvas-wrap" />
         </div>
 
-        {/* RIGHT — panels always mounted, tabs switch visibility */}
+        {/* RIGHT — panels always in DOM, tabs switch visibility */}
         <div className="editor-right">
-          <div className="right-tabs">
-            {[['styles','🎨 Style'],['layers','🗂 Layers'],['traits','⚙️ Attrs'],['css','</> CSS']].map(([k,label]) => (
-              <button key={k} className={`right-tab ${rightTab === k ? 'active' : ''}`}
-                onClick={() => setRightTab(k)}>{label}</button>
+
+          {/* Tab pill bar */}
+          <div className="right-tab-bar">
+            {[
+              ['styles',  '🎨', 'Style'],
+              ['layers',  '🗂', 'Layers'],
+              ['traits',  '⚙',  'Attrs'],
+              ['css',     '<>', 'CSS'],
+            ].map(([k, icon, label]) => (
+              <button key={k}
+                className={`right-tab ${rightTab === k ? 'active' : ''}`}
+                onClick={() => setRightTab(k)}
+              >
+                <span className="rt-icon">{icon}</span>
+                <span className="rt-label">{label}</span>
+              </button>
             ))}
           </div>
 
-          {/* ALL panels always in DOM — use visibility not display:none */}
+          {/* All panels always mounted — visibility-toggled */}
           <div className="right-panels-wrap">
 
-            {/* Style panel */}
+            {/* Style — GrapesJS renders sectors, each styled as a card */}
             <div className={`panel-pane ${rightTab === 'styles' ? 'active' : ''}`}>
               <div id="gjs-styles" />
             </div>
 
-            {/* Layers panel */}
+            {/* Layers */}
             <div className={`panel-pane ${rightTab === 'layers' ? 'active' : ''}`}>
-              <div id="gjs-layers" />
+              <div className="side-card">
+                <div className="side-card-title">Page Layers</div>
+                <div id="gjs-layers" />
+              </div>
             </div>
 
-            {/* Traits panel */}
+            {/* Traits / Attrs */}
             <div className={`panel-pane ${rightTab === 'traits' ? 'active' : ''}`}>
-              <div id="gjs-traits" style={{ padding: '8px' }} />
+              <div className="side-card">
+                <div className="side-card-title">Element Attributes</div>
+                <div id="gjs-traits" />
+              </div>
             </div>
 
-            {/* Live CSS panel */}
+            {/* Live CSS */}
             <div className={`panel-pane ${rightTab === 'css' ? 'active' : ''}`}>
-              <div className="css-panel">
-                {selectedTag
-                  ? <>
-                      <div className="css-panel-header">
-                        <span className="css-tag">&lt;{selectedTag}&gt;</span>
-                        <span className="css-hint">Live CSS output</span>
+              <div className="side-card">
+                <div className="side-card-title">
+                  {selectedTag ? <><span className="css-tag-inline">&lt;{selectedTag}&gt;</span> Live CSS</> : 'Live CSS Output'}
+                </div>
+                <div className="css-panel">
+                  {selectedTag
+                    ? <pre className="css-code">{liveCSS || '/* no styles yet */'}</pre>
+                    : <div className="css-empty">
+                        <span className="css-empty-icon">👆</span>
+                        <p>Click any element on the canvas</p>
                       </div>
-                      <pre className="css-code">{liveCSS || '/* no styles yet */'}</pre>
-                    </>
-                  : <div className="css-empty">
-                      <span className="css-empty-icon">👆</span>
-                      <p>Click any element on the canvas to see its CSS here</p>
-                    </div>
-                }
+                  }
+                </div>
               </div>
             </div>
 

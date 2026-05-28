@@ -1,4 +1,4 @@
-/* ── Global font for editor ──────────────────────────────── */
+/* ── Global font ──────────────────────────────────────────── */
 .editor-shell,
 .editor-shell * {
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -13,7 +13,7 @@
   background: #f8fafc;
 }
 
-/* ── Toolbar — clean white ───────────────────────────────── */
+/* ── Toolbar ─────────────────────────────────────────────── */
 .editor-toolbar {
   height: 56px;
   background: #ffffff;
@@ -49,13 +49,9 @@
   font-size: 0.9rem;
   cursor: pointer;
   flex-shrink: 0;
-  text-decoration: none;
 }
 
 .editor-back-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   padding: 6px 12px;
   background: #f8fafc;
   color: #475569;
@@ -67,15 +63,11 @@
   flex-shrink: 0;
   transition: all 0.15s;
 }
-.editor-back-btn:hover {
-  background: #f1f5f9;
-  color: #1e293b;
-  border-color: #cbd5e1;
-}
+.editor-back-btn:hover { background: #f1f5f9; color: #1e293b; border-color: #cbd5e1; }
 
 .editor-page-title {
   color: #1e293b;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.88rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -126,9 +118,6 @@
 }
 
 .editor-icon-btn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
   padding: 6px 10px;
   background: #f8fafc;
   color: #64748b;
@@ -141,16 +130,9 @@
 }
 .editor-icon-btn:hover { background: #f1f5f9; color: #1e293b; }
 
-.editor-save-msg {
-  color: #16a34a;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
+.editor-save-msg { color: #16a34a; font-size: 0.8rem; font-weight: 600; }
 
 .editor-save-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
   padding: 7px 16px;
   background: #f8fafc;
   color: #1e293b;
@@ -164,9 +146,6 @@
 .editor-save-btn:hover { background: #f1f5f9; border-color: #cbd5e1; }
 
 .editor-publish-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
   padding: 7px 16px;
   border: none;
   border-radius: 8px;
@@ -177,7 +156,7 @@
   transition: all 0.15s;
 }
 .editor-publish-btn.publish    { background: #4f46e5; }
-.editor-publish-btn.publish:hover { background: #4338ca; }
+.editor-publish-btn.publish:hover  { background: #4338ca; }
 .editor-publish-btn.unpublish  { background: #64748b; }
 .editor-publish-btn.unpublish:hover { background: #475569; }
 
@@ -186,45 +165,32 @@
   display: flex;
   flex: 1;
   min-height: 0;
-  overflow-x: hidden; /* prevent horizontal bleed from GrapesJS elements */
+  overflow-x: hidden;
 }
 
-/* ── Left panel ──────────────────────────────────────────── */
+/* ── LEFT — Blocks panel ─────────────────────────────────── */
 .editor-left {
-  width: 220px;
-  background: #ffffff;
-  border-right: 1px solid #e8ecf0;
+  width: 290px;
+  background: #e8edf2;
+  border-right: none;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   overflow: hidden;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.03);
+  padding: 12px;
+  gap: 0;
 }
-.panel-title {
-  padding: 12px 14px 2px;
-  font-weight: 700;
-  font-size: 0.72rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-}
-.panel-hint {
-  padding: 2px 14px 10px;
-  font-size: 0.72rem;
-  color: #b0bcc8;
-  border-bottom: 1px solid #f1f5f9;
-}
+
 .gjs-blocks-wrap {
   flex: 1;
   overflow-y: auto;
-  padding: 4px;
 }
 
-/* ── Canvas ──────────────────────────────────────────────── */
+/* ── CENTER — Canvas ─────────────────────────────────────── */
 .editor-center {
   flex: 1;
   overflow: hidden;
-  background: #e8ecf0;
+  background: transparent;
   display: flex;
   flex-direction: column;
 }
@@ -234,58 +200,68 @@
   overflow: hidden;
 }
 
-/* ── Right panel ─────────────────────────────────────────── */
+/* ── RIGHT — Sidebar panels ──────────────────────────────── */
 .editor-right {
-  width: 280px;
-  background: #ffffff;
+  width: 290px;
+  background: #e8edf2;
   border-left: 1px solid #e8ecf0;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  /* NO overflow:hidden — would clip the color picker popup */
-  box-shadow: -2px 0 8px rgba(0,0,0,0.03);
+  overflow: hidden;
+  padding: 12px 12px 0;
+  gap: 10px;
 }
 
-.right-tabs {
+/* ── Tab pill bar (matches PostEditor top-bar style) ─────── */
+.right-tab-bar {
   display: flex;
-  border-bottom: 1px solid #f1f5f9;
+  background: #fff;
+  border: 1px solid #f1f5f9;
+  border-radius: 10px;
+  padding: 4px;
+  gap: 2px;
   flex-shrink: 0;
-  padding: 0 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
+
 .right-tab {
   flex: 1;
-  padding: 10px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 4px;
   background: transparent;
   border: none;
-  border-bottom: 2px solid transparent;
+  border-radius: 7px;
   cursor: pointer;
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.15s;
   color: #94a3b8;
-  margin-bottom: -1px;
-  white-space: nowrap;
-  transition: color 0.15s;
 }
-.right-tab.active  { color: #4f46e5; border-bottom-color: #4f46e5; }
-.right-tab:hover:not(.active) { color: #475569; }
+.rt-icon  { font-size: 0.9rem; line-height: 1; }
+.rt-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.3px; }
 
-/* ── Panels wrapper — visibility-based (keeps DOM mounted for GrapesJS) */
+.right-tab:hover:not(.active) { background: #f8fafc; color: #64748b; }
+.right-tab.active { background: #4f46e5; color: #fff; }
+
+/* ── Panels wrapper ──────────────────────────────────────── */
 .right-panels-wrap {
   flex: 1;
   position: relative;
   min-height: 0;
-  /* Allow color picker to overflow */
   overflow: visible;
 }
 
-/* Each panel pane fills the wrapper; hidden by default */
 .panel-pane {
   position: absolute;
   inset: 0;
   visibility: hidden;
   pointer-events: none;
   overflow-y: auto;
-  /* scrollbar inside the pane */
+  overflow-x: hidden;
+  padding: 0 0 16px;
 }
 .panel-pane.active {
   visibility: visible;
@@ -293,15 +269,349 @@
   z-index: 1;
 }
 
-/* ── Color field: outer container ───────────────────────────
-   GrapesJS structure:
-     .gjs-field-color (position relative)
-       input[type=text]  ← hex value
-       .gjs-field-colorp (position absolute, right)
-         .gjs-field-colorp-c
-           .gjs-checker-bg
-           .gjs-field-color-picker  ← the actual swatch button
-──────────────────────────────────────────────────────────── */
+/* ── Shared card component (left + right panels) ─────────── */
+/* Matches PostEditor's sideCard exactly */
+.side-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: visible;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.side-card-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 11px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Blocks card takes remaining height in left panel */
+.blocks-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.blocks-card .gjs-blocks-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Live CSS panel ──────────────────────────────────────── */
+.css-panel {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.css-tag-inline {
+  display: inline-block;
+  background: #eef2ff;
+  color: #4f46e5;
+  border: 1px solid #c7d2fe;
+  border-radius: 5px;
+  padding: 1px 7px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+}
+
+.css-code {
+  background: #f1f5f9;
+  color: #334155;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: 'Courier New', 'Fira Code', monospace;
+  font-size: 0.75rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-y: auto;
+  margin: 0;
+  border: 1px solid #e2e8f0;
+  min-height: 100px;
+  max-height: 300px;
+}
+
+.css-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 28px 16px;
+  color: #b0bcc8;
+  text-align: center;
+}
+.css-empty-icon { font-size: 1.8rem; display: block; }
+.css-empty p { font-size: 0.75rem; line-height: 1.5; margin: 0; }
+
+/* ── Scrollbar styling ───────────────────────────────────── */
+.editor-left ::-webkit-scrollbar,
+.panel-pane::-webkit-scrollbar,
+.gjs-blocks-wrap::-webkit-scrollbar { width: 4px; }
+.editor-left ::-webkit-scrollbar-track,
+.panel-pane::-webkit-scrollbar-track,
+.gjs-blocks-wrap::-webkit-scrollbar-track { background: transparent; }
+.editor-left ::-webkit-scrollbar-thumb,
+.panel-pane::-webkit-scrollbar-thumb,
+.gjs-blocks-wrap::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+
+/* ═══════════════════════════════════════════════════════════
+   GrapesJS UI overrides
+═══════════════════════════════════════════════════════════ */
+
+/* Override GrapesJS dark-theme root variables with light values */
+:root {
+  --gjs-main-color:           #f8fafc;
+  --gjs-primary-color:        #4f46e5;
+  --gjs-secondary-color:      #e2e8f0;
+  --gjs-font-color:           #1e293b;
+  --gjs-font-color-active:    #0f172a;
+  --gjs-main-dark-color:      rgba(0,0,0,0.08);
+  --gjs-secondary-dark-color: rgba(0,0,0,0.05);
+  --gjs-main-light-color:     rgba(79,70,229,0.08);
+  --gjs-light-border:         rgba(0,0,0,0.06);
+  --gjs-arrow-color:          #64748b;
+}
+
+/* Ensure GrapesJS editor container has no dark background */
+.gjs-editor,
+.gjs-editor-cont { background: transparent !important; }
+
+/* Remove GrapesJS primary-color background from utility class */
+.gjs-one-bg { background-color: transparent !important; }
+
+/* The colorp-c swatch preview (used in style manager color rows) */
+.gjs-sm-colorp-c,
+.gjs-off-prv { background-color: #e2e8f0 !important; }
+
+/* Hide GrapesJS default panel bar — we use custom appendTo targets */
+.gjs-pn-panels { display: none !important; }
+.gjs-pn-panel  { display: none !important; }
+
+/* ── Block categories ────────────────────────────────────── */
+.gjs-block-category {
+  margin-bottom: 8px !important;
+  background: #f1f4f8 !important;
+  border: none !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.gjs-block-category .gjs-title {
+  background: #f1f4f8 !important;
+  color: #64748b !important;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.8px !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* Block grid — 2 columns, no gap, full width fill */
+.gjs-blocks-c {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 4px !important;
+  padding: 8px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+.gjs-block {
+  padding: 14px 6px !important;
+  border: none !important;
+  border-radius: 6px !important;
+  background: #e8edf2 !important;
+  cursor: grab !important;
+  transition: all 0.15s ease !important;
+  text-align: center !important;
+  min-height: 64px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.gjs-block:hover {
+  background: #eef2ff !important;
+  border-color: #c7d2fe !important;
+  box-shadow: inset 0 0 0 1px #c7d2fe !important;
+}
+.gjs-block__media { display: none !important; }
+.gjs-block-label   { font-size: 0 !important; }
+
+.blk-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem !important;
+  font-weight: 600;
+  color: #475569;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.2;
+}
+.blk-ico { font-size: 1rem; line-height: 1; color: #4f46e5; }
+
+/* ── Canvas ──────────────────────────────────────────────── */
+.gjs-cv-canvas {
+  background: #fff !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+.gjs-frame-wrapper { background: transparent !important; }
+
+.gjs-selected { outline: 2px solid #4f46e5 !important; outline-offset: 1px !important; }
+.gjs-hovered  { outline: 1px dashed #a5b4fc !important; outline-offset: 1px !important; }
+
+/* Element toolbar */
+.gjs-toolbar {
+  background: #1e293b !important;
+  border-radius: 8px !important;
+  padding: 3px 6px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+}
+.gjs-toolbar-item {
+  color: #94a3b8 !important;
+  padding: 4px 7px !important;
+  font-size: 0.8rem !important;
+  border-radius: 5px !important;
+}
+.gjs-toolbar-item:hover { color: #fff !important; background: #334155 !important; }
+
+/* ── Style manager — each sector = a side-card ───────────── */
+.gjs-sm-sector {
+  background: #fff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  overflow: visible !important;
+  margin-bottom: 10px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+
+.gjs-sm-sector-title {
+  background: #fff !important;
+  color: #475569 !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.8px !important;
+  padding: 11px 16px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  border-radius: 12px 12px 0 0 !important;
+  cursor: pointer !important;
+  font-family: 'Poppins', sans-serif !important;
+  transition: color 0.15s !important;
+}
+.gjs-sm-sector-title:hover { color: #4f46e5 !important; }
+
+.gjs-sm-sector.gjs-sm-open .gjs-sm-sector-title {
+  color: #4f46e5 !important;
+  border-bottom-color: #e0e7ff !important;
+}
+
+.gjs-sm-properties { padding: 12px 16px 14px !important; }
+.gjs-sm-field, .gjs-sm-composite { margin-bottom: 10px !important; }
+.gjs-sm-label {
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+  margin-bottom: 5px !important;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* Style manager inputs (non-color) */
+/* Wrap each field+unit together */
+.gjs-field:not(.gjs-field-color) {
+  display: flex !important;
+  align-items: center !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 7px !important;
+  overflow: hidden !important;
+}
+.gjs-field:not(.gjs-field-color) input {
+  flex: 1 !important;
+  min-width: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  color: #1e293b !important;
+  font-size: 0.78rem !important;
+  padding: 6px 8px !important;
+  font-family: 'Poppins', sans-serif !important;
+  outline: none !important;
+}
+/* Unit label (px / em / %) — right-side tag */
+.gjs-input-unit {
+  flex-shrink: 0 !important;
+  background: #e8edf2 !important;
+  border: none !important;
+  border-left: 1px solid #e2e8f0 !important;
+  border-radius: 0 !important;
+  color: #64748b !important;
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+  padding: 0 7px !important;
+  height: 100% !important;
+  min-height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  font-family: 'Poppins', sans-serif !important;
+}
+.gjs-field select {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 7px !important;
+  color: #1e293b !important;
+  font-size: 0.78rem !important;
+  padding: 5px 8px !important;
+  font-family: 'Poppins', sans-serif !important;
+  width: 100% !important;
+}
+.gjs-field:not(.gjs-field-color):focus-within {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 2px rgba(79,70,229,0.1) !important;
+}
+.gjs-field select:focus {
+  outline: none !important;
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 2px rgba(79,70,229,0.1) !important;
+}
+.gjs-four-color,
+.gjs-four-color-h {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 7px !important;
+}
+
+/* ── Color field ─────────────────────────────────────────── */
+/*
+  GrapesJS structure:
+    .gjs-field-color  (position: relative, width: 100%)
+      input[type=text]            ← hex value input
+      .gjs-field-colorp           ← swatch strip (position: absolute, right: 0)
+        .gjs-field-colorp-c
+          .gjs-checker-bg
+          .gjs-field-color-picker ← swatch button (position: absolute inside strip)
+*/
 .gjs-field-color {
   position: relative !important;
   display: block !important;
@@ -312,7 +622,7 @@
   overflow: visible !important;
 }
 
-/* Hex code input — visible, left-aligned, no own border */
+/* Hex input */
 .gjs-field-color > input,
 .gjs-field-color input[type="text"] {
   position: absolute !important;
@@ -322,7 +632,7 @@
   padding: 0 8px !important;
   border: none !important;
   background: transparent !important;
-  font-size: 0.78rem !important;
+  font-size: 0.75rem !important;
   font-family: 'Courier New', monospace !important;
   color: #1e293b !important;
   outline: none !important;
@@ -330,7 +640,7 @@
   border-radius: 8px 0 0 8px !important;
 }
 
-/* Swatch holder — right side strip */
+/* Swatch strip */
 .gjs-field-colorp {
   position: absolute !important;
   right: 0 !important;
@@ -344,7 +654,6 @@
   background: transparent !important;
 }
 
-/* Inner checker + swatch fill the holder */
 .gjs-field-colorp .gjs-checker-bg,
 .gjs-field-colorp .gjs-field-colorp-c,
 .gjs-field-colorp-c {
@@ -353,7 +662,7 @@
   border-radius: 4px !important;
 }
 
-/* The swatch/color button — MUST stay absolute inside the holder */
+/* Swatch button — must stay absolute inside strip */
 .gjs-field-color-picker {
   position: absolute !important;
   inset: 0 !important;
@@ -364,250 +673,19 @@
   box-shadow: 0 0 0 1px rgba(0,0,0,0.12) !important;
 }
 
-/* Popup color picker dropdowns — fixed so they escape scroll containers */
+/* Popup color pickers — fixed to escape scroll containers */
 .sp-container,
 .gjs-clr-picker {
   position: fixed !important;
   z-index: 9999 !important;
 }
+.sp-container { font-family: 'Poppins', sans-serif !important; }
 
-/* ── Live CSS preview panel ─────────────────────────────── */
-.css-panel {
-  padding: 12px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.css-panel-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.css-tag {
-  display: inline-block;
-  background: #eef2ff;
-  color: #4f46e5;
-  border: 1px solid #c7d2fe;
-  border-radius: 6px;
-  padding: 2px 10px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  font-family: 'Courier New', monospace;
-  letter-spacing: 0.3px;
-}
-
-.css-hint {
-  font-size: 0.7rem;
-  color: #94a3b8;
-  font-weight: 500;
-}
-
-.css-code {
-  flex: 1;
-  background: #0f172a;
-  color: #7dd3fc;
-  border-radius: 10px;
-  padding: 14px 16px;
-  font-family: 'Courier New', 'Fira Code', monospace;
-  font-size: 0.78rem;
-  line-height: 1.7;
-  white-space: pre-wrap;
-  word-break: break-all;
-  overflow-y: auto;
-  margin: 0;
-  border: 1px solid #1e293b;
-  min-height: 120px;
-}
-
-.css-empty {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  color: #94a3b8;
-  text-align: center;
-  padding: 24px;
-}
-
-.css-empty-icon {
-  font-size: 2rem;
-  line-height: 1;
-  display: block;
-}
-
-.css-empty p {
-  font-size: 0.78rem;
-  line-height: 1.6;
-  margin: 0;
-  color: #b0bcc8;
-}
-
-/* ── Traits wrap ─────────────────────────────────────────── */
-.traits-wrap { padding: 10px; }
-
-/* ═══════════════════════════════════════════════════════════
-   GrapesJS UI overrides
-═══════════════════════════════════════════════════════════ */
-
-/* GrapesJS renders its own panel bar even with defaults:[].
-   Hide it — we use custom appendTo targets for all managers. */
-.gjs-pn-panels { display: none !important; }
-.gjs-pn-panel  { display: none !important; }
-
-/* Block categories */
-.gjs-block-category .gjs-title {
-  background: #f8fafc !important;
-  color: #64748b !important;
-  font-size: 0.68rem !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.8px !important;
-  padding: 7px 12px !important;
-  border-bottom: 1px solid #f1f5f9 !important;
-  font-family: 'Poppins', sans-serif !important;
-}
-
-/* Block grid */
-.gjs-blocks-c {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 5px !important;
-  padding: 8px !important;
-}
-.gjs-block {
-  padding: 10px 6px !important;
-  border: 1px solid #e8ecf0 !important;
-  border-radius: 10px !important;
-  background: #fafbfc !important;
-  cursor: grab !important;
-  transition: all 0.15s ease !important;
-  text-align: center !important;
-  min-height: 56px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-.gjs-block:hover {
-  background: #eef2ff !important;
-  border-color: #a5b4fc !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 3px 10px rgba(79,70,229,0.12) !important;
-}
-.gjs-block__media { display: none !important; }
-.gjs-block-label   { font-size: 0 !important; }
-
-/* Custom block label */
-.blk-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.72rem !important;
-  font-weight: 600;
-  color: #475569;
-  font-family: 'Poppins', sans-serif;
-  line-height: 1.2;
-}
-.blk-ico {
-  font-size: 1.1rem;
-  line-height: 1;
-  color: #4f46e5;
-}
-
-/* Canvas */
-.gjs-cv-canvas {
-  background: #fff !important;
-  top: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-}
-.gjs-frame-wrapper { background: #e8ecf0 !important; }
-
-/* Selection highlight */
-.gjs-selected { outline: 2px solid #4f46e5 !important; outline-offset: 1px !important; }
-.gjs-hovered  { outline: 1px dashed #a5b4fc !important; outline-offset: 1px !important; }
-
-/* Floating toolbar on selected element */
-.gjs-toolbar {
-  background: #1e293b !important;
-  border-radius: 8px !important;
-  padding: 3px 6px !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
-}
-.gjs-toolbar-item {
-  color: #94a3b8 !important;
-  padding: 4px 7px !important;
-  font-size: 0.8rem !important;
-  border-radius: 5px !important;
-}
-.gjs-toolbar-item:hover {
-  color: #fff !important;
-  background: #334155 !important;
-}
-
-/* Style manager */
-.gjs-sm-sector-title {
-  background: #f8fafc !important;
-  color: #1e293b !important;
-  font-size: 0.72rem !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.6px !important;
-  padding: 9px 14px !important;
-  border-bottom: 1px solid #f1f5f9 !important;
-  cursor: pointer !important;
-  font-family: 'Poppins', sans-serif !important;
-}
-.gjs-sm-sector-title:hover { color: #4f46e5 !important; }
-.gjs-sm-properties { padding: 10px 12px 14px !important; }
-.gjs-sm-field, .gjs-sm-composite { margin-bottom: 9px !important; }
-.gjs-sm-label {
-  font-size: 0.72rem !important;
-  font-weight: 600 !important;
-  color: #64748b !important;
-  margin-bottom: 4px !important;
-  font-family: 'Poppins', sans-serif !important;
-}
-.gjs-input-unit,
-.gjs-field:not(.gjs-field-color) input,
-.gjs-field select {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 7px !important;
-  color: #1e293b !important;
-  font-size: 0.8rem !important;
-  padding: 5px 8px !important;
-  font-family: 'Poppins', sans-serif !important;
-}
-.gjs-field:not(.gjs-field-color) input:focus,
-.gjs-field select:focus {
-  outline: none !important;
-  border-color: #4f46e5 !important;
-  box-shadow: 0 0 0 2px rgba(79,70,229,0.1) !important;
-}
-.gjs-four-color,
-.gjs-four-color-h {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 7px !important;
-}
-
-/* Spectrum color picker font */
-.sp-container {
-  font-family: 'Poppins', sans-serif !important;
-}
-
-/* Layers */
+/* ── Layers ──────────────────────────────────────────────── */
 .gjs-layer-title {
-  font-size: 0.8rem !important;
+  font-size: 0.78rem !important;
   color: #334155 !important;
-  padding: 6px 10px !important;
+  padding: 7px 12px !important;
   font-family: 'Poppins', sans-serif !important;
   font-weight: 500 !important;
 }
@@ -617,24 +695,24 @@
   background: #4f46e5 !important;
   color: #fff !important;
   border-radius: 5px !important;
-  font-size: 0.68rem !important;
+  font-size: 0.65rem !important;
   padding: 1px 5px !important;
 }
 
-/* Traits */
+/* ── Traits ──────────────────────────────────────────────── */
 .gjs-trt-trait {
-  padding: 7px 12px !important;
+  padding: 7px 14px !important;
   border-bottom: 1px solid #f8fafc !important;
 }
 .gjs-trt-trait__label {
-  font-size: 0.72rem !important;
+  font-size: 0.7rem !important;
   font-weight: 600 !important;
   color: #64748b !important;
   font-family: 'Poppins', sans-serif !important;
 }
 .gjs-trt-trait .gjs-field { margin-top: 4px !important; }
 
-/* Asset manager */
+/* ── Asset manager ───────────────────────────────────────── */
 .gjs-am-assets-header { background: #f8fafc !important; }
 .gjs-am-asset-image   { border-radius: 8px !important; }
 .gjs-am-add-field {
@@ -643,14 +721,4 @@
   border: 1px solid #e2e8f0 !important;
   font-family: 'Poppins', sans-serif !important;
 }
-
-/* Color picker swatch */
 .gjs-swatch { border-radius: 5px !important; }
-
-/* Scrollbar styling */
-.editor-left ::-webkit-scrollbar,
-.panel-pane::-webkit-scrollbar { width: 4px; }
-.editor-left ::-webkit-scrollbar-track,
-.panel-pane::-webkit-scrollbar-track { background: transparent; }
-.editor-left ::-webkit-scrollbar-thumb,
-.panel-pane::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
