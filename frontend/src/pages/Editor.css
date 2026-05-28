@@ -15,14 +15,14 @@
 
 /* ── Toolbar ─────────────────────────────────────────────── */
 .editor-toolbar {
-  height: 56px;
+  height: 46px;
   background: #ffffff;
   border-bottom: 1px solid #e8ecf0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
-  gap: 12px;
+  padding: 0 10px;
+  gap: 8px;
   flex-shrink: 0;
   z-index: 100;
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
@@ -31,7 +31,7 @@
 .editor-toolbar-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   flex: 1;
   min-width: 0;
 }
@@ -52,13 +52,13 @@
 }
 
 .editor-back-btn {
-  padding: 6px 12px;
+  padding: 4px 10px;
   background: #f8fafc;
   color: #475569;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 7px;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 500;
   flex-shrink: 0;
   transition: all 0.15s;
@@ -112,19 +112,19 @@
 .editor-toolbar-right {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   flex: 1;
   justify-content: flex-end;
 }
 
 .editor-icon-btn {
-  padding: 6px 10px;
+  padding: 4px 8px;
   background: #f8fafc;
   color: #64748b;
   border: 1px solid #e2e8f0;
-  border-radius: 7px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 500;
   transition: all 0.15s;
 }
@@ -133,25 +133,25 @@
 .editor-save-msg { color: #16a34a; font-size: 0.8rem; font-weight: 600; }
 
 .editor-save-btn {
-  padding: 7px 16px;
+  padding: 5px 13px;
   background: #f8fafc;
   color: #1e293b;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 7px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   transition: all 0.15s;
 }
 .editor-save-btn:hover { background: #f1f5f9; border-color: #cbd5e1; }
 
 .editor-publish-btn {
-  padding: 7px 16px;
+  padding: 5px 13px;
   border: none;
-  border-radius: 8px;
+  border-radius: 7px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   color: #fff;
   transition: all 0.15s;
 }
@@ -170,14 +170,14 @@
 
 /* ── LEFT — Blocks panel ─────────────────────────────────── */
 .editor-left {
-  width: 290px;
+  width: 260px;
   background: #e8edf2;
   border-right: none;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   overflow: hidden;
-  padding: 12px;
+  padding: 6px;
   gap: 0;
 }
 
@@ -202,15 +202,15 @@
 
 /* ── RIGHT — Sidebar panels ──────────────────────────────── */
 .editor-right {
-  width: 290px;
+  width: 260px;
   background: #e8edf2;
   border-left: 1px solid #e8ecf0;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   overflow: hidden;
-  padding: 12px 12px 0;
-  gap: 10px;
+  padding: 6px 6px 0;
+  gap: 6px;
 }
 
 /* ── Tab pill bar (matches PostEditor top-bar style) ─────── */
@@ -218,8 +218,8 @@
   display: flex;
   background: #fff;
   border: 1px solid #f1f5f9;
-  border-radius: 10px;
-  padding: 4px;
+  border-radius: 8px;
+  padding: 3px;
   gap: 2px;
   flex-shrink: 0;
   box-shadow: 0 1px 3px rgba(0,0,0,0.04);
@@ -230,18 +230,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 6px 4px;
+  gap: 1px;
+  padding: 4px 3px;
   background: transparent;
   border: none;
-  border-radius: 7px;
+  border-radius: 6px;
   cursor: pointer;
   font-family: 'Poppins', sans-serif;
   transition: all 0.15s;
   color: #94a3b8;
 }
-.rt-icon  { font-size: 0.9rem; line-height: 1; }
-.rt-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.3px; }
+.rt-icon  { font-size: 0.82rem; line-height: 1; }
+.rt-label { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.3px; }
 
 .right-tab:hover:not(.active) { background: #f8fafc; color: #64748b; }
 .right-tab.active { background: #4f46e5; color: #fff; }
@@ -261,7 +261,7 @@
   pointer-events: none;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0 0 16px;
+  padding: 0 0 8px;
 }
 .panel-pane.active {
   visibility: visible;
@@ -274,19 +274,19 @@
 .side-card {
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: visible;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .side-card-title {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
   color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  padding: 11px 16px;
+  padding: 7px 12px;
   border-bottom: 1px solid #f1f5f9;
   display: flex;
   align-items: center;
@@ -303,17 +303,17 @@
 .blocks-card .gjs-blocks-wrap {
   flex: 1;
   overflow-y: auto;
-  padding: 8px;
+  padding: 5px;
   width: 100%;
   box-sizing: border-box;
 }
 
 /* ── Live CSS panel ──────────────────────────────────────── */
 .css-panel {
-  padding: 10px 12px 12px;
+  padding: 7px 10px 10px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .css-tag-inline {
@@ -404,10 +404,10 @@
 
 /* ── Block categories ────────────────────────────────────── */
 .gjs-block-category {
-  margin-bottom: 8px !important;
+  margin-bottom: 5px !important;
   background: #f1f4f8 !important;
   border: none !important;
-  border-radius: 10px !important;
+  border-radius: 8px !important;
   overflow: hidden !important;
   width: 100% !important;
   box-sizing: border-box !important;
@@ -415,11 +415,11 @@
 .gjs-block-category .gjs-title {
   background: #f1f4f8 !important;
   color: #64748b !important;
-  font-size: 0.65rem !important;
+  font-size: 0.62rem !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.8px !important;
-  padding: 10px 14px !important;
+  padding: 6px 10px !important;
   border-bottom: 1px solid #e2e8f0 !important;
   font-family: 'Poppins', sans-serif !important;
 }
@@ -428,20 +428,20 @@
 .gjs-blocks-c {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: 4px !important;
-  padding: 8px !important;
+  gap: 3px !important;
+  padding: 5px !important;
   box-sizing: border-box !important;
   width: 100% !important;
 }
 .gjs-block {
-  padding: 14px 6px !important;
+  padding: 9px 4px !important;
   border: none !important;
-  border-radius: 6px !important;
+  border-radius: 5px !important;
   background: #e8edf2 !important;
   cursor: grab !important;
   transition: all 0.15s ease !important;
   text-align: center !important;
-  min-height: 64px !important;
+  min-height: 52px !important;
   width: 100% !important;
   box-sizing: border-box !important;
   display: flex !important;
@@ -500,22 +500,22 @@
 .gjs-sm-sector {
   background: #fff !important;
   border: 1px solid #e2e8f0 !important;
-  border-radius: 12px !important;
+  border-radius: 9px !important;
   overflow: visible !important;
-  margin-bottom: 10px !important;
+  margin-bottom: 5px !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
 }
 
 .gjs-sm-sector-title {
   background: #fff !important;
   color: #475569 !important;
-  font-size: 0.68rem !important;
+  font-size: 0.65rem !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.8px !important;
-  padding: 11px 16px !important;
+  padding: 7px 12px !important;
   border-bottom: 1px solid #f1f5f9 !important;
-  border-radius: 12px 12px 0 0 !important;
+  border-radius: 9px 9px 0 0 !important;
   cursor: pointer !important;
   font-family: 'Poppins', sans-serif !important;
   transition: color 0.15s !important;
@@ -527,19 +527,18 @@
   border-bottom-color: #e0e7ff !important;
 }
 
-.gjs-sm-properties { padding: 12px 16px 14px !important; }
-.gjs-sm-field, .gjs-sm-composite { margin-bottom: 10px !important; }
+.gjs-sm-properties { padding: 7px 10px 8px !important; }
+.gjs-sm-field, .gjs-sm-composite { margin-bottom: 6px !important; }
 .gjs-sm-label {
-  font-size: 0.7rem !important;
+  font-size: 0.67rem !important;
   font-weight: 600 !important;
   color: #64748b !important;
-  margin-bottom: 5px !important;
+  margin-bottom: 3px !important;
   font-family: 'Poppins', sans-serif !important;
 }
 
-/* Style manager inputs (non-color) */
-/* Wrap each field+unit together */
-.gjs-field:not(.gjs-field-color) {
+/* Style manager inputs — exclude radio and color fields */
+.gjs-field:not(.gjs-field-color):not(.gjs-field-radio) {
   display: flex !important;
   align-items: center !important;
   background: #f8fafc !important;
@@ -547,7 +546,7 @@
   border-radius: 7px !important;
   overflow: hidden !important;
 }
-.gjs-field:not(.gjs-field-color) input {
+.gjs-field:not(.gjs-field-color):not(.gjs-field-radio) input {
   flex: 1 !important;
   min-width: 0 !important;
   background: transparent !important;
@@ -586,7 +585,7 @@
   font-family: 'Poppins', sans-serif !important;
   width: 100% !important;
 }
-.gjs-field:not(.gjs-field-color):focus-within {
+.gjs-field:not(.gjs-field-color):not(.gjs-field-radio):focus-within {
   border-color: #4f46e5 !important;
   box-shadow: 0 0 0 2px rgba(79,70,229,0.1) !important;
 }
@@ -600,6 +599,53 @@
   background: #f8fafc !important;
   border: 1px solid #e2e8f0 !important;
   border-radius: 7px !important;
+}
+
+/* ── Radio buttons (Text Align etc.) ────────────────────────── */
+.gjs-field-radio {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+.gjs-radio-items {
+  display: flex !important;
+  gap: 4px !important;
+  flex-wrap: wrap !important;
+}
+.gjs-radio-item {
+  flex: 1 !important;
+  min-width: 0 !important;
+  cursor: pointer !important;
+}
+.gjs-radio-item input[type="radio"] {
+  display: none !important;
+}
+.gjs-radio-item-label {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 5px 6px !important;
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 6px !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+  font-family: 'Poppins', sans-serif !important;
+  cursor: pointer !important;
+  transition: all 0.15s !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+}
+.gjs-radio-item:hover .gjs-radio-item-label {
+  background: #e0e7ff !important;
+  border-color: #a5b4fc !important;
+  color: #4f46e5 !important;
+}
+.gjs-radio-item input[type="radio"]:checked + .gjs-radio-item-label {
+  background: #4f46e5 !important;
+  border-color: #4f46e5 !important;
+  color: #fff !important;
 }
 
 /* ── Color field ─────────────────────────────────────────── */
@@ -683,9 +729,9 @@
 
 /* ── Layers ──────────────────────────────────────────────── */
 .gjs-layer-title {
-  font-size: 0.78rem !important;
+  font-size: 0.74rem !important;
   color: #334155 !important;
-  padding: 7px 12px !important;
+  padding: 5px 10px !important;
   font-family: 'Poppins', sans-serif !important;
   font-weight: 500 !important;
 }
@@ -701,7 +747,7 @@
 
 /* ── Traits ──────────────────────────────────────────────── */
 .gjs-trt-trait {
-  padding: 7px 14px !important;
+  padding: 5px 10px !important;
   border-bottom: 1px solid #f8fafc !important;
 }
 .gjs-trt-trait__label {

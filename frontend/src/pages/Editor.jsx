@@ -150,6 +150,148 @@ const SECTORS = [
     ],
   },
   {
+    name: 'Position', open: false,
+    properties: [
+      { name: 'Position', property: 'position', type: 'select',
+        options: [
+          { value: 'static',   name: 'Static'   },
+          { value: 'relative', name: 'Relative' },
+          { value: 'absolute', name: 'Absolute' },
+          { value: 'fixed',    name: 'Fixed'    },
+          { value: 'sticky',   name: 'Sticky'   },
+        ]},
+      { name: 'Top',    property: 'top',    type: 'integer', units: ['px','%','em','rem','auto'] },
+      { name: 'Right',  property: 'right',  type: 'integer', units: ['px','%','em','rem','auto'] },
+      { name: 'Bottom', property: 'bottom', type: 'integer', units: ['px','%','em','rem','auto'] },
+      { name: 'Left',   property: 'left',   type: 'integer', units: ['px','%','em','rem','auto'] },
+      { name: 'Z-Index', property: 'z-index', type: 'integer', units: [''] },
+    ],
+  },
+  {
+    name: 'Transform', open: false,
+    properties: [
+      { name: 'Transform', property: 'transform', type: 'select',
+        options: [
+          { value: 'none',                  name: 'None'              },
+          { value: 'scale(1.05)',            name: 'Scale Up 5%'       },
+          { value: 'scale(1.1)',             name: 'Scale Up 10%'      },
+          { value: 'scale(0.95)',            name: 'Scale Down 5%'     },
+          { value: 'scale(0.9)',             name: 'Scale Down 10%'    },
+          { value: 'rotate(45deg)',          name: 'Rotate 45°'        },
+          { value: 'rotate(90deg)',          name: 'Rotate 90°'        },
+          { value: 'rotate(180deg)',         name: 'Rotate 180°'       },
+          { value: 'rotate(-45deg)',         name: 'Rotate -45°'       },
+          { value: 'scaleX(-1)',             name: 'Flip Horizontal'   },
+          { value: 'scaleY(-1)',             name: 'Flip Vertical'     },
+          { value: 'skewX(10deg)',           name: 'Skew X 10°'        },
+          { value: 'skewY(10deg)',           name: 'Skew Y 10°'        },
+          { value: 'translateX(20px)',       name: 'Shift Right 20px'  },
+          { value: 'translateX(-20px)',      name: 'Shift Left 20px'   },
+          { value: 'translateY(20px)',       name: 'Shift Down 20px'   },
+          { value: 'translateY(-20px)',      name: 'Shift Up 20px'     },
+        ]},
+      { name: 'Transform Origin', property: 'transform-origin', type: 'select',
+        options: [
+          { value: 'center center',  name: 'Center'        },
+          { value: 'top left',       name: 'Top Left'      },
+          { value: 'top center',     name: 'Top Center'    },
+          { value: 'top right',      name: 'Top Right'     },
+          { value: 'bottom left',    name: 'Bottom Left'   },
+          { value: 'bottom center',  name: 'Bottom Center' },
+          { value: 'bottom right',   name: 'Bottom Right'  },
+        ]},
+    ],
+  },
+  {
+    name: 'Transition', open: false,
+    properties: [
+      { name: 'Transition', property: 'transition', type: 'select',
+        options: [
+          { value: 'none',                           name: 'None'                  },
+          { value: 'all 0.15s ease',                 name: 'Fast — 0.15s'          },
+          { value: 'all 0.2s ease',                  name: 'Quick — 0.2s'          },
+          { value: 'all 0.3s ease',                  name: 'Normal — 0.3s'         },
+          { value: 'all 0.5s ease',                  name: 'Slow — 0.5s'           },
+          { value: 'all 0.8s ease',                  name: 'Slower — 0.8s'         },
+          { value: 'all 0.3s ease-in',               name: 'Ease In — 0.3s'        },
+          { value: 'all 0.3s ease-out',              name: 'Ease Out — 0.3s'       },
+          { value: 'all 0.3s ease-in-out',           name: 'Ease In-Out — 0.3s'    },
+          { value: 'all 0.3s linear',                name: 'Linear — 0.3s'         },
+          { value: 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)', name: 'Spring — 0.4s' },
+          { value: 'opacity 0.3s ease',              name: 'Opacity only'          },
+          { value: 'transform 0.3s ease',            name: 'Transform only'        },
+          { value: 'background-color 0.3s ease',     name: 'BG Color only'         },
+        ]},
+      { name: 'Duration', property: 'transition-duration', type: 'integer', units: ['s','ms'] },
+      { name: 'Timing',   property: 'transition-timing-function', type: 'select',
+        options: [
+          { value: 'ease',         name: 'Ease'        },
+          { value: 'linear',       name: 'Linear'      },
+          { value: 'ease-in',      name: 'Ease In'     },
+          { value: 'ease-out',     name: 'Ease Out'    },
+          { value: 'ease-in-out',  name: 'Ease In-Out' },
+          { value: 'cubic-bezier(0.34,1.56,0.64,1)', name: 'Spring' },
+        ]},
+      { name: 'Delay', property: 'transition-delay', type: 'integer', units: ['s','ms'] },
+    ],
+  },
+  {
+    name: 'Animation', open: false,
+    properties: [
+      { name: 'Animation', property: 'animation-name', type: 'select',
+        options: [
+          { value: 'none',              name: 'None'          },
+          { value: 'gjs-fadeIn',        name: 'Fade In'       },
+          { value: 'gjs-fadeInUp',      name: 'Fade In Up'    },
+          { value: 'gjs-fadeInDown',    name: 'Fade In Down'  },
+          { value: 'gjs-fadeInLeft',    name: 'Fade In Left'  },
+          { value: 'gjs-fadeInRight',   name: 'Fade In Right' },
+          { value: 'gjs-slideInUp',     name: 'Slide In Up'   },
+          { value: 'gjs-slideInLeft',   name: 'Slide In Left' },
+          { value: 'gjs-slideInRight',  name: 'Slide In Right'},
+          { value: 'gjs-zoomIn',        name: 'Zoom In'       },
+          { value: 'gjs-bounce',        name: 'Bounce'        },
+          { value: 'gjs-pulse',         name: 'Pulse'         },
+          { value: 'gjs-spin',          name: 'Spin'          },
+          { value: 'gjs-shake',         name: 'Shake'         },
+          { value: 'gjs-flip',          name: 'Flip'          },
+          { value: 'gjs-float',         name: 'Float'         },
+        ]},
+      { name: 'Duration',   property: 'animation-duration',         type: 'integer', units: ['s','ms'] },
+      { name: 'Delay',      property: 'animation-delay',            type: 'integer', units: ['s','ms'] },
+      { name: 'Repeat',     property: 'animation-iteration-count',  type: 'select',
+        options: [
+          { value: '1', name: '1×' }, { value: '2', name: '2×' },
+          { value: '3', name: '3×' }, { value: 'infinite', name: 'Infinite' },
+        ]},
+      { name: 'Timing',     property: 'animation-timing-function',  type: 'select',
+        options: [
+          { value: 'ease', name: 'Ease' }, { value: 'linear', name: 'Linear' },
+          { value: 'ease-in', name: 'Ease In' }, { value: 'ease-out', name: 'Ease Out' },
+          { value: 'ease-in-out', name: 'Ease In-Out' },
+        ]},
+      { name: 'Direction',  property: 'animation-direction', type: 'select',
+        options: [
+          { value: 'normal',            name: 'Normal'           },
+          { value: 'reverse',           name: 'Reverse'          },
+          { value: 'alternate',         name: 'Alternate'        },
+          { value: 'alternate-reverse', name: 'Alternate Reverse'},
+        ]},
+      { name: 'Fill Mode',  property: 'animation-fill-mode', type: 'select',
+        options: [
+          { value: 'none',      name: 'None'      },
+          { value: 'forwards',  name: 'Forwards'  },
+          { value: 'backwards', name: 'Backwards' },
+          { value: 'both',      name: 'Both'      },
+        ]},
+      { name: 'Play State', property: 'animation-play-state', type: 'select',
+        options: [
+          { value: 'running', name: 'Running' },
+          { value: 'paused',  name: 'Paused'  },
+        ]},
+    ],
+  },
+  {
     name: 'Box Shadow', open: false,
     properties: [
       { name: 'Box Shadow', property: 'box-shadow', type: 'select',
@@ -190,6 +332,25 @@ const SECTORS = [
     ],
   },
 ];
+
+/* ─── Animation keyframes injected into canvas iframe ───── */
+const ANIMATION_CSS = `
+@keyframes gjs-fadeIn      { from { opacity:0 }                                    to { opacity:1 } }
+@keyframes gjs-fadeInUp    { from { opacity:0; transform:translateY(30px) }        to { opacity:1; transform:translateY(0) } }
+@keyframes gjs-fadeInDown  { from { opacity:0; transform:translateY(-30px) }       to { opacity:1; transform:translateY(0) } }
+@keyframes gjs-fadeInLeft  { from { opacity:0; transform:translateX(-30px) }       to { opacity:1; transform:translateX(0) } }
+@keyframes gjs-fadeInRight { from { opacity:0; transform:translateX(30px) }        to { opacity:1; transform:translateX(0) } }
+@keyframes gjs-slideInUp   { from { transform:translateY(100%) }                   to { transform:translateY(0) } }
+@keyframes gjs-slideInLeft { from { transform:translateX(-100%) }                  to { transform:translateX(0) } }
+@keyframes gjs-slideInRight{ from { transform:translateX(100%) }                   to { transform:translateX(0) } }
+@keyframes gjs-zoomIn      { from { opacity:0; transform:scale(0.5) }              to { opacity:1; transform:scale(1) } }
+@keyframes gjs-bounce      { 0%,100% { transform:translateY(0) }    50% { transform:translateY(-20px) } }
+@keyframes gjs-pulse       { 0%,100% { transform:scale(1) }         50% { transform:scale(1.06) } }
+@keyframes gjs-spin        { from { transform:rotate(0deg) }                       to { transform:rotate(360deg) } }
+@keyframes gjs-shake       { 0%,100% { transform:translateX(0) }    25% { transform:translateX(-8px) }   75% { transform:translateX(8px) } }
+@keyframes gjs-flip        { from { transform:perspective(400px) rotateY(0) }      to { transform:perspective(400px) rotateY(360deg) } }
+@keyframes gjs-float       { 0%,100% { transform:translateY(0) }    50% { transform:translateY(-10px) } }
+`;
 
 /* ─── Editor ──────────────────────────────────────────────── */
 const Editor = () => {
@@ -293,6 +454,17 @@ const Editor = () => {
       editor.on('style:change',        () => refreshCSS(editor));
 
       editor.on('change:device', () => setDevice(editor.getDevice()));
+
+      /* Inject animation keyframes into canvas iframe */
+      editor.on('load', () => {
+        const doc = editor.Canvas.getDocument();
+        if (doc) {
+          const style = doc.createElement('style');
+          style.id = 'gjs-animation-keyframes';
+          style.textContent = ANIMATION_CSS;
+          doc.head.appendChild(style);
+        }
+      });
 
       gjsRef.current = editor;
     }
