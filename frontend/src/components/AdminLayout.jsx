@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 
 const NAV_ITEMS = [
   { to: '/admin/pages',  icon: '📄', label: 'Pages'  },
+  { to: '/admin/header', icon: '🖥', label: 'Header' },
   { to: '/admin/menu',   icon: '☰',  label: 'Menu'   },
   { to: '/admin/footer', icon: '🔲', label: 'Footer' },
   { to: '/admin/blog',   icon: '📝', label: 'Blog'   },

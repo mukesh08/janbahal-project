@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import SiteHeader from '../components/SiteHeader';
 
 const PublicViewer = () => {
   const { slug } = useParams();
@@ -37,27 +38,34 @@ const PublicViewer = () => {
 
   if (loading) {
     return (
-      <div style={styles.center}>
-        <p>Loading...</p>
-      </div>
+      <>
+        <SiteHeader />
+        <div style={styles.center}><p>Loading...</p></div>
+      </>
     );
   }
 
   if (error) {
     return (
-      <div style={styles.center}>
-        <h2>404</h2>
-        <p>{error}</p>
-        <a href="/" style={styles.homeLink}>← Go Home</a>
-      </div>
+      <>
+        <SiteHeader editHref="/admin/pages" editLabel="Edit Pages" />
+        <div style={styles.center}>
+          <h2>404</h2>
+          <p>{error}</p>
+          <a href="/" style={styles.homeLink}>← Go Home</a>
+        </div>
+      </>
     );
   }
 
   return (
-    <div
-      dangerouslySetInnerHTML={{ __html: page.gjsHtml }}
-      style={{ minHeight: '100vh' }}
-    />
+    <>
+      <SiteHeader editHref={`/admin/editor/${page._id}`} editLabel="Edit Page" />
+      <div
+        dangerouslySetInnerHTML={{ __html: page.gjsHtml }}
+        style={{ minHeight: '100vh' }}
+      />
+    </>
   );
 };
 

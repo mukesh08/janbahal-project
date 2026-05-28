@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import SiteHeader from '../components/SiteHeader';
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -28,18 +29,20 @@ const Landing = () => {
     return () => { document.getElementById('home-page-css')?.remove(); };
   }, [homeCSS]);
 
-  // If a published home page exists in DB, render it directly
+  // If a published home page exists in DB, render it with the site header
   if (homePage?.gjsHtml) {
-    return <div dangerouslySetInnerHTML={{ __html: homePage.gjsHtml }} style={{ minHeight: '100vh' }} />;
+    return (
+      <div style={{ minHeight: '100vh' }}>
+        <SiteHeader editHref={`/admin/editor/${homePage._id}`} editLabel="Edit Page" />
+        <div dangerouslySetInnerHTML={{ __html: homePage.gjsHtml }} />
+      </div>
+    );
   }
 
   return (
     <div style={s.root}>
 
-      {/* ── NAV ── */}
-      <nav style={s.nav}>
-        <span style={s.navLogo}>Janbahal</span>
-      </nav>
+      <SiteHeader editHref="/admin/pages" editLabel="Edit Pages" />
 
       {/* ── HERO ── */}
       <section style={s.hero}>
@@ -129,11 +132,6 @@ const Landing = () => {
 /* ── Styles ── */
 const s = {
   root: { minHeight: '100vh', background: '#fff', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', overflowX: 'hidden' },
-
-  /* nav */
-  nav: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.1rem 2.5rem', borderBottom: '1px solid #f1f5f9', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(8px)', zIndex: 100 },
-  navLogo: { fontSize: '1.4rem', fontWeight: '800', color: '#4f46e5' },
-  navBtn: { padding: '0.5rem 1.2rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.9rem' },
 
   /* hero */
   hero: { position: 'relative', padding: '6rem 2rem 5rem', textAlign: 'center', overflow: 'hidden', background: 'linear-gradient(160deg, #f8f7ff 0%, #eef2ff 100%)' },

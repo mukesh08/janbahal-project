@@ -9,6 +9,8 @@ const pageRoutes   = require('./routes/pageRoutes');
 const menuRoutes   = require('./routes/menuRoutes');
 const footerRoutes = require('./routes/footerRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const postRoutes   = require('./routes/postRoutes');
+const headerRoutes = require('./routes/headerRoutes');
 
 const app = express();
 
@@ -26,6 +28,8 @@ app.use('/api/pages',  pageRoutes);
 app.use('/api/menu',   menuRoutes);
 app.use('/api/footer', footerRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/posts',  postRoutes);
+app.use('/api/header', headerRoutes);
 
 // 404
 app.use((req, res) => res.status(404).json({ message: `Route ${req.originalUrl} not found` }));

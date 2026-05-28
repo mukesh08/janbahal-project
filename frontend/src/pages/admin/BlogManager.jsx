@@ -1,30 +1,190 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
 
-const BlogManager = () => (
-  <AdminLayout>
-    <div style={s.container}>
-      <div style={s.header}>
-        <h1 style={s.title}>Blog</h1>
-        <p style={s.sub}>Manage blog categories and settings</p>
+const BlogManager = () => {
+  const navigate = useNavigate();
+  const [stats,       setStats]       = useState({ total: 0, published: 0, draft: 0 });
+  const [categories,  setCategories]  = useState([]);
+  const [recentPosts, setRecentPosts] = useState([]);
+  const [loading,     setLoading]     = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      axios.get('/api/posts/all'),
+      axios.get('/api/posts/categories'),
+    ]).then(([allRes, catRes]) => {
+      const posts = allRes.data;
+      setStats({
+        total:     posts.length,
+        published: posts.filter(p => p.status === 'published').length,
+        draft:     posts.filter(p => p.status === 'draft').length,
+      });
+      setCategories(catRes.data);
+      setRecentPosts(posts.slice(0, 5));
+    }).catch(() => {}).finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <AdminLayout>
+      <div style={s.container}>
+
+        {/* Header */}
+        <div style={s.header}>
+          <div>
+            <h1 style={s.title}>Blog</h1>
+            <p style={s.sub}>Overview of your blog — posts, categories and activity</p>
+          </div>
+          <button style={s.newBtn} onClick={() => navigate('/admin/posts/new')}>
+            ＋ New Post
+          </button>
+        </div>
+
+        {/* Stats */}
+        <div style={s.statsRow}>
+          {[
+            { icon: '📝', label: 'Total Posts',  value: stats.total,     color: '#4f46e5', bg: '#eef2ff' },
+            { icon: '🚀', label: 'Published',     value: stats.published, color: '#16a34a', bg: '#dcfce7' },
+            { icon: '📋', label: 'Drafts',        value: stats.draft,     color: '#d97706', bg: '#fef3c7' },
+            { icon: '🏷',  label: 'Categories',   value: categories.length, color: '#0891b2', bg: '#e0f2fe' },
+          ].map(({ icon, label, value, color, bg }) => (
+            <div key={label} style={s.statCard}>
+              <div style={{ ...s.statIcon, background: bg, color }}>{icon}</div>
+              <div style={s.statValue}>{loading ? '…' : value}</div>
+              <div style={s.statLabel}>{label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Two columns */}
+        <div style={s.cols}>
+
+          {/* Categories */}
+          <div style={s.card}>
+            <div style={s.cardHeader}>
+              <span style={s.cardTitle}>Categories</span>
+              <button style={s.viewAllBtn} onClick={() => navigate('/admin/posts')}>View Posts →</button>
+            </div>
+            {loading ? (
+              <p style={s.loadingTxt}>Loading…</p>
+            ) : categories.length === 0 ? (
+              <p style={s.emptyTxt}>No categories yet. Create a post to get started.</p>
+            ) : (
+              <div style={s.catList}>
+                {categories.map(c => (
+                  <div key={c._id} style={s.catRow}>
+                    <span style={s.catName}>{c._id}</span>
+                    <span style={s.catCount}>{c.count} {c.count === 1 ? 'post' : 'posts'}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Recent Posts */}
+          <div style={s.card}>
+            <div style={s.cardHeader}>
+              <span style={s.cardTitle}>Recent Posts</span>
+              <button style={s.viewAllBtn} onClick={() => navigate('/admin/posts')}>All Posts →</button>
+            </div>
+            {loading ? (
+              <p style={s.loadingTxt}>Loading…</p>
+            ) : recentPosts.length === 0 ? (
+              <div style={s.emptyWrap}>
+                <span style={{ fontSize: '2.5rem' }}>✏️</span>
+                <p style={s.emptyTxt}>No posts yet.</p>
+                <button style={s.newBtn} onClick={() => navigate('/admin/posts/new')}>Write First Post</button>
+              </div>
+            ) : (
+              <div style={s.recentList}>
+                {recentPosts.map(p => (
+                  <div key={p._id} style={s.recentRow} onClick={() => navigate(`/admin/posts/${p._id}/edit`)}>
+                    <div style={s.recentInfo}>
+                      <span style={s.recentTitle}>{p.title}</span>
+                      <span style={s.recentMeta}>{p.category} · {new Date(p.updatedAt).toLocaleDateString()}</span>
+                    </div>
+                    <span style={{ ...s.statusDot, color: p.status === 'published' ? '#16a34a' : '#d97706' }}>
+                      {p.status === 'published' ? '●' : '○'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+        </div>
+
+        {/* Quick links */}
+        <div style={s.quickLinks}>
+          <span style={s.quickLabel}>Quick links:</span>
+          <button style={s.quickBtn} onClick={() => navigate('/admin/posts')}>📋 All Posts</button>
+          <button style={s.quickBtn} onClick={() => navigate('/admin/posts/new')}>✏️ Write Post</button>
+          <button style={s.quickBtn} onClick={() => window.open('/blog', '_blank')}>🌐 View Blog</button>
+        </div>
+
       </div>
-      <div style={s.comingSoon}>
-        <span style={s.icon}>📝</span>
-        <p style={s.label}>Blog Manager</p>
-        <p style={s.hint}>Coming soon — manage categories, tags, featured posts and blog layout settings.</p>
-      </div>
-    </div>
-  </AdminLayout>
-);
+    </AdminLayout>
+  );
+};
 
 const s = {
-  container: { padding: '2rem' },
-  header: { marginBottom: '2rem' },
+  container: { padding: '2rem', fontFamily: "'Poppins', sans-serif" },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.75rem' },
   title: { fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: '0 0 0.25rem' },
-  sub: { color: '#64748b', fontSize: '0.9rem', margin: 0 },
-  comingSoon: { background: '#fff', border: '2px dashed #e2e8f0', borderRadius: '16px', padding: '5rem 2rem', textAlign: 'center' },
-  icon: { fontSize: '3rem', display: 'block', marginBottom: '1rem' },
-  label: { fontSize: '1.1rem', fontWeight: '700', color: '#1e293b', marginBottom: '0.5rem' },
-  hint: { color: '#94a3b8', fontSize: '0.9rem', maxWidth: '360px', margin: '0 auto' },
+  sub:   { color: '#64748b', fontSize: '0.9rem', margin: 0 },
+  newBtn: {
+    padding: '0.6rem 1.25rem', background: '#4f46e5', color: '#fff',
+    border: 'none', borderRadius: '8px', cursor: 'pointer',
+    fontWeight: '600', fontSize: '0.88rem', fontFamily: "'Poppins', sans-serif",
+  },
+
+  statsRow: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' },
+  statCard: {
+    background: '#fff', borderRadius: '12px', padding: '1.25rem',
+    border: '1px solid #f1f5f9', textAlign: 'center',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+  },
+  statIcon:  { width: '44px', height: '44px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', margin: '0 auto 0.75rem' },
+  statValue: { fontSize: '1.8rem', fontWeight: '800', color: '#0f172a', lineHeight: 1 },
+  statLabel: { fontSize: '0.75rem', color: '#94a3b8', marginTop: '4px', fontWeight: '600' },
+
+  cols: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' },
+  card: { background: '#fff', borderRadius: '12px', border: '1px solid #f1f5f9', padding: '1.25rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' },
+  cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' },
+  cardTitle:  { fontSize: '0.85rem', fontWeight: '700', color: '#1e293b' },
+  viewAllBtn: { background: 'transparent', border: 'none', color: '#4f46e5', cursor: 'pointer', fontSize: '0.78rem', fontWeight: '600', fontFamily: "'Poppins', sans-serif" },
+
+  loadingTxt: { color: '#94a3b8', fontSize: '0.85rem', textAlign: 'center', padding: '1rem 0' },
+  emptyTxt:   { color: '#94a3b8', fontSize: '0.85rem', textAlign: 'center', padding: '1rem 0' },
+  emptyWrap:  { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '1.5rem 0' },
+
+  catList: { display: 'flex', flexDirection: 'column', gap: '6px' },
+  catRow: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    padding: '8px 12px', background: '#f8fafc', borderRadius: '8px',
+  },
+  catName:  { fontSize: '0.85rem', fontWeight: '600', color: '#334155' },
+  catCount: { fontSize: '0.75rem', color: '#94a3b8', fontWeight: '500' },
+
+  recentList: { display: 'flex', flexDirection: 'column', gap: '4px' },
+  recentRow: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    padding: '8px 10px', borderRadius: '8px', cursor: 'pointer',
+    transition: 'background 0.15s',
+  },
+  recentInfo:  { display: 'flex', flexDirection: 'column', gap: '2px', flex: 1, minWidth: 0 },
+  recentTitle: { fontSize: '0.85rem', fontWeight: '600', color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  recentMeta:  { fontSize: '0.72rem', color: '#94a3b8' },
+  statusDot:   { fontSize: '0.85rem', flexShrink: 0, marginLeft: '8px' },
+
+  quickLinks: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' },
+  quickLabel: { fontSize: '0.78rem', color: '#94a3b8', fontWeight: '600' },
+  quickBtn: {
+    padding: '6px 14px', background: '#fff', color: '#334155',
+    border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer',
+    fontSize: '0.78rem', fontWeight: '600', fontFamily: "'Poppins', sans-serif",
+  },
 };
 
 export default BlogManager;
