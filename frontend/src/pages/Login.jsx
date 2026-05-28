@@ -38,7 +38,7 @@ const Login = () => {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h1 style={styles.logo}>Janbahal</h1>
+        <h1 style={styles.logo}>NewaCore</h1>
         <h2 style={styles.title}>{isRegister ? 'Create Admin Account' : 'Admin Login'}</h2>
 
         {error && <p style={styles.error}>{error}</p>}

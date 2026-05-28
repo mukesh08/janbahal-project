@@ -5,18 +5,22 @@ import SiteHeader from '../components/SiteHeader';
 
 const Landing = () => {
   const navigate = useNavigate();
-  const [pages, setPages]       = useState([]);
-  const [homePage, setHomePage] = useState(null);   // DB-managed home page
-  const [homeCSS, setHomeCSS]   = useState('');
+  const [pages,    setPages]    = useState([]);
+  const [homePage, setHomePage] = useState(null);
+  const [homeCSS,  setHomeCSS]  = useState('');
+  const [tagline,  setTagline]  = useState('');
 
   useEffect(() => {
-    // Load published pages
     axios.get('/api/pages').then(({ data }) => setPages(data)).catch(() => {});
 
-    // Check if "home" page exists and is published — render it instead
-    axios.get('/api/pages/slug/home')
-      .then(({ data }) => { setHomePage(data); setHomeCSS(data.gjsCss || ''); })
-      .catch(() => {}); // no home page yet — show default layout
+    // Use site settings to determine the home page
+    axios.get('/api/settings').then(({ data }) => {
+      setTagline(data.siteTagline || '');
+      if (data.homePage?.gjsHtml) {
+        setHomePage(data.homePage);
+        setHomeCSS(data.homePage.gjsCss || '');
+      }
+    }).catch(() => {});
   }, []);
 
   // Inject GrapesJS CSS for home page
@@ -29,7 +33,12 @@ const Landing = () => {
     return () => { document.getElementById('home-page-css')?.remove(); };
   }, [homeCSS]);
 
-  // If a published home page exists in DB, render it with the site header
+  // Inject tagline into document title
+  useEffect(() => {
+    if (tagline) document.title = `NewaCore — ${tagline}`;
+  }, [tagline]);
+
+  // If a custom home page is set, render it
   if (homePage?.gjsHtml) {
     return (
       <div style={{ minHeight: '100vh' }}>
@@ -53,8 +62,7 @@ const Landing = () => {
             <span style={s.heroAccent}>without writing code</span>
           </h1>
           <p style={s.heroSub}>
-            Drag, drop and design beautiful web pages. Let AI generate content,
-            layouts and copy — publish in minutes.
+            {tagline || 'Drag, drop and design beautiful web pages. Let AI generate content, layouts and copy — publish in minutes.'}
           </p>
           {pages.length > 0 && (
             <div style={s.heroBtns}>
@@ -92,7 +100,7 @@ const Landing = () => {
       {pages.length > 0 && (
         <section id="pages-section" style={s.pagesSection}>
           <h2 style={s.sectionTitle}>Published Pages</h2>
-          <p style={s.sectionSub}>Explore pages built with Janbahal</p>
+          <p style={s.sectionSub}>Explore pages built with NewaCore</p>
           <div style={s.pagesGrid}>
             {pages.map((page) => (
               <div
@@ -121,7 +129,7 @@ const Landing = () => {
 
       {/* ── FOOTER ── */}
       <footer style={s.footer}>
-        <span style={s.footerLogo}>Janbahal</span>
+        <span style={s.footerLogo}>NewaCore</span>
         <span style={s.footerText}>© {new Date().getFullYear()} — AI Website Builder</span>
       </footer>
 

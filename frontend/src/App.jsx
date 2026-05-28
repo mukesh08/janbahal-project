@@ -9,13 +9,15 @@ import BlogList       from './pages/BlogList';
 import BlogPost       from './pages/BlogPost';
 
 import AdminDashboard from './pages/AdminDashboard';
+import Dashboard      from './pages/admin/Dashboard';
 import Editor         from './pages/Editor';
 import MenuManager    from './pages/admin/MenuManager';
 import FooterManager  from './pages/admin/FooterManager';
 import BlogManager    from './pages/admin/BlogManager';
 import PostsManager   from './pages/admin/PostsManager';
 import PostEditor     from './pages/admin/PostEditor';
-import HeaderManager  from './pages/admin/HeaderManager';
+import HeaderManager   from './pages/admin/HeaderManager';
+import CustomizeManager from './pages/admin/CustomizeManager';
 import UploadManager  from './pages/admin/UploadManager';
 
 const Guard = ({ children }) => (
@@ -35,11 +37,12 @@ function App() {
           <Route path="/blog/:slug"  element={<BlogPost />} />
 
           {/* ── Admin (protected) ── */}
-          <Route path="/admin"               element={<Guard><AdminDashboard /></Guard>} />
+          <Route path="/admin"               element={<Guard><Dashboard /></Guard>} />
           <Route path="/admin/pages"         element={<Guard><AdminDashboard /></Guard>} />
           <Route path="/admin/editor/:id"    element={<Guard><Editor /></Guard>} />
           <Route path="/admin/menu"          element={<Guard><MenuManager /></Guard>} />
           <Route path="/admin/footer"        element={<Guard><FooterManager /></Guard>} />
+          <Route path="/admin/customize"         element={<Guard><CustomizeManager /></Guard>} />
           <Route path="/admin/header"            element={<Guard><HeaderManager /></Guard>} />
           <Route path="/admin/blog"              element={<Guard><BlogManager /></Guard>} />
           <Route path="/admin/posts"           element={<Guard><PostsManager /></Guard>} />

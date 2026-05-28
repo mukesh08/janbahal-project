@@ -121,7 +121,7 @@ const BlogList = () => {
 
       {/* Footer */}
       <footer style={s.footer}>
-        <p>© {new Date().getFullYear()} Janbahal. <Link to="/" style={{ color: '#4f46e5' }}>Back to home</Link></p>
+        <p>© {new Date().getFullYear()} NewaCore. <Link to="/" style={{ color: '#4f46e5' }}>Back to home</Link></p>
       </footer>
     </div>
   );

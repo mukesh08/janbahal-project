@@ -2,8 +2,10 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const NAV_ITEMS = [
-  { to: '/admin/pages',  icon: '📄', label: 'Pages'  },
-  { to: '/admin/header', icon: '🖥', label: 'Header' },
+  { to: '/admin',           icon: '🏠', label: 'Dashboard', exact: true },
+  { to: '/admin/pages',     icon: '📄', label: 'Pages'     },
+  { to: '/admin/customize', icon: '🎨', label: 'Customize' },
+  { to: '/admin/header',    icon: '🖥', label: 'Header'    },
   { to: '/admin/menu',   icon: '☰',  label: 'Menu'   },
   { to: '/admin/footer', icon: '🔲', label: 'Footer' },
   { to: '/admin/blog',   icon: '📝', label: 'Blog'   },
@@ -25,7 +27,7 @@ const AdminLayout = ({ children }) => {
         <div style={s.logoWrap} onClick={() => navigate('/')}>
           <div style={s.logoMark}>J</div>
           <div>
-            <div style={s.logoText}>Janbahal</div>
+            <div style={s.logoText}>NewaCore</div>
             <div style={s.logoSub}>Admin Panel</div>
           </div>
         </div>
@@ -35,10 +37,11 @@ const AdminLayout = ({ children }) => {
 
         {/* Nav items */}
         <nav style={s.nav}>
-          {NAV_ITEMS.map(({ to, icon, label }) => (
+          {NAV_ITEMS.map(({ to, icon, label, exact }) => (
             <NavLink
               key={to}
               to={to}
+              end={exact}
               style={({ isActive }) => ({
                 ...s.navItem,
                 ...(isActive ? s.navItemActive : {}),

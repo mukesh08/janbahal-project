@@ -10,7 +10,8 @@ const menuRoutes   = require('./routes/menuRoutes');
 const footerRoutes = require('./routes/footerRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const postRoutes   = require('./routes/postRoutes');
-const headerRoutes = require('./routes/headerRoutes');
+const headerRoutes   = require('./routes/headerRoutes');
+const settingsRoutes = require('./routes/settingsRoutes');
 
 const app = express();
 
@@ -22,14 +23,15 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
-app.get('/', (req, res) => res.json({ message: 'Janbahal API Running', status: 'ok' }));
+app.get('/', (req, res) => res.json({ message: 'NewaCore API Running', status: 'ok' }));
 app.use('/api/auth',   authRoutes);
 app.use('/api/pages',  pageRoutes);
 app.use('/api/menu',   menuRoutes);
 app.use('/api/footer', footerRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/posts',  postRoutes);
-app.use('/api/header', headerRoutes);
+app.use('/api/header',   headerRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // 404
 app.use((req, res) => res.status(404).json({ message: `Route ${req.originalUrl} not found` }));

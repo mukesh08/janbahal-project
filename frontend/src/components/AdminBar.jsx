@@ -9,7 +9,7 @@ const AdminBar = ({ editHref = '/admin', editLabel = 'Edit' }) => {
     <div style={s.bar}>
       <div style={s.left}>
         <div style={s.dot} />
-        <span style={s.siteName}>Janbahal</span>
+        <span style={s.siteName}>NewaCore</span>
         <span style={s.sep}>·</span>
         <span style={s.userTxt}>Logged in as <strong>{user.name}</strong></span>
       </div>

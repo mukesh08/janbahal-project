@@ -4,7 +4,7 @@ import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
 
 const DEFAULT = {
-  logoText: 'Janbahal', logoImage: '', tagline: '',
+  logoText: 'NewaCore', logoImage: '', tagline: '',
   bgColor: '#ffffff', textColor: '#0f172a', accentColor: '#4f46e5',
   isSticky: true, showCta: false, ctaLabel: 'Get Started', ctaUrl: '/contact',
   selectedMenu: '',
@@ -120,7 +120,7 @@ const HeaderManager = () => {
 
               <div style={s.field}>
                 <label style={s.label}>Site Name / Logo Text</label>
-                <input style={s.input} value={form.logoText} onChange={set('logoText')} placeholder="Janbahal" />
+                <input style={s.input} value={form.logoText} onChange={set('logoText')} placeholder="NewaCore" />
               </div>
 
               <div style={s.field}>

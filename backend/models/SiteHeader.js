@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const siteHeaderSchema = new mongoose.Schema({
-  logoText:     { type: String, default: 'Janbahal', trim: true },
+  logoText:     { type: String, default: 'NewaCore', trim: true },
   logoImage:    { type: String, default: '' },
   tagline:      { type: String, default: '', trim: true },
   bgColor:      { type: String, default: '#ffffff' },

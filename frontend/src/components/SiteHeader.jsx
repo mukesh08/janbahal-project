@@ -4,7 +4,7 @@ import axios from 'axios';
 import AdminBar from './AdminBar';
 
 const DEFAULT_HEADER = {
-  logoText: 'Janbahal', logoImage: '', tagline: '',
+  logoText: 'NewaCore', logoImage: '', tagline: '',
   bgColor: '#ffffff', textColor: '#0f172a', accentColor: '#4f46e5',
   isSticky: true, showCta: false, ctaLabel: 'Get Started', ctaUrl: '/contact',
   navItems: [],

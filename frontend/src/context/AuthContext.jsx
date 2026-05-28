@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
 
   // Load user from localStorage on app start
   useEffect(() => {
-    const stored = localStorage.getItem('janbahal_user');
+    const stored = localStorage.getItem('newacore_user');
     if (stored) {
       const parsed = JSON.parse(stored);
       setUser(parsed);
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const { data } = await axios.post('/api/auth/login', { email, password });
     setUser(data);
-    localStorage.setItem('janbahal_user', JSON.stringify(data));
+    localStorage.setItem('newacore_user', JSON.stringify(data));
     axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
     return data;
   };
@@ -29,14 +29,14 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password) => {
     const { data } = await axios.post('/api/auth/register', { name, email, password });
     setUser(data);
-    localStorage.setItem('janbahal_user', JSON.stringify(data));
+    localStorage.setItem('newacore_user', JSON.stringify(data));
     axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
     return data;
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('janbahal_user');
+    localStorage.removeItem('newacore_user');
     delete axios.defaults.headers.common['Authorization'];
   };
 

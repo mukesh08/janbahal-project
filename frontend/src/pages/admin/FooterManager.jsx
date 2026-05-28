@@ -88,7 +88,7 @@ const FooterManager = () => {
         {/* Copyright */}
         <div style={s.card}>
           <h3 style={s.cardTitle}>Copyright Text</h3>
-          <input style={s.input} placeholder="© 2025 Janbahal. All rights reserved."
+          <input style={s.input} placeholder="© 2025 NewaCore. All rights reserved."
             value={footer.copyright || ''}
             onChange={e => setFooter({ ...footer, copyright: e.target.value })} />
         </div>
