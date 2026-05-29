@@ -378,17 +378,26 @@ const Editor = () => {
       .catch(() => { alert('Page not found'); navigate('/admin/pages'); });
   }, [id, navigate]);
 
-  /* ── apply content from sidebar textarea ── */
-  const applyContent = useCallback(() => {
-    const sel = gjsRef.current?.getSelected();
-    if (!sel) return;
-    const type = sel.get('type');
-    if (type === 'text' || type === 'textnode') {
-      sel.set('content', editContent);
-    } else {
-      try { sel.components(editContent); } catch (_) {}
-    }
-  }, [editContent]);
+  const contentDebounce = useRef(null);
+
+  /* Tags that show the content editor */
+  const TEXT_TAGS = new Set(['h1','h2','h3','h4','h5','h6','p','span','a','li','label','button','blockquote','figcaption','cite','td','th','dt','dd']);
+
+  /* Live content update — debounced 120ms so canvas stays in sync as user types */
+  const handleContentChange = useCallback((value) => {
+    setEditContent(value);
+    clearTimeout(contentDebounce.current);
+    contentDebounce.current = setTimeout(() => {
+      const sel = gjsRef.current?.getSelected();
+      if (!sel) return;
+      try {
+        // Replace children with a single plain-text node so HTML isn't injected
+        sel.components([{ type: 'textnode', content: value }]);
+      } catch (_) {
+        try { sel.set('content', value); } catch (__) {}
+      }
+    }, 120);
+  }, []);
 
   /* ── live CSS helper ── */
   const refreshCSS = useCallback((editor) => {
@@ -470,14 +479,10 @@ const Editor = () => {
       const syncContent = () => {
         const sel = editor.getSelected();
         if (!sel) { setEditContent(''); setEditTag(''); return; }
-        const tag = sel.get('tagName') || sel.get('type') || 'div';
-        setEditTag(tag.toLowerCase());
-        const raw = sel.getEl()?.innerHTML || '';
-        // Strip GrapesJS canvas attributes for clean display
-        setEditContent(
-          raw.replace(/ data-gjs-[a-z-]+="[^"]*"/g, '')
-             .replace(/ draggable="[^"]*"/g, '')
-        );
+        const tag = (sel.get('tagName') || '').toLowerCase();
+        const isText = ['h1','h2','h3','h4','h5','h6','p','span','a','li','label','button','blockquote','figcaption','cite','td','th','dt','dd'].includes(tag);
+        setEditTag(isText ? tag : '');
+        setEditContent(isText ? (sel.getEl()?.textContent || '') : '');
       };
 
       editor.on('component:selected',  () => { refreshCSS(editor); syncContent(); });
@@ -618,8 +623,8 @@ const Editor = () => {
               <div className="side-card">
                 <div className="side-card-title">
                   {editTag
-                    ? <><span className="css-tag-inline">&lt;{editTag}&gt;</span> Content</>
-                    : 'Content Editor'}
+                    ? <><span className="css-tag-inline">&lt;{editTag}&gt;</span> Text Content</>
+                    : 'Text Content'}
                 </div>
                 <div className="content-panel">
                   {editTag ? (
@@ -627,27 +632,19 @@ const Editor = () => {
                       <textarea
                         className="content-textarea"
                         value={editContent}
-                        onChange={e => setEditContent(e.target.value)}
-                        onKeyDown={e => {
-                          if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-                            e.preventDefault();
-                            applyContent();
-                          }
-                        }}
-                        placeholder="Edit element content…"
-                        spellCheck={false}
+                        onChange={e => handleContentChange(e.target.value)}
+                        placeholder="Type to edit text…"
+                        spellCheck={true}
+                        autoFocus
                       />
                       <div className="content-actions">
-                        <span className="content-hint">⌘↵ to apply</span>
-                        <button className="content-apply-btn" onClick={applyContent}>
-                          ✓ Apply
-                        </button>
+                        <span className="content-hint">Changes apply instantly</span>
                       </div>
                     </>
                   ) : (
                     <div className="css-empty">
-                      <span className="css-empty-icon">👆</span>
-                      <p>Click any element on the canvas</p>
+                      <span className="css-empty-icon">✏️</span>
+                      <p>Click a heading, paragraph<br/>or text element to edit it</p>
                     </div>
                   )}
                 </div>
