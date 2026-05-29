@@ -440,13 +440,15 @@ const Editor = () => {
         },
       });
 
-      /* Load saved content — always prefer gjsHtml so seeded/saved HTML renders correctly */
-      if (page.gjsHtml) {
-        editor.setComponents(page.gjsHtml);
-        editor.setStyle(page.gjsCss || '');
-      } else if (page.gjsComponents?.length) {
+      /* Load saved content — prefer gjsComponents (native GrapesJS format, syncs style manager)
+         Fall back to gjsHtml for new/seeded pages that have no saved components yet.
+         When loading from gjsHtml, do NOT call setStyle — inline styles in the HTML are
+         extracted automatically by GrapesJS; calling setStyle('') would clear them. */
+      if (page.gjsComponents?.length) {
         editor.setComponents(page.gjsComponents);
         editor.setStyle(page.gjsStyles || []);
+      } else if (page.gjsHtml) {
+        editor.setComponents(page.gjsHtml);
       }
 
       /* Live CSS events */
@@ -456,26 +458,8 @@ const Editor = () => {
 
       editor.on('change:device', () => setDevice(editor.getDevice()));
 
-      /* Normalise background shorthand → individual properties so style manager works */
-      const normalizeBg = (comp) => {
-        const style = comp.getStyle();
-        const bg = style['background'];
-        if (bg && bg !== 'initial' && bg !== 'inherit') {
-          const next = { ...style };
-          delete next['background'];
-          if (bg.includes('gradient')) {
-            next['background-image'] = bg;
-          } else if (!bg.includes('url(')) {
-            next['background-color'] = bg;
-          }
-          comp.setStyle(next, { silent: true });
-        }
-        comp.components?.().each?.(normalizeBg);
-      };
-
       /* Inject base CSS + animation keyframes into canvas iframe */
       editor.on('load', () => {
-        editor.getComponents().each(normalizeBg);
 
         const doc = editor.Canvas.getDocument();
         if (doc) {

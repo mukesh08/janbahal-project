@@ -81,8 +81,8 @@ router.get('/ensure-home', protect, adminOnly, async (req, res) => {
         gjsStyles: [],
         createdBy: req.user._id,
       });
-    } else if (!page.gjsHtml || page.gjsHtml.includes('min-height:100vh') || page.gjsHtml.includes('border:1px solid') || (page.gjsHtml.includes('background:#') && !page.gjsHtml.includes('background-color'))) {
-      // reseed: empty, old wrapper, old shorthand border, or old background shorthand
+    } else if (!page.gjsHtml || page.gjsHtml.includes('min-height:100vh') || page.gjsHtml.includes('border:1px solid') || !page.gjsHtml.includes('background-color')) {
+      // reseed: empty, old wrapper, old shorthand border, or no individual background-color props
       page.gjsHtml = DEFAULT_LANDING_HTML;
       page.gjsComponents = [];
       page.gjsStyles = [];
