@@ -10,17 +10,23 @@ const fmt = (iso) => {
 
 const AdminDashboard = () => {
   const navigate  = useNavigate();
-  const [pages,   setPages]   = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search,  setSearch]  = useState('');
-  const [filter,  setFilter]  = useState('all');   // all | published | draft
-  const [showModal, setShowModal] = useState(false);
-  const [newTitle,  setNewTitle]  = useState('');
-  const [creating,  setCreating]  = useState(false);
-  const [actionRow, setActionRow] = useState(null); // page id with open action menu
+  const [pages,      setPages]      = useState([]);
+  const [homePageId, setHomePageId] = useState(null);
+  const [loading,    setLoading]    = useState(true);
+  const [search,     setSearch]     = useState('');
+  const [filter,     setFilter]     = useState('all');   // all | published | draft
+  const [showModal,  setShowModal]  = useState(false);
+  const [newTitle,   setNewTitle]   = useState('');
+  const [creating,   setCreating]   = useState(false);
+  const [actionRow,  setActionRow]  = useState(null); // page id with open action menu
 
   const fetchPages = async () => {
     try {
+      // Ensure home page exists (seeds it if new) and set it as the site home
+      const { data: home } = await axios.get('/api/pages/ensure-home');
+      await axios.put('/api/settings', { homePage: home._id });
+      setHomePageId(home._id);
+
       const { data } = await axios.get('/api/pages');
       setPages(data);
     } catch (err) {
@@ -191,12 +197,17 @@ const AdminDashboard = () => {
                 {/* Page info */}
                 <div style={{ ...s.tdCell, flex: 3, gap: '12px', cursor: 'pointer' }}
                   onClick={() => navigate(`/admin/editor/${page._id}`)}>
-                  <div style={{ ...s.pageThumb, background: page.published ? '#eef2ff' : '#fef3c7' }}>
-                    <span style={{ fontSize: '1rem' }}>📄</span>
+                  <div style={{ ...s.pageThumb, background: page._id === homePageId ? '#eef2ff' : page.published ? '#f0fdf4' : '#fef3c7' }}>
+                    <span style={{ fontSize: '1rem' }}>{page._id === homePageId ? '🏠' : '📄'}</span>
                   </div>
                   <div style={{ minWidth: 0 }}>
-                    <div style={s.pageTitle}>{page.title}</div>
-                    <div style={s.pageSlug}>/{page.slug}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={s.pageTitle}>{page.title}</span>
+                      {page._id === homePageId && (
+                        <span style={s.homeBadge}>Home</span>
+                      )}
+                    </div>
+                    <div style={s.pageSlug}>{page._id === homePageId ? '/' : `/${page.slug}`}</div>
                   </div>
                 </div>
 
@@ -224,7 +235,7 @@ const AdminDashboard = () => {
                   </button>
                   {page.published && (
                     <button style={s.actionView}
-                      onClick={() => window.open(`/page/${page.slug}`, '_blank')}>
+                      onClick={() => window.open(page._id === homePageId ? '/' : `/page/${page.slug}`, '_blank')}>
                       ↗
                     </button>
                   )}
@@ -341,6 +352,7 @@ const s = {
   pageThumb: { width: '36px', height: '36px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   pageTitle: { fontSize: '0.88rem', fontWeight: '700', color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   pageSlug:  { fontSize: '0.72rem', color: '#94a3b8', fontFamily: 'monospace', marginTop: '2px' },
+  homeBadge: { fontSize: '0.6rem', fontWeight: '700', padding: '2px 7px', borderRadius: '20px', background: '#eef2ff', color: '#4f46e5', whiteSpace: 'nowrap', flexShrink: 0 },
 
   statusBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', borderRadius: '20px', border: 'none', cursor: 'pointer', fontSize: '0.72rem', fontWeight: '700', fontFamily: "'Poppins', sans-serif", transition: 'opacity 0.15s' },
   statusPublished: { background: '#dcfce7', color: '#16a34a' },

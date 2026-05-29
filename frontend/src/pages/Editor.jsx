@@ -436,16 +436,17 @@ const Editor = () => {
 
         canvas: {
           styles: ['https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'],
+          scripts: [],
         },
       });
 
-      /* Load saved content */
-      if (page.gjsComponents?.length) {
-        editor.setComponents(page.gjsComponents);
-        editor.setStyle(page.gjsStyles || []);
-      } else if (page.gjsHtml) {
+      /* Load saved content — always prefer gjsHtml so seeded/saved HTML renders correctly */
+      if (page.gjsHtml) {
         editor.setComponents(page.gjsHtml);
         editor.setStyle(page.gjsCss || '');
+      } else if (page.gjsComponents?.length) {
+        editor.setComponents(page.gjsComponents);
+        editor.setStyle(page.gjsStyles || []);
       }
 
       /* Live CSS events */
@@ -455,14 +456,43 @@ const Editor = () => {
 
       editor.on('change:device', () => setDevice(editor.getDevice()));
 
-      /* Inject animation keyframes into canvas iframe */
+      /* Normalise background shorthand → individual properties so style manager works */
+      const normalizeBg = (comp) => {
+        const style = comp.getStyle();
+        const bg = style['background'];
+        if (bg && bg !== 'initial' && bg !== 'inherit') {
+          const next = { ...style };
+          delete next['background'];
+          if (bg.includes('gradient')) {
+            next['background-image'] = bg;
+          } else if (!bg.includes('url(')) {
+            next['background-color'] = bg;
+          }
+          comp.setStyle(next, { silent: true });
+        }
+        comp.components?.().each?.(normalizeBg);
+      };
+
+      /* Inject base CSS + animation keyframes into canvas iframe */
       editor.on('load', () => {
+        editor.getComponents().each(normalizeBg);
+
         const doc = editor.Canvas.getDocument();
         if (doc) {
-          const style = doc.createElement('style');
-          style.id = 'gjs-animation-keyframes';
-          style.textContent = ANIMATION_CSS;
-          doc.head.appendChild(style);
+          const base = doc.createElement('style');
+          base.id = 'gjs-base-reset';
+          base.textContent = `
+            *, *::before, *::after { box-sizing: border-box; }
+            body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; }
+            h1,h2,h3,h4,h5,h6,p { margin: 0; }
+            section, div, footer, header, nav { box-sizing: border-box; }
+          `;
+          doc.head.appendChild(base);
+
+          const anim = doc.createElement('style');
+          anim.id = 'gjs-animation-keyframes';
+          anim.textContent = ANIMATION_CSS;
+          doc.head.appendChild(anim);
         }
       });
 
