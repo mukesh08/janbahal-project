@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -41,9 +42,10 @@ const Landing = () => {
   // If a custom home page is set, render it
   if (homePage?.gjsHtml) {
     return (
-      <div style={{ minHeight: '100vh' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <SiteHeader editHref={`/admin/editor/${homePage._id}`} editLabel="Edit Page" />
-        <div dangerouslySetInnerHTML={{ __html: homePage.gjsHtml }} />
+        <div dangerouslySetInnerHTML={{ __html: homePage.gjsHtml }} style={{ flex: 1 }} />
+        <SiteFooter />
       </div>
     );
   }
@@ -127,11 +129,7 @@ const Landing = () => {
         <p style={s.ctaSub}>Drag, drop and publish stunning pages — no code needed.</p>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer style={s.footer}>
-        <span style={s.footerLogo}>NewaCore</span>
-        <span style={s.footerText}>© {new Date().getFullYear()} — AI Website Builder</span>
-      </footer>
+      <SiteFooter />
 
     </div>
   );

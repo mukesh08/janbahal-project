@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 
 const BlogPost = () => {
   const { slug }    = useParams();
@@ -97,9 +98,7 @@ const BlogPost = () => {
         </div>
       </div>
 
-      <footer style={s.pageFooter}>
-        <p>© {new Date().getFullYear()} NewaCore. <Link to="/" style={{ color: '#4f46e5' }}>Back to home</Link></p>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };

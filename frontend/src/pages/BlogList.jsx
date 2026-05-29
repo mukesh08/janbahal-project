@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 
 const BlogList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -119,10 +120,7 @@ const BlogList = () => {
         )}
       </div>
 
-      {/* Footer */}
-      <footer style={s.footer}>
-        <p>© {new Date().getFullYear()} NewaCore. <Link to="/" style={{ color: '#4f46e5' }}>Back to home</Link></p>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };

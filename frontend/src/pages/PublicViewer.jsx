@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 
 const PublicViewer = () => {
   const { slug } = useParams();
@@ -59,13 +60,11 @@ const PublicViewer = () => {
   }
 
   return (
-    <>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <SiteHeader editHref={`/admin/editor/${page._id}`} editLabel="Edit Page" />
-      <div
-        dangerouslySetInnerHTML={{ __html: page.gjsHtml }}
-        style={{ minHeight: '100vh' }}
-      />
-    </>
+      <div dangerouslySetInnerHTML={{ __html: page.gjsHtml }} style={{ flex: 1 }} />
+      <SiteFooter />
+    </div>
   );
 };
 
