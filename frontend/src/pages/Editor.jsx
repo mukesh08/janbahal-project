@@ -362,11 +362,14 @@ const Editor = () => {
   const [saving,      setSaving]      = useState(false);
   const [published,   setPublished]   = useState(false);
   const [saveMsg,     setSaveMsg]     = useState('');
-  const [rightTab,    setRightTab]    = useState('styles');
+  const [rightTab,    setRightTab]    = useState('content');
   const [device,      setDevice]      = useState('desktop');
   // Live CSS preview
   const [selectedTag, setSelectedTag] = useState('');
   const [liveCSS,     setLiveCSS]     = useState('');
+  // Content editor
+  const [editContent,  setEditContent]  = useState('');
+  const [editTag,      setEditTag]      = useState('');
 
   /* ── fetch page ── */
   useEffect(() => {
@@ -374,6 +377,18 @@ const Editor = () => {
       .then(({ data }) => { setPage(data); setPublished(data.published); })
       .catch(() => { alert('Page not found'); navigate('/admin/pages'); });
   }, [id, navigate]);
+
+  /* ── apply content from sidebar textarea ── */
+  const applyContent = useCallback(() => {
+    const sel = gjsRef.current?.getSelected();
+    if (!sel) return;
+    const type = sel.get('type');
+    if (type === 'text' || type === 'textnode') {
+      sel.set('content', editContent);
+    } else {
+      try { sel.components(editContent); } catch (_) {}
+    }
+  }, [editContent]);
 
   /* ── live CSS helper ── */
   const refreshCSS = useCallback((editor) => {
@@ -451,9 +466,22 @@ const Editor = () => {
         editor.setComponents(page.gjsHtml);
       }
 
-      /* Live CSS events */
-      editor.on('component:selected',  () => refreshCSS(editor));
-      editor.on('component:deselected',() => { setSelectedTag(''); setLiveCSS(''); });
+      /* Live CSS + Content sync events */
+      const syncContent = () => {
+        const sel = editor.getSelected();
+        if (!sel) { setEditContent(''); setEditTag(''); return; }
+        const tag = sel.get('tagName') || sel.get('type') || 'div';
+        setEditTag(tag.toLowerCase());
+        const raw = sel.getEl()?.innerHTML || '';
+        // Strip GrapesJS canvas attributes for clean display
+        setEditContent(
+          raw.replace(/ data-gjs-[a-z-]+="[^"]*"/g, '')
+             .replace(/ draggable="[^"]*"/g, '')
+        );
+      };
+
+      editor.on('component:selected',  () => { refreshCSS(editor); syncContent(); });
+      editor.on('component:deselected',() => { setSelectedTag(''); setLiveCSS(''); setEditContent(''); setEditTag(''); });
       editor.on('style:change',        () => refreshCSS(editor));
 
       editor.on('change:device', () => setDevice(editor.getDevice()));
@@ -566,6 +594,7 @@ const Editor = () => {
           {/* Tab pill bar */}
           <div className="right-tab-bar">
             {[
+              ['content', '✏', 'Content'],
               ['styles',  '🎨', 'Style'],
               ['layers',  '🗂', 'Layers'],
               ['traits',  '⚙',  'Attrs'],
@@ -583,6 +612,47 @@ const Editor = () => {
 
           {/* All panels always mounted — visibility-toggled */}
           <div className="right-panels-wrap">
+
+            {/* Content editor */}
+            <div className={`panel-pane ${rightTab === 'content' ? 'active' : ''}`}>
+              <div className="side-card">
+                <div className="side-card-title">
+                  {editTag
+                    ? <><span className="css-tag-inline">&lt;{editTag}&gt;</span> Content</>
+                    : 'Content Editor'}
+                </div>
+                <div className="content-panel">
+                  {editTag ? (
+                    <>
+                      <textarea
+                        className="content-textarea"
+                        value={editContent}
+                        onChange={e => setEditContent(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                            e.preventDefault();
+                            applyContent();
+                          }
+                        }}
+                        placeholder="Edit element content…"
+                        spellCheck={false}
+                      />
+                      <div className="content-actions">
+                        <span className="content-hint">⌘↵ to apply</span>
+                        <button className="content-apply-btn" onClick={applyContent}>
+                          ✓ Apply
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="css-empty">
+                      <span className="css-empty-icon">👆</span>
+                      <p>Click any element on the canvas</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
 
             {/* Style — GrapesJS renders sectors, each styled as a card */}
             <div className={`panel-pane ${rightTab === 'styles' ? 'active' : ''}`}>
