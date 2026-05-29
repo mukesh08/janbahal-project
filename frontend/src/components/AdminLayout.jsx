@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -16,6 +17,25 @@ const NAV_ITEMS = [
   { to: '/admin/posts',     Icon: PenLine,         label: 'Posts'     },
   { to: '/admin/upload',    Icon: Upload,          label: 'Upload'    },
 ];
+
+const NavItemLink = ({ to, Icon, label, exact }) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <NavLink
+      to={to}
+      end={exact}
+      style={({ isActive }) => ({
+        ...s.navItem,
+        ...(isActive ? s.navItemActive : hovered ? s.navItemHover : {}),
+      })}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <span style={s.navIcon}><Icon size={16} strokeWidth={1.8} /></span>
+      <span style={s.navLabel2}>{label}</span>
+    </NavLink>
+  );
+};
 
 const AdminLayout = ({ children }) => {
   const { user, logout } = useAuth();
@@ -42,18 +62,7 @@ const AdminLayout = ({ children }) => {
         {/* Nav items */}
         <nav style={s.nav}>
           {NAV_ITEMS.map(({ to, Icon, label, exact }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={exact}
-              style={({ isActive }) => ({
-                ...s.navItem,
-                ...(isActive ? s.navItemActive : {}),
-              })}
-            >
-              <span style={s.navIcon}><Icon size={16} strokeWidth={1.8} /></span>
-              <span style={s.navLabel2}>{label}</span>
-            </NavLink>
+            <NavItemLink key={to} to={to} Icon={Icon} label={label} exact={exact} />
           ))}
         </nav>
 
@@ -175,6 +184,10 @@ const s = {
     transition: 'background 0.15s ease, color 0.15s ease',
     fontFamily: "'Poppins', sans-serif",
     transform: 'translateZ(0)',  // GPU layer prevents subpixel shift
+  },
+  navItemHover: {
+    background: '#f8fafc',
+    color: '#334155',
   },
   navItemActive: {
     background: '#eef2ff',
