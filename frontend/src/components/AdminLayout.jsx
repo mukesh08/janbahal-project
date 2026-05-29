@@ -27,6 +27,7 @@ const NavItemLink = ({ to, Icon, label, exact }) => {
       style={({ isActive }) => ({
         ...s.navItem,
         ...(isActive ? s.navItemActive : hovered ? s.navItemHover : {}),
+        ...(hovered ? { transform: 'translateX(4px)' } : {}),
       })}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
