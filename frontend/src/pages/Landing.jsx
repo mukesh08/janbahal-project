@@ -4,6 +4,12 @@ import axios from 'axios';
 import SiteHeader from '../components/SiteHeader';
 import SiteFooter from '../components/SiteFooter';
 
+const stripBody = (html) => {
+  if (!html) return '';
+  const m = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  return m ? m[1] : html;
+};
+
 const Landing = () => {
   const navigate = useNavigate();
   const [pages,    setPages]    = useState([]);
@@ -44,7 +50,7 @@ const Landing = () => {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <SiteHeader editHref={`/admin/editor/${homePage._id}`} editLabel="Edit Page" />
-        <div dangerouslySetInnerHTML={{ __html: homePage.gjsHtml }} style={{ flex: 1 }} />
+        <div dangerouslySetInnerHTML={{ __html: stripBody(homePage.gjsHtml) }} style={{ flex: 1 }} />
         <SiteFooter />
       </div>
     );
@@ -137,10 +143,10 @@ const Landing = () => {
 
 /* ── Styles ── */
 const s = {
-  root: { minHeight: '100vh', background: '#fff', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', overflowX: 'hidden' },
+  root: { minHeight: '100vh', background: '#fff', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', overflowX: 'clip' },
 
   /* hero */
-  hero: { position: 'relative', padding: '6rem 2rem 5rem', textAlign: 'center', overflow: 'hidden', background: 'linear-gradient(160deg, #f8f7ff 0%, #eef2ff 100%)' },
+  hero: { position: 'relative', padding: '6rem 2rem 5rem', textAlign: 'center', overflow: 'clip', background: 'linear-gradient(160deg, #f8f7ff 0%, #eef2ff 100%)' },
   heroInner: { position: 'relative', zIndex: 1, maxWidth: '720px', margin: '0 auto' },
   pill: { display: 'inline-block', padding: '0.35rem 1rem', background: '#ede9fe', color: '#5b21b6', borderRadius: '999px', fontSize: '0.82rem', fontWeight: '600', marginBottom: '1.5rem' },
   heroTitle: { fontSize: 'clamp(2.2rem, 5vw, 3.6rem)', fontWeight: '800', lineHeight: 1.15, color: '#0f172a', marginBottom: '1.25rem' },

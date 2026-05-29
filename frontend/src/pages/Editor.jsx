@@ -150,21 +150,21 @@ const SECTORS = [
     ],
   },
   {
-    name: 'Position', open: false,
+    name: 'Position', open: true,
     properties: [
       { name: 'Position', property: 'position', type: 'select',
         options: [
-          { value: 'static',   name: 'Static'   },
+          { value: 'static',   name: 'Static (default)' },
+          { value: 'sticky',   name: '📌 Sticky (header/nav)' },
+          { value: 'fixed',    name: 'Fixed (always visible)' },
           { value: 'relative', name: 'Relative' },
           { value: 'absolute', name: 'Absolute' },
-          { value: 'fixed',    name: 'Fixed'    },
-          { value: 'sticky',   name: 'Sticky'   },
         ]},
-      { name: 'Top',    property: 'top',    type: 'integer', units: ['px','%','em','rem','auto'] },
+      { name: 'Top',    property: 'top',    type: 'integer', units: ['px','%','em','rem','auto'], defaults: '0' },
       { name: 'Right',  property: 'right',  type: 'integer', units: ['px','%','em','rem','auto'] },
       { name: 'Bottom', property: 'bottom', type: 'integer', units: ['px','%','em','rem','auto'] },
       { name: 'Left',   property: 'left',   type: 'integer', units: ['px','%','em','rem','auto'] },
-      { name: 'Z-Index', property: 'z-index', type: 'integer', units: [''] },
+      { name: 'Z-Index', property: 'z-index', type: 'integer', units: [''], defaults: '100' },
     ],
   },
   {
@@ -533,6 +533,22 @@ const Editor = () => {
       } else if (page.gjsHtml) {
         editor.setComponents(page.gjsHtml);
       }
+
+      /* Auto-apply top:0 when user sets position:sticky so it works immediately */
+      editor.on('style:change', (prop) => {
+        const propName = typeof prop?.get === 'function' ? prop.get('property') : null;
+        if (propName === 'position') {
+          const sel = editor.getSelected();
+          if (!sel) return;
+          const val = sel.getStyle()['position'];
+          if (val === 'sticky') {
+            const styles = { ...sel.getStyle() };
+            if (!styles['top']) styles['top'] = '0px';
+            if (!styles['z-index']) styles['z-index'] = '100';
+            sel.setStyle(styles);
+          }
+        }
+      });
 
       /* Live CSS + Content sync events */
       const syncContent = () => {

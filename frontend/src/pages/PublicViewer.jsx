@@ -4,6 +4,12 @@ import axios from 'axios';
 import SiteHeader from '../components/SiteHeader';
 import SiteFooter from '../components/SiteFooter';
 
+const stripBody = (html) => {
+  if (!html) return '';
+  const m = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  return m ? m[1] : html;
+};
+
 const PublicViewer = () => {
   const { slug } = useParams();
   const [page, setPage] = useState(null);
@@ -62,7 +68,7 @@ const PublicViewer = () => {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <SiteHeader editHref={`/admin/editor/${page._id}`} editLabel="Edit Page" />
-      <div dangerouslySetInnerHTML={{ __html: page.gjsHtml }} style={{ flex: 1 }} />
+      <div dangerouslySetInnerHTML={{ __html: stripBody(page.gjsHtml) }} style={{ flex: 1 }} />
       <SiteFooter />
     </div>
   );

@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
+const stripBodyWrapper = (html) => {
+  if (!html) return '';
+  const m = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  return m ? m[1] : html;
+};
+
 const SiteFooter = () => {
   const [gjsHtml, setGjsHtml] = useState('');
   const [gjsCss,  setGjsCss]  = useState('');
@@ -24,7 +30,7 @@ const SiteFooter = () => {
   }, [gjsCss]);
 
   if (!gjsHtml) return null;
-  return <div dangerouslySetInnerHTML={{ __html: gjsHtml }} />;
+  return <div style={{ display: 'contents' }} dangerouslySetInnerHTML={{ __html: stripBodyWrapper(gjsHtml) }} />;
 };
 
 export default SiteFooter;

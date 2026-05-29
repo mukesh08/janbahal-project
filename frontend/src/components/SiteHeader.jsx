@@ -2,6 +2,15 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import AdminBar from './AdminBar';
 
+/* GrapesJS wraps canvas output in <body id="xxx">…</body>.
+   Strip it so the header element sits in normal page flow,
+   giving position:sticky a full-height containing block. */
+const stripBodyWrapper = (html) => {
+  if (!html) return '';
+  const m = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  return m ? m[1] : html;
+};
+
 const SiteHeader = ({ editHref, editLabel }) => {
   const [gjsHtml, setGjsHtml] = useState('');
   const [gjsCss,  setGjsCss]  = useState('');
@@ -28,7 +37,8 @@ const SiteHeader = ({ editHref, editLabel }) => {
     <>
       <AdminBar editHref={editHref} editLabel={editLabel} />
       {gjsHtml
-        ? <div dangerouslySetInnerHTML={{ __html: gjsHtml }} />
+        ? <div style={{ display: 'contents' }}
+               dangerouslySetInnerHTML={{ __html: stripBodyWrapper(gjsHtml) }} />
         : <DefaultHeader />
       }
     </>
