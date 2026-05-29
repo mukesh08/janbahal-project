@@ -4,12 +4,15 @@ const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+const INTERNAL_SLUGS = ['__header__', '__footer__'];
+
 // @route  GET /api/pages
-// @desc   Get all pages (admin sees all, public sees published)
+// @desc   Get all pages (admin sees all, public sees published) — excludes internal header/footer pages
 // @access Public (published) / Private (all)
 router.get('/', async (req, res) => {
   try {
-    const filter = req.headers.authorization ? {} : { published: true };
+    const base = req.headers.authorization ? {} : { published: true };
+    const filter = { ...base, slug: { $nin: INTERNAL_SLUGS } };
     const pages = await Page.find(filter)
       .select('title slug published createdAt')
       .sort({ createdAt: -1 });
@@ -92,6 +95,86 @@ router.get('/ensure-home', protect, adminOnly, async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+});
+
+const DEFAULT_HEADER_HTML = `
+<header style="background-color:#ffffff;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#e2e8f0;position:sticky;top:0;z-index:100;box-shadow:0 1px 6px rgba(0,0,0,0.06);width:100%;box-sizing:border-box;">
+  <div style="display:flex;align-items:center;gap:16px;padding:0 2rem;height:60px;max-width:1200px;margin:0 auto;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <div style="width:32px;height:32px;border-radius:8px;background-color:#4f46e5;background-image:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;">N</div>
+      <span style="font-weight:800;font-size:1rem;color:#0f172a;">NewaCore</span>
+    </div>
+    <div style="flex:1;"></div>
+    <a href="/" style="font-size:0.85rem;color:#64748b;text-decoration:none;font-weight:500;">Home</a>
+    <a href="/blog" style="font-size:0.85rem;color:#64748b;text-decoration:none;font-weight:500;">Blog</a>
+    <a href="/contact" style="font-size:0.85rem;color:#64748b;text-decoration:none;font-weight:500;">Contact</a>
+    <a href="#" style="padding:7px 18px;background-color:#4f46e5;color:#fff;border-radius:8px;text-decoration:none;font-size:0.82rem;font-weight:600;">Get Started</a>
+  </div>
+</header>`;
+
+const DEFAULT_FOOTER_HTML = `
+<footer style="background-color:#1e293b;color:#94a3b8;width:100%;box-sizing:border-box;">
+  <div style="max-width:1100px;margin:0 auto;padding:3rem 2rem 2rem;box-sizing:border-box;">
+    <div style="display:flex;flex-wrap:wrap;gap:2.5rem;margin-bottom:2rem;">
+      <div style="min-width:160px;">
+        <div style="color:#e2e8f0;font-weight:700;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Company</div>
+        <a href="/about" style="display:block;color:#64748b;font-size:0.82rem;text-decoration:none;margin-bottom:8px;">About Us</a>
+        <a href="/blog" style="display:block;color:#64748b;font-size:0.82rem;text-decoration:none;margin-bottom:8px;">Blog</a>
+        <a href="/contact" style="display:block;color:#64748b;font-size:0.82rem;text-decoration:none;margin-bottom:8px;">Contact</a>
+      </div>
+      <div style="min-width:160px;">
+        <div style="color:#e2e8f0;font-weight:700;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Legal</div>
+        <a href="/privacy" style="display:block;color:#64748b;font-size:0.82rem;text-decoration:none;margin-bottom:8px;">Privacy Policy</a>
+        <a href="/terms" style="display:block;color:#64748b;font-size:0.82rem;text-decoration:none;margin-bottom:8px;">Terms of Service</a>
+      </div>
+    </div>
+    <div style="border-top-width:1px;border-top-style:solid;border-top-color:rgba(255,255,255,0.08);padding-top:1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+      <span style="font-size:0.78rem;color:#475569;">© ${new Date().getFullYear()} NewaCore — All rights reserved</span>
+      <div style="display:flex;gap:16px;">
+        <a href="#" style="color:#475569;font-size:0.78rem;text-decoration:none;">Twitter</a>
+        <a href="#" style="color:#475569;font-size:0.78rem;text-decoration:none;">LinkedIn</a>
+        <a href="#" style="color:#475569;font-size:0.78rem;text-decoration:none;">GitHub</a>
+      </div>
+    </div>
+  </div>
+</footer>`;
+
+// @route  GET /api/pages/ensure-header
+router.get('/ensure-header', protect, adminOnly, async (req, res) => {
+  try {
+    let page = await Page.findOne({ slug: '__header__' });
+    if (!page) {
+      page = await Page.create({ title: 'Header', slug: '__header__', published: true, gjsHtml: DEFAULT_HEADER_HTML, gjsComponents: [], gjsStyles: [], createdBy: req.user._id });
+    }
+    res.json(page);
+  } catch (error) { res.status(500).json({ message: error.message }); }
+});
+
+// @route  GET /api/pages/ensure-footer
+router.get('/ensure-footer', protect, adminOnly, async (req, res) => {
+  try {
+    let page = await Page.findOne({ slug: '__footer__' });
+    if (!page) {
+      page = await Page.create({ title: 'Footer', slug: '__footer__', published: true, gjsHtml: DEFAULT_FOOTER_HTML, gjsComponents: [], gjsStyles: [], createdBy: req.user._id });
+    }
+    res.json(page);
+  } catch (error) { res.status(500).json({ message: error.message }); }
+});
+
+// @route  GET /api/pages/header-content  — public, returns gjsHtml+gjsCss for rendering
+router.get('/header-content', async (req, res) => {
+  try {
+    const page = await Page.findOne({ slug: '__header__' }).select('gjsHtml gjsCss');
+    res.json(page || { gjsHtml: '', gjsCss: '' });
+  } catch (error) { res.status(500).json({ message: error.message }); }
+});
+
+// @route  GET /api/pages/footer-content  — public
+router.get('/footer-content', async (req, res) => {
+  try {
+    const page = await Page.findOne({ slug: '__footer__' }).select('gjsHtml gjsCss');
+    res.json(page || { gjsHtml: '', gjsCss: '' });
+  } catch (error) { res.status(500).json({ message: error.message }); }
 });
 
 // @route  GET /api/pages/slug/:slug

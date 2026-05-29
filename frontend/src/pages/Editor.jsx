@@ -601,6 +601,11 @@ const Editor = () => {
     finally { setSaving(false); }
   };
 
+  const isHeaderPage = page?.slug === '__header__';
+  const isFooterPage = page?.slug === '__footer__';
+  const backLabel    = isHeaderPage ? '← Header' : isFooterPage ? '← Footer' : '← Pages';
+  const backPath     = isHeaderPage ? '/admin/header' : isFooterPage ? '/admin/footer' : '/admin/pages';
+
   return (
     <div className="editor-shell">
 
@@ -608,7 +613,7 @@ const Editor = () => {
       <div className="editor-toolbar">
         <div className="editor-toolbar-left">
           <div className="editor-logo" onClick={() => navigate('/')}>N</div>
-          <button className="editor-back-btn" onClick={() => navigate('/admin/pages')}>← Pages</button>
+          <button className="editor-back-btn" onClick={() => navigate(backPath)}>{backLabel}</button>
           <span className="editor-page-title">{page?.title || '...'}</span>
         </div>
 
@@ -629,10 +634,12 @@ const Editor = () => {
           <button className="editor-save-btn" onClick={() => handleSave()} disabled={saving}>
             {saving ? 'Saving…' : '💾 Save'}
           </button>
-          <button className={`editor-publish-btn ${published ? 'unpublish' : 'publish'}`}
-            onClick={() => handleSave(!published)} disabled={saving}>
-            {published ? '⬇ Unpublish' : '🚀 Publish'}
-          </button>
+          {!isHeaderPage && !isFooterPage && (
+            <button className={`editor-publish-btn ${published ? 'unpublish' : 'publish'}`}
+              onClick={() => handleSave(!published)} disabled={saving}>
+              {published ? '⬇ Unpublish' : '🚀 Publish'}
+            </button>
+          )}
         </div>
       </div>
 
@@ -647,11 +654,11 @@ const Editor = () => {
           </div>
         </div>
 
-        {/* CENTER — Canvas with header/footer previews */}
+        {/* CENTER — Canvas with header/footer previews (hidden when editing that section) */}
         <div className="editor-center">
-          <HeaderPreview data={headerData} onEdit={() => { handleSave(); navigate('/admin/header'); }} />
+          {!isHeaderPage && <HeaderPreview data={headerData} onEdit={() => { handleSave(); navigate('/admin/header'); }} />}
           <div id="gjs-canvas" className="gjs-canvas-wrap" />
-          <FooterPreview data={footerData} onEdit={() => { handleSave(); navigate('/admin/footer'); }} />
+          {!isFooterPage && <FooterPreview data={footerData} onEdit={() => { handleSave(); navigate('/admin/footer'); }} />}
         </div>
 
         {/* RIGHT — panels always in DOM, tabs switch visibility */}
