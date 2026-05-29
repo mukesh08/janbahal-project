@@ -171,14 +171,14 @@ const s = {
     color: '#64748b',
     textDecoration: 'none',
     fontSize: '0.88rem',
-    fontWeight: '500',
-    transition: 'all 0.15s ease',
+    fontWeight: '600',           // always 600 — no weight reflow on hover/active
+    transition: 'background 0.15s ease, color 0.15s ease',
     fontFamily: "'Poppins', sans-serif",
+    transform: 'translateZ(0)',  // GPU layer prevents subpixel shift
   },
   navItemActive: {
     background: '#eef2ff',
     color: '#4f46e5',
-    fontWeight: '600',
   },
   navIcon: {
     fontSize: '1rem',
