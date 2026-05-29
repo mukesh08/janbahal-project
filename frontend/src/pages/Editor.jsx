@@ -353,12 +353,69 @@ const ANIMATION_CSS = `
 `;
 
 /* ─── Editor ──────────────────────────────────────────────── */
+/* ─── Header / Footer preview bars (read-only) ─────────── */
+const HeaderPreview = ({ data, onEdit }) => {
+  if (!data) return null;
+  const bg    = data.bgColor    || '#ffffff';
+  const text  = data.textColor  || '#0f172a';
+  const accent = data.accentColor || '#4f46e5';
+  return (
+    <div className="preview-section">
+      <div className="preview-label">Header</div>
+      <nav style={{ display:'flex', alignItems:'center', gap:'12px', padding:'0 2rem', height:'52px', background:bg, borderBottom:'1px solid rgba(0,0,0,0.07)', fontFamily:"'Poppins',sans-serif" }}>
+        {data.logoImage
+          ? <img src={data.logoImage} alt={data.logoText} style={{ height:'28px', borderRadius:'6px' }} />
+          : <div style={{ width:'28px', height:'28px', borderRadius:'7px', background:`linear-gradient(135deg,${accent},${accent}cc)`, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'800', fontSize:'0.85rem' }}>{(data.logoText||'S')[0]}</div>
+        }
+        <span style={{ fontWeight:'800', fontSize:'0.9rem', color:text }}>{data.logoText || 'Site'}</span>
+        <div style={{ flex:1 }} />
+        {(data.navItems||[]).slice(0,5).map((item,i) => (
+          <span key={i} style={{ fontSize:'0.82rem', color:text, opacity:0.75 }}>{item.label}</span>
+        ))}
+        {data.showCta && (
+          <span style={{ padding:'5px 14px', background:accent, color:'#fff', borderRadius:'7px', fontSize:'0.78rem', fontWeight:'600' }}>{data.ctaLabel||'Get Started'}</span>
+        )}
+      </nav>
+      <button className="preview-edit-btn" onClick={onEdit}>✏ Edit Header</button>
+    </div>
+  );
+};
+
+const FooterPreview = ({ data, onEdit }) => {
+  if (!data) return null;
+  return (
+    <div className="preview-section">
+      <div className="preview-label">Footer</div>
+      <footer style={{ background:'#1e293b', color:'#94a3b8', fontFamily:"'Poppins',sans-serif", padding:'1.5rem 2rem' }}>
+        {(data.columns||[]).length > 0 && (
+          <div style={{ display:'flex', gap:'2.5rem', flexWrap:'wrap', marginBottom:'1.25rem' }}>
+            {data.columns.map((col,i) => (
+              <div key={i} style={{ minWidth:'120px' }}>
+                <div style={{ color:'#e2e8f0', fontWeight:'700', fontSize:'0.8rem', marginBottom:'0.5rem' }}>{col.title}</div>
+                {(col.links||[]).slice(0,3).map((l,j) => (
+                  <div key={j} style={{ fontSize:'0.75rem', opacity:0.65, marginBottom:'3px' }}>{l.label}</div>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+        <div style={{ fontSize:'0.75rem', borderTop: (data.columns||[]).length ? '1px solid rgba(255,255,255,0.08)' : 'none', paddingTop:(data.columns||[]).length ? '0.85rem' : '0' }}>
+          {data.copyrightText || `© ${new Date().getFullYear()} — All rights reserved`}
+        </div>
+      </footer>
+      <button className="preview-edit-btn footer" onClick={onEdit}>✏ Edit Footer</button>
+    </div>
+  );
+};
+
 const Editor = () => {
   const { id }   = useParams();
   const navigate = useNavigate();
   const gjsRef   = useRef(null);
 
   const [page,        setPage]        = useState(null);
+  const [headerData,  setHeaderData]  = useState(null);
+  const [footerData,  setFooterData]  = useState(null);
   const [saving,      setSaving]      = useState(false);
   const [published,   setPublished]   = useState(false);
   const [saveMsg,     setSaveMsg]     = useState('');
@@ -371,11 +428,13 @@ const Editor = () => {
   const [editContent,  setEditContent]  = useState('');
   const [editTag,      setEditTag]      = useState('');
 
-  /* ── fetch page ── */
+  /* ── fetch page + header + footer ── */
   useEffect(() => {
     axios.get(`/api/pages/${id}`)
       .then(({ data }) => { setPage(data); setPublished(data.published); })
       .catch(() => { alert('Page not found'); navigate('/admin/pages'); });
+    axios.get('/api/header').then(({ data }) => setHeaderData(data)).catch(() => {});
+    axios.get('/api/footer').then(({ data }) => setFooterData(data)).catch(() => {});
   }, [id, navigate]);
 
   const contentDebounce = useRef(null);
@@ -588,9 +647,11 @@ const Editor = () => {
           </div>
         </div>
 
-        {/* CENTER — Canvas */}
+        {/* CENTER — Canvas with header/footer previews */}
         <div className="editor-center">
+          <HeaderPreview data={headerData} onEdit={() => { handleSave(); navigate('/admin/header'); }} />
           <div id="gjs-canvas" className="gjs-canvas-wrap" />
+          <FooterPreview data={footerData} onEdit={() => { handleSave(); navigate('/admin/footer'); }} />
         </div>
 
         {/* RIGHT — panels always in DOM, tabs switch visibility */}
