@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import { Loader2, Pencil, FileText, ArrowDown, Rocket, Trash2 } from 'lucide-react';
 
 const STATUS_COLORS = {
   published: { bg: '#dcfce7', color: '#16a34a', border: '#bbf7d0' },
@@ -97,12 +98,12 @@ const PostsManager = () => {
         {/* ── Posts list ── */}
         {loading ? (
           <div style={s.emptyBox}>
-            <span style={s.emptyIcon}>⏳</span>
+            <span style={s.emptyIcon}><Loader2 size={48} strokeWidth={1.8} /></span>
             <p style={s.emptyTxt}>Loading posts…</p>
           </div>
         ) : posts.length === 0 ? (
           <div style={s.emptyBox}>
-            <span style={s.emptyIcon}>✏️</span>
+            <span style={s.emptyIcon}><Pencil size={48} strokeWidth={1.8} /></span>
             <p style={s.emptyLabel}>No posts yet</p>
             <p style={s.emptyTxt}>Click "＋ New Post" to write your first blog post.</p>
             <button style={s.newBtn} onClick={() => navigate('/admin/posts/new')}>＋ New Post</button>
@@ -117,14 +118,17 @@ const PostsManager = () => {
                   {/* Thumbnail */}
                   {post.featuredImage
                     ? <img src={post.featuredImage} alt="" style={s.thumb} />
-                    : <div style={s.thumbPlaceholder}>📄</div>
+                    : <div style={s.thumbPlaceholder}><FileText size={24} strokeWidth={1.8} color="#94a3b8" /></div>
                   }
 
                   {/* Info */}
                   <div style={s.info}>
                     <div style={s.cardTop}>
                       <span style={{ ...s.statusBadge, background: sc.bg, color: sc.color, border: `1px solid ${sc.border}` }}>
-                        {post.status === 'published' ? '● Published' : '○ Draft'}
+                        {post.status === 'published'
+                        ? <><span style={{width:6,height:6,borderRadius:'50%',background:'#16a34a',display:'inline-block',marginRight:4}} />Published</>
+                        : <><span style={{width:6,height:6,borderRadius:'50%',background:'#d97706',display:'inline-block',marginRight:4}} />Draft</>
+                      }
                       </span>
                       <span style={s.category}>{post.category}</span>
                       {post.tags?.length > 0 && (
@@ -142,22 +146,25 @@ const PostsManager = () => {
 
                   {/* Actions */}
                   <div style={s.actions}>
-                    <button style={s.editBtn}
+                    <button style={{ ...s.editBtn, display: 'flex', alignItems: 'center', gap: '6px' }}
                       onClick={() => navigate(`/admin/posts/${post._id}/edit`)}>
-                      ✏️ Edit
+                      <Pencil size={14} strokeWidth={1.8} /> Edit
                     </button>
                     <button
-                      style={{ ...s.statusBtn, color: post.status === 'published' ? '#d97706' : '#16a34a' }}
+                      style={{ ...s.statusBtn, color: post.status === 'published' ? '#d97706' : '#16a34a', display: 'flex', alignItems: 'center', gap: '6px' }}
                       onClick={() => handleToggleStatus(post)}
                     >
-                      {post.status === 'published' ? '⬇ Unpublish' : '🚀 Publish'}
+                      {post.status === 'published'
+                        ? <><ArrowDown size={14} strokeWidth={1.8} /> Unpublish</>
+                        : <><Rocket size={14} strokeWidth={1.8} /> Publish</>
+                      }
                     </button>
                     <button
-                      style={{ ...s.deleteBtn, opacity: deleting === post._id ? 0.5 : 1 }}
+                      style={{ ...s.deleteBtn, opacity: deleting === post._id ? 0.5 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       disabled={deleting === post._id}
                       onClick={() => handleDelete(post._id, post.title)}
                     >
-                      🗑
+                      <Trash2 size={14} strokeWidth={1.8} />
                     </button>
                   </div>
 
@@ -208,7 +215,7 @@ const s = {
     padding: '5rem 2rem', textAlign: 'center', display: 'flex',
     flexDirection: 'column', alignItems: 'center', gap: '0.75rem',
   },
-  emptyIcon:  { fontSize: '3rem', display: 'block' },
+  emptyIcon:  { display: 'block' },
   emptyLabel: { fontSize: '1.1rem', fontWeight: '700', color: '#1e293b', margin: 0 },
   emptyTxt:   { color: '#94a3b8', fontSize: '0.88rem', margin: 0 },
 

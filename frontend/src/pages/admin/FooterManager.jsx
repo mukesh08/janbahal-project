@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import { Save, Trash2, X } from 'lucide-react';
 
 const FooterManager = () => {
   const [footer, setFooter]   = useState(null);
@@ -79,8 +80,8 @@ const FooterManager = () => {
             <h1 style={s.title}>Footer</h1>
             <p style={s.sub}>Manage site footer columns, links and settings</p>
           </div>
-          <button style={s.saveBtn} onClick={save} disabled={saving}>
-            {saving ? 'Saving...' : '💾 Save Changes'}
+          <button style={{ ...s.saveBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={save} disabled={saving}>
+            {saving ? 'Saving...' : <><Save size={14} strokeWidth={1.8} /> Save Changes</>}
           </button>
         </div>
         {msg && <p style={{ ...s.msg, color: msg.startsWith('✅') ? '#16a34a' : '#dc2626' }}>{msg}</p>}
@@ -116,7 +117,7 @@ const FooterManager = () => {
                       <input style={s.colTitleInput} value={col.title}
                         onChange={e => updateColTitle(col._id, e.target.value)}
                         onBlur={saveColTitle} />
-                      <button style={s.iconBtn} onClick={() => deleteColumn(col._id)} title="Delete column">🗑</button>
+                      <button style={s.iconBtn} onClick={() => deleteColumn(col._id)} title="Delete column"><Trash2 size={14} strokeWidth={1.8} /></button>
                     </div>
 
                     {/* Links list */}
@@ -125,7 +126,7 @@ const FooterManager = () => {
                         <div key={link._id} style={s.linkRow}>
                           <span style={s.linkLabel}>{link.label}</span>
                           <span style={s.linkUrl}>{link.url}</span>
-                          <button style={s.iconBtn} onClick={() => deleteLink(col._id, link._id)}>×</button>
+                          <button style={s.iconBtn} onClick={() => deleteLink(col._id, link._id)}><X size={14} strokeWidth={2} /></button>
                         </div>
                       ))}
                     </div>

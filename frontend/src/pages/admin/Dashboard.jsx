@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import { FileText, Globe, Pencil, Newspaper, Plus, Palette, AlignJustify, Monitor, Upload, ArrowRight } from 'lucide-react';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -45,32 +46,32 @@ const Dashboard = () => {
     {
       label: 'Total Pages', value: stats.totalPages,
       sub: `${stats.publishedPages} published`,
-      icon: '📄', color: '#4f46e5', bg: '#eef2ff', href: '/admin/pages',
+      icon: <FileText size={20} strokeWidth={1.8} />, color: '#4f46e5', bg: '#eef2ff', href: '/admin/pages',
     },
     {
       label: 'Published Pages', value: stats.publishedPages,
       sub: `${stats.totalPages - stats.publishedPages} drafts`,
-      icon: '🌐', color: '#0891b2', bg: '#ecfeff', href: '/admin/pages',
+      icon: <Globe size={20} strokeWidth={1.8} />, color: '#0891b2', bg: '#ecfeff', href: '/admin/pages',
     },
     {
       label: 'Total Posts', value: stats.totalPosts,
       sub: `${stats.publishedPosts} published`,
-      icon: '✏️', color: '#7c3aed', bg: '#f5f3ff', href: '/admin/posts',
+      icon: <Pencil size={20} strokeWidth={1.8} />, color: '#7c3aed', bg: '#f5f3ff', href: '/admin/posts',
     },
     {
       label: 'Published Posts', value: stats.publishedPosts,
       sub: `${stats.totalPosts - stats.publishedPosts} drafts`,
-      icon: '📰', color: '#059669', bg: '#f0fdf4', href: '/admin/posts',
+      icon: <Newspaper size={20} strokeWidth={1.8} />, color: '#059669', bg: '#f0fdf4', href: '/admin/posts',
     },
   ];
 
   const QUICK_ACTIONS = [
-    { label: '+ New Page',    icon: '📄', onClick: () => navigate('/admin/pages'),         color: '#4f46e5' },
-    { label: '+ New Post',    icon: '✏️', onClick: () => navigate('/admin/posts/new'),     color: '#7c3aed' },
-    { label: 'Customize',     icon: '🎨', onClick: () => navigate('/admin/customize'),     color: '#d97706' },
-    { label: 'Manage Menu',   icon: '☰',  onClick: () => navigate('/admin/menu'),          color: '#0891b2' },
-    { label: 'Edit Header',   icon: '🖥',  onClick: () => navigate('/admin/header'),        color: '#059669' },
-    { label: 'Upload Media',  icon: '⬆️', onClick: () => navigate('/admin/upload'),        color: '#dc2626' },
+    { label: '+ New Page',    icon: <FileText size={14} strokeWidth={1.8} />, onClick: () => navigate('/admin/pages'),         color: '#4f46e5' },
+    { label: '+ New Post',    icon: <Pencil size={14} strokeWidth={1.8} />,   onClick: () => navigate('/admin/posts/new'),     color: '#7c3aed' },
+    { label: 'Customize',     icon: <Palette size={14} strokeWidth={1.8} />,  onClick: () => navigate('/admin/customize'),     color: '#d97706' },
+    { label: 'Manage Menu',   icon: <AlignJustify size={14} strokeWidth={1.8} />, onClick: () => navigate('/admin/menu'),     color: '#0891b2' },
+    { label: 'Edit Header',   icon: <Monitor size={14} strokeWidth={1.8} />,  onClick: () => navigate('/admin/header'),        color: '#059669' },
+    { label: 'Upload Media',  icon: <Upload size={14} strokeWidth={1.8} />,   onClick: () => navigate('/admin/upload'),        color: '#dc2626' },
   ];
 
   return (
@@ -83,8 +84,8 @@ const Dashboard = () => {
             <h1 style={s.title}>Dashboard</h1>
             <p style={s.sub}>Welcome back — here's what's happening on your site</p>
           </div>
-          <button style={s.newPageBtn} onClick={() => navigate('/admin/pages')}>
-            + New Page
+          <button style={{ ...s.newPageBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => navigate('/admin/pages')}>
+            <Plus size={14} strokeWidth={2} /> New Page
           </button>
         </div>
 
@@ -119,7 +120,7 @@ const Dashboard = () => {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = a.color; e.currentTarget.style.color = a.color; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.color = '#475569'; }}
               >
-                <span style={s.actionIcon}>{a.icon}</span>
+                {a.icon}
                 {a.label}
               </button>
             ))}
@@ -133,7 +134,7 @@ const Dashboard = () => {
           <div style={s.recentCard}>
             <div style={s.recentHeader}>
               <span style={s.recentTitle}>Recent Pages</span>
-              <button style={s.recentLink} onClick={() => navigate('/admin/pages')}>View all →</button>
+              <button style={{ ...s.recentLink, display: 'flex', alignItems: 'center', gap: '4px' }} onClick={() => navigate('/admin/pages')}>View all <ArrowRight size={12} strokeWidth={2} /></button>
             </div>
             {loading ? (
               <div style={s.recentEmpty}>Loading…</div>
@@ -146,7 +147,7 @@ const Dashboard = () => {
                     onClick={() => navigate(`/admin/editor/${p._id}`)}
                   >
                     <div style={s.recentRowLeft}>
-                      <span style={s.recentRowIcon}>📄</span>
+                      <span style={s.recentRowIcon}><FileText size={16} strokeWidth={1.8} /></span>
                       <div>
                         <div style={s.recentRowTitle}>{p.title}</div>
                         <div style={s.recentRowSlug}>/{p.slug}</div>
@@ -168,7 +169,7 @@ const Dashboard = () => {
           <div style={s.recentCard}>
             <div style={s.recentHeader}>
               <span style={s.recentTitle}>Recent Posts</span>
-              <button style={s.recentLink} onClick={() => navigate('/admin/posts')}>View all →</button>
+              <button style={{ ...s.recentLink, display: 'flex', alignItems: 'center', gap: '4px' }} onClick={() => navigate('/admin/posts')}>View all <ArrowRight size={12} strokeWidth={2} /></button>
             </div>
             {loading ? (
               <div style={s.recentEmpty}>Loading…</div>
@@ -181,7 +182,7 @@ const Dashboard = () => {
                     onClick={() => navigate(`/admin/posts/${p._id}/edit`)}
                   >
                     <div style={s.recentRowLeft}>
-                      <span style={s.recentRowIcon}>✏️</span>
+                      <span style={s.recentRowIcon}><Pencil size={16} strokeWidth={1.8} /></span>
                       <div>
                         <div style={s.recentRowTitle}>{p.title}</div>
                         <div style={s.recentRowSlug}>/blog/{p.slug}</div>
@@ -221,7 +222,7 @@ const s = {
     boxShadow: '0 1px 4px rgba(0,0,0,0.05)', cursor: 'pointer',
     transition: 'box-shadow 0.15s',
   },
-  statIcon: { width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', flexShrink: 0 },
+  statIcon: { width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   statBody: { minWidth: 0 },
   statValue: { fontSize: '1.8rem', fontWeight: '800', lineHeight: 1, marginBottom: '2px' },
   statLabel: { fontSize: '0.8rem', fontWeight: '600', color: '#475569', marginBottom: '2px' },

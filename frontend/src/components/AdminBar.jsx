@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Pencil } from 'lucide-react';
 
 const AdminBar = ({ editHref = '/admin', editLabel = 'Edit' }) => {
   const { user } = useAuth();
@@ -17,7 +18,7 @@ const AdminBar = ({ editHref = '/admin', editLabel = 'Edit' }) => {
         <Link to="/admin" style={s.link}>Dashboard</Link>
         <span style={s.divider} />
         <Link to={editHref} style={s.editBtn}>
-          ✏ {editLabel}
+          <Pencil size={11} strokeWidth={2.5} /> {editLabel}
         </Link>
       </div>
     </div>

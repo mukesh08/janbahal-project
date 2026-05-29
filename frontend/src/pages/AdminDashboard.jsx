@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Search, X, Home, FileText, Pencil, ExternalLink, MoreHorizontal, Copy, Trash2, Plus } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 
 const fmt = (iso) => {
@@ -109,7 +110,7 @@ const AdminDashboard = () => {
             <p style={s.sub}>Create and manage your website pages</p>
           </div>
           <button style={s.newBtn} onClick={() => { setNewTitle(''); setShowModal(true); }}>
-            + New Page
+            <Plus size={14} strokeWidth={2.5} /> New Page
           </button>
         </div>
 
@@ -148,7 +149,7 @@ const AdminDashboard = () => {
             ))}
           </div>
           <div style={s.searchWrap}>
-            <span style={s.searchIcon}>🔍</span>
+            <span style={s.searchIcon}><Search size={13} strokeWidth={2} /></span>
             <input
               style={s.searchInput}
               placeholder="Search pages…"
@@ -156,7 +157,7 @@ const AdminDashboard = () => {
               onChange={e => setSearch(e.target.value)}
             />
             {search && (
-              <button style={s.clearBtn} onClick={() => setSearch('')}>✕</button>
+              <button style={s.clearBtn} onClick={() => setSearch('')}><X size={12} strokeWidth={2.5} /></button>
             )}
           </div>
         </div>
@@ -198,7 +199,9 @@ const AdminDashboard = () => {
                 <div style={{ ...s.tdCell, flex: 3, gap: '12px', cursor: 'pointer' }}
                   onClick={() => navigate(`/admin/editor/${page._id}`)}>
                   <div style={{ ...s.pageThumb, background: page._id === homePageId ? '#eef2ff' : page.published ? '#f0fdf4' : '#fef3c7' }}>
-                    <span style={{ fontSize: '1rem' }}>{page._id === homePageId ? '🏠' : '📄'}</span>
+                    {page._id === homePageId
+                      ? <Home size={16} strokeWidth={1.8} color="#4f46e5" />
+                      : <FileText size={16} strokeWidth={1.8} color={page.published ? '#16a34a' : '#d97706'} />}
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -231,29 +234,29 @@ const AdminDashboard = () => {
                 {/* Actions */}
                 <div style={{ ...s.tdCell, flex: 1.5, justifyContent: 'flex-end', gap: '6px' }}>
                   <button style={s.actionEdit} onClick={() => navigate(`/admin/editor/${page._id}`)}>
-                    ✏ Edit
+                    <Pencil size={12} strokeWidth={2} /> Edit
                   </button>
                   {page.published && (
                     <button style={s.actionView}
                       onClick={() => window.open(page._id === homePageId ? '/' : `/page/${page.slug}`, '_blank')}>
-                      ↗
+                      <ExternalLink size={12} strokeWidth={2} />
                     </button>
                   )}
                   <div style={{ position: 'relative' }} onClick={e => e.stopPropagation()}>
                     <button style={s.actionMore}
                       onClick={() => setActionRow(actionRow === page._id ? null : page._id)}>
-                      ⋯
+                      <MoreHorizontal size={15} strokeWidth={2} />
                     </button>
                     {actionRow === page._id && (
                       <div style={s.dropdown}>
                         <button style={s.dropItem}
                           onClick={() => { duplicatePage(page); setActionRow(null); }}>
-                          📋 Duplicate
+                          <Copy size={13} strokeWidth={2} /> Duplicate
                         </button>
                         <div style={s.dropDivider} />
                         <button style={{ ...s.dropItem, color: '#ef4444' }}
                           onClick={() => { deletePage(page._id); setActionRow(null); }}>
-                          🗑 Delete
+                          <Trash2 size={13} strokeWidth={2} /> Delete
                         </button>
                       </div>
                     )}
@@ -319,7 +322,7 @@ const s = {
   pageHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' },
   title: { fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: '0 0 0.2rem' },
   sub:   { color: '#64748b', fontSize: '0.88rem', margin: 0 },
-  newBtn: { padding: '0.6rem 1.4rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '700', fontSize: '0.88rem', fontFamily: "'Poppins', sans-serif", whiteSpace: 'nowrap' },
+  newBtn: { display: 'flex', alignItems: 'center', gap: '6px', padding: '0.6rem 1.4rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '700', fontSize: '0.88rem', fontFamily: "'Poppins', sans-serif", whiteSpace: 'nowrap' },
 
   /* Stats bar */
   statsBar: { display: 'flex', alignItems: 'center', gap: '0', background: '#fff', border: '1px solid #f1f5f9', borderRadius: '12px', padding: '1rem 1.5rem', marginBottom: '1.25rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', width: 'fit-content' },
@@ -361,12 +364,12 @@ const s = {
 
   dateText: { fontSize: '0.78rem', color: '#64748b' },
 
-  actionEdit: { padding: '5px 12px', background: '#eef2ff', color: '#4f46e5', border: '1px solid #c7d2fe', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: '600', fontFamily: "'Poppins', sans-serif", whiteSpace: 'nowrap' },
-  actionView: { padding: '5px 10px', background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontFamily: "'Poppins', sans-serif" },
-  actionMore: { padding: '5px 10px', background: '#f8fafc', color: '#64748b', border: '1px solid #e2e8f0', borderRadius: '6px', cursor: 'pointer', fontSize: '0.9rem', fontFamily: "'Poppins', sans-serif", letterSpacing: '1px' },
+  actionEdit: { display: 'flex', alignItems: 'center', gap: '4px', padding: '5px 12px', background: '#eef2ff', color: '#4f46e5', border: '1px solid #c7d2fe', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: '600', fontFamily: "'Poppins', sans-serif", whiteSpace: 'nowrap' },
+  actionView: { display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '5px 10px', background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0', borderRadius: '6px', cursor: 'pointer', fontFamily: "'Poppins', sans-serif" },
+  actionMore: { display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '5px 10px', background: '#f8fafc', color: '#64748b', border: '1px solid #e2e8f0', borderRadius: '6px', cursor: 'pointer', fontFamily: "'Poppins', sans-serif" },
 
   dropdown: { position: 'absolute', top: '110%', right: 0, background: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', boxShadow: '0 8px 24px rgba(0,0,0,0.12)', minWidth: '150px', zIndex: 100, overflow: 'hidden' },
-  dropItem: { display: 'block', width: '100%', padding: '9px 14px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '0.82rem', fontWeight: '600', color: '#1e293b', fontFamily: "'Poppins', sans-serif' "},
+  dropItem: { display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '9px 14px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '0.82rem', fontWeight: '600', color: '#1e293b', fontFamily: "'Poppins', sans-serif" },
   dropDivider: { height: '1px', background: '#f1f5f9', margin: '0' },
 
   placeholder: { padding: '3rem', textAlign: 'center', color: '#94a3b8', fontSize: '0.88rem' },

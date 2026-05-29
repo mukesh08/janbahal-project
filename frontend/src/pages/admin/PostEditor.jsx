@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import { ArrowLeft, Save, ArrowDown, Rocket, Image as ImageIcon, FolderOpen, RefreshCw, ExternalLink, X } from 'lucide-react';
 
 const CATEGORIES = ['General', 'News', 'Tutorial', 'Opinion', 'Case Study', 'Announcement', 'Technology', 'Design'];
 
@@ -105,23 +106,26 @@ const PostEditor = () => {
         {/* ── Top bar ── */}
         <div style={s.topBar}>
           <div style={s.topLeft}>
-            <button style={s.backBtn} onClick={() => navigate('/admin/posts')}>← Posts</button>
+            <button style={{ ...s.backBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => navigate('/admin/posts')}><ArrowLeft size={14} strokeWidth={1.8} /> Posts</button>
             <span style={s.topTitle}>{isNew ? 'New Post' : 'Edit Post'}</span>
             <span style={{ ...s.statusPill, ...(isPublished ? s.pillPublished : s.pillDraft) }}>
-              {isPublished ? '● Published' : '○ Draft'}
+              {isPublished
+                ? <><span style={{width:6,height:6,borderRadius:'50%',background:'#16a34a',display:'inline-block',marginRight:4}} />Published</>
+                : <><span style={{width:6,height:6,borderRadius:'50%',background:'#d97706',display:'inline-block',marginRight:4}} />Draft</>
+              }
             </span>
           </div>
           <div style={s.topRight}>
             {saveMsg && <span style={s.saveMsg}>{saveMsg}</span>}
-            <button style={s.saveDraftBtn} onClick={() => handleSave('draft')} disabled={saving}>
-              💾 Save Draft
+            <button style={{ ...s.saveDraftBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => handleSave('draft')} disabled={saving}>
+              <Save size={14} strokeWidth={1.8} /> Save Draft
             </button>
             <button
-              style={isPublished ? s.unpublishBtn : s.publishBtn}
+              style={{ ...(isPublished ? s.unpublishBtn : s.publishBtn), display: 'flex', alignItems: 'center', gap: '6px' }}
               onClick={() => handleSave(isPublished ? 'draft' : 'published')}
               disabled={saving}
             >
-              {saving ? 'Saving…' : isPublished ? '⬇ Unpublish' : '🚀 Publish'}
+              {saving ? 'Saving…' : isPublished ? <><ArrowDown size={14} strokeWidth={1.8} /> Unpublish</> : <><Rocket size={14} strokeWidth={1.8} /> Publish</>}
             </button>
           </div>
         </div>
@@ -155,9 +159,9 @@ const PostEditor = () => {
                   href={`/blog/${form.slug}`}
                   target="_blank"
                   rel="noreferrer"
-                  style={s.previewLink}
+                  style={{ ...s.previewLink, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                 >
-                  ↗ Preview
+                  <ExternalLink size={13} strokeWidth={2} /> Preview
                 </a>
               )}
             </div>
@@ -199,16 +203,16 @@ const PostEditor = () => {
               {form.featuredImage ? (
                 <div style={s.imgPreviewWrap}>
                   <img src={form.featuredImage} alt="" style={s.imgPreview} />
-                  <button style={s.removeImgBtn} onClick={() => setForm(f => ({ ...f, featuredImage: '' }))}>✕ Remove</button>
+                  <button style={{ ...s.removeImgBtn, display: 'flex', alignItems: 'center', gap: '4px' }} onClick={() => setForm(f => ({ ...f, featuredImage: '' }))}><X size={11} strokeWidth={2} /> Remove</button>
                 </div>
               ) : (
                 <div style={s.imgEmpty} onClick={() => setShowImgPicker(true)}>
-                  <span style={{ fontSize: '2rem' }}>🖼</span>
+                  <ImageIcon size={32} strokeWidth={1.8} color="#94a3b8" />
                   <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Click to choose image</span>
                 </div>
               )}
-              <button style={s.chooseImgBtn} onClick={() => setShowImgPicker(true)}>
-                {form.featuredImage ? '🔄 Change Image' : '📁 Choose from Uploads'}
+              <button style={{ ...s.chooseImgBtn, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }} onClick={() => setShowImgPicker(true)}>
+                {form.featuredImage ? <><RefreshCw size={13} strokeWidth={1.8} /> Change Image</> : <><FolderOpen size={13} strokeWidth={1.8} /> Choose from Uploads</>}
               </button>
               <div style={s.orRow}><span style={s.orLine}/><span style={s.orText}>or paste URL</span><span style={s.orLine}/></div>
               <input
@@ -275,7 +279,7 @@ const PostEditor = () => {
           <div style={s.modal} onClick={e => e.stopPropagation()}>
             <div style={s.modalHeader}>
               <span style={s.modalTitle}>Choose Image</span>
-              <button style={s.modalClose} onClick={() => setShowImgPicker(false)}>✕</button>
+              <button style={s.modalClose} onClick={() => setShowImgPicker(false)}><X size={16} strokeWidth={2} /></button>
             </div>
             {uploads.length === 0 ? (
               <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>

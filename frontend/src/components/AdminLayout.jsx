@@ -1,16 +1,20 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import {
+  LayoutDashboard, FileText, Palette, Monitor,
+  Menu, PanelBottom, BookOpen, PenLine, Upload,
+} from 'lucide-react';
 
 const NAV_ITEMS = [
-  { to: '/admin',           icon: '🏠', label: 'Dashboard', exact: true },
-  { to: '/admin/pages',     icon: '📄', label: 'Pages'     },
-  { to: '/admin/customize', icon: '🎨', label: 'Customize' },
-  { to: '/admin/header',    icon: '🖥', label: 'Header'    },
-  { to: '/admin/menu',   icon: '☰',  label: 'Menu'   },
-  { to: '/admin/footer', icon: '🔲', label: 'Footer' },
-  { to: '/admin/blog',   icon: '📝', label: 'Blog'   },
-  { to: '/admin/posts',  icon: '✏️', label: 'Posts'  },
-  { to: '/admin/upload', icon: '⬆️', label: 'Upload' },
+  { to: '/admin',           Icon: LayoutDashboard, label: 'Dashboard', exact: true },
+  { to: '/admin/pages',     Icon: FileText,        label: 'Pages'     },
+  { to: '/admin/customize', Icon: Palette,         label: 'Customize' },
+  { to: '/admin/header',    Icon: Monitor,         label: 'Header'    },
+  { to: '/admin/menu',      Icon: Menu,            label: 'Menu'      },
+  { to: '/admin/footer',    Icon: PanelBottom,     label: 'Footer'    },
+  { to: '/admin/blog',      Icon: BookOpen,        label: 'Blog'      },
+  { to: '/admin/posts',     Icon: PenLine,         label: 'Posts'     },
+  { to: '/admin/upload',    Icon: Upload,          label: 'Upload'    },
 ];
 
 const AdminLayout = ({ children }) => {
@@ -37,7 +41,7 @@ const AdminLayout = ({ children }) => {
 
         {/* Nav items */}
         <nav style={s.nav}>
-          {NAV_ITEMS.map(({ to, icon, label, exact }) => (
+          {NAV_ITEMS.map(({ to, Icon, label, exact }) => (
             <NavLink
               key={to}
               to={to}
@@ -47,7 +51,7 @@ const AdminLayout = ({ children }) => {
                 ...(isActive ? s.navItemActive : {}),
               })}
             >
-              <span style={s.navIcon}>{icon}</span>
+              <span style={s.navIcon}><Icon size={16} strokeWidth={1.8} /></span>
               <span style={s.navLabel2}>{label}</span>
             </NavLink>
           ))}

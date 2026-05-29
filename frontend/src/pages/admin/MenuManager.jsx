@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import { Pencil, Trash2, AlignJustify, FileText, ChevronUp, ChevronDown, Link2, X } from 'lucide-react';
 
 const EMPTY_ITEM = { label: '', url: '', target: '_self' };
 
@@ -186,8 +187,8 @@ const MenuManager = () => {
                       </span>
                     )}
                     <div style={s.menuTabActions}>
-                      <button style={s.iconBtn} title="Rename" onClick={() => { setRenamingId(menu._id); setRenameVal(menu.name); }}>✏</button>
-                      <button style={{ ...s.iconBtn, color: '#ef4444' }} title="Delete" onClick={() => handleDeleteMenu(menu)}>🗑</button>
+                      <button style={s.iconBtn} title="Rename" onClick={() => { setRenamingId(menu._id); setRenameVal(menu.name); }}><Pencil size={14} strokeWidth={1.8} /></button>
+                      <button style={{ ...s.iconBtn, color: '#ef4444' }} title="Delete" onClick={() => handleDeleteMenu(menu)}><Trash2 size={14} strokeWidth={1.8} /></button>
                     </div>
                   </div>
                 ))}
@@ -214,7 +215,7 @@ const MenuManager = () => {
           <div style={s.main}>
             {!activeMenu ? (
               <div style={s.emptyState}>
-                <span style={{ fontSize: '3rem' }}>☰</span>
+                <AlignJustify size={48} strokeWidth={1.8} color="#94a3b8" />
                 <p style={{ color: '#94a3b8', marginTop: '1rem' }}>Select or create a menu to add links.</p>
               </div>
             ) : (
@@ -233,8 +234,8 @@ const MenuManager = () => {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                     <div style={s.cardTitle}>{editItemId ? 'Edit Link' : 'Add Link'}</div>
                     {!editItemId && (
-                      <button style={s.pickerToggleBtn} type="button" onClick={() => { setShowPicker(p => !p); setPickerSearch(''); }}>
-                        {showPicker ? '✕ Close picker' : '📄 Pick from Pages / Posts'}
+                      <button style={{ ...s.pickerToggleBtn, display: 'flex', alignItems: 'center', gap: '6px' }} type="button" onClick={() => { setShowPicker(p => !p); setPickerSearch(''); }}>
+                        {showPicker ? <><X size={14} strokeWidth={2} /> Close picker</> : <><FileText size={14} strokeWidth={1.8} /> Pick from Pages / Posts</>}
                       </button>
                     )}
                   </div>
@@ -244,10 +245,10 @@ const MenuManager = () => {
                     <div style={s.pickerPanel}>
                       {/* Tabs */}
                       <div style={s.pickerTabs}>
-                        {[['pages','📄 Pages'], ['posts','✏️ Posts']].map(([key, label]) => (
+                        {[['pages', <><FileText size={13} strokeWidth={1.8} /> Pages</>], ['posts', <><Pencil size={13} strokeWidth={1.8} /> Posts</>]].map(([key, label]) => (
                           <button
                             key={key}
-                            style={{ ...s.pickerTab, ...(pickerTab === key ? s.pickerTabActive : {}) }}
+                            style={{ ...s.pickerTab, ...(pickerTab === key ? s.pickerTabActive : {}), display: 'flex', alignItems: 'center', gap: '5px' }}
                             onClick={() => { setPickerTab(key); setPickerSearch(''); }}
                             type="button"
                           >{label}</button>
@@ -273,7 +274,7 @@ const MenuManager = () => {
                                   onMouseEnter={e => { e.currentTarget.style.background = '#eef2ff'; e.currentTarget.style.borderColor = '#c7d2fe'; }}
                                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent'; }}
                                 >
-                                  <div style={s.pickerItemIcon}>📄</div>
+                                  <div style={s.pickerItemIcon}><FileText size={16} strokeWidth={1.8} color="#4f46e5" /></div>
                                   <div style={s.pickerItemInfo}>
                                     <span style={s.pickerItemTitle}>{page.title}</span>
                                     <span style={s.pickerItemUrl}>/page/{page.slug}</span>
@@ -297,7 +298,7 @@ const MenuManager = () => {
                                   onMouseEnter={e => { e.currentTarget.style.background = '#eef2ff'; e.currentTarget.style.borderColor = '#c7d2fe'; }}
                                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent'; }}
                                 >
-                                  <div style={s.pickerItemIcon}>✏️</div>
+                                  <div style={s.pickerItemIcon}><Pencil size={16} strokeWidth={1.8} color="#7c3aed" /></div>
                                   <div style={s.pickerItemInfo}>
                                     <span style={s.pickerItemTitle}>{post.title}</span>
                                     <span style={s.pickerItemUrl}>/blog/{post.slug}</span>
@@ -356,7 +357,7 @@ const MenuManager = () => {
                     <p style={s.dimTxt}>Loading…</p>
                   ) : items.length === 0 ? (
                     <div style={s.emptyLinks}>
-                      <span style={{ fontSize: '1.5rem' }}>🔗</span>
+                      <Link2 size={24} strokeWidth={1.8} color="#94a3b8" />
                       <p style={{ color: '#94a3b8', fontSize: '0.85rem', margin: 0 }}>No links yet. Add one above.</p>
                     </div>
                   ) : (
@@ -364,8 +365,8 @@ const MenuManager = () => {
                       {items.map((item, i) => (
                         <div key={item._id} style={s.itemRow}>
                           <div style={s.orderBtns}>
-                            <button style={s.orderBtn} onClick={() => moveItem(i, -1)} disabled={i === 0}>↑</button>
-                            <button style={s.orderBtn} onClick={() => moveItem(i, 1)} disabled={i === items.length - 1}>↓</button>
+                            <button style={{ ...s.orderBtn, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => moveItem(i, -1)} disabled={i === 0}><ChevronUp size={12} strokeWidth={2} /></button>
+                            <button style={{ ...s.orderBtn, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => moveItem(i, 1)} disabled={i === items.length - 1}><ChevronDown size={12} strokeWidth={2} /></button>
                           </div>
                           <div style={s.itemInfo}>
                             <span style={s.itemLabel}>{item.label}</span>
@@ -375,10 +376,10 @@ const MenuManager = () => {
                             {item.target === '_blank' ? 'New tab' : 'Same tab'}
                           </span>
                           <div style={s.itemActions}>
-                            <button style={s.editBtn} onClick={() => { setItemForm({ label: item.label, url: item.url, target: item.target }); setEditItemId(item._id); setItemError(''); }}>
-                              ✏️ Edit
+                            <button style={{ ...s.editBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => { setItemForm({ label: item.label, url: item.url, target: item.target }); setEditItemId(item._id); setItemError(''); }}>
+                              <Pencil size={13} strokeWidth={1.8} /> Edit
                             </button>
-                            <button style={s.deleteBtn} onClick={() => handleDeleteItem(item._id)}>🗑</button>
+                            <button style={{ ...s.deleteBtn, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => handleDeleteItem(item._id)}><Trash2 size={13} strokeWidth={1.8} /></button>
                           </div>
                         </div>
                       ))}

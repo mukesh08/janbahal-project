@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import { Upload, FileText, Video, FolderOpen, Copy, Trash2, X } from 'lucide-react';
 
 const formatSize = (bytes) => {
   if (bytes < 1024) return `${bytes} B`;
@@ -69,7 +70,7 @@ const UploadManager = () => {
             <h1 style={s.title}>Upload</h1>
             <p style={s.sub}>Media library — {files.length} file{files.length !== 1 ? 's' : ''}</p>
           </div>
-          <button style={s.btnPrimary} onClick={() => inputRef.current?.click()}>⬆️ Upload Files</button>
+          <button style={{ ...s.btnPrimary, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => inputRef.current?.click()}><Upload size={14} strokeWidth={1.8} /> Upload Files</button>
           <input ref={inputRef} type="file" multiple accept="image/*,video/*,.pdf,.svg"
             style={{ display: 'none' }} onChange={e => upload(e.target.files)} />
         </div>
@@ -89,7 +90,7 @@ const UploadManager = () => {
                 <div style={s.progressBar}><div style={{ ...s.progressFill, width: `${progress}%` }} /></div>
               </div>
             : <>
-                <span style={s.dropIcon}>⬆️</span>
+                <span style={s.dropIcon}><Upload size={32} strokeWidth={1.8} /></span>
                 <p style={s.dropText}>{dragging ? 'Drop files here' : 'Drag & drop files here'}</p>
                 <p style={s.dropHint}>PNG, JPG, GIF, SVG, WebP, PDF, MP4 — max 10 MB</p>
               </>
@@ -112,7 +113,7 @@ const UploadManager = () => {
                     >
                       {isImage(file.mimetype)
                         ? <img src={file.url} alt={file.originalName} style={s.thumb} />
-                        : <div style={s.fileIcon}>{file.mimetype.includes('pdf') ? '📄' : file.mimetype.includes('video') ? '🎬' : '📁'}</div>
+                        : <div style={s.fileIcon}>{file.mimetype.includes('pdf') ? <FileText size={32} strokeWidth={1.8} color="#64748b" /> : file.mimetype.includes('video') ? <Video size={32} strokeWidth={1.8} color="#64748b" /> : <FolderOpen size={32} strokeWidth={1.8} color="#64748b" />}</div>
                       }
                       <div style={s.itemName}>{file.originalName}</div>
                     </div>
@@ -126,11 +127,11 @@ const UploadManager = () => {
             <div style={s.preview}>
               <div style={s.previewHeader}>
                 <h4 style={s.previewTitle}>File Details</h4>
-                <button style={s.closeBtn} onClick={() => setSelected(null)}>×</button>
+                <button style={s.closeBtn} onClick={() => setSelected(null)}><X size={16} strokeWidth={2} /></button>
               </div>
               {isImage(selected.mimetype)
                 ? <img src={selected.url} alt={selected.originalName} style={s.previewImg} />
-                : <div style={s.previewIconBig}>{selected.mimetype.includes('pdf') ? '📄' : '🎬'}</div>
+                : <div style={s.previewIconBig}>{selected.mimetype.includes('pdf') ? <FileText size={64} strokeWidth={1.8} color="#94a3b8" /> : <Video size={64} strokeWidth={1.8} color="#94a3b8" />}</div>
               }
               <div style={s.previewMeta}>
                 <p style={s.metaName}>{selected.originalName}</p>
@@ -141,8 +142,8 @@ const UploadManager = () => {
                 </div>
               </div>
               <div style={s.previewActions}>
-                <button style={s.copyBtn} onClick={() => copyUrl(selected.url)}>📋 Copy URL</button>
-                <button style={s.deleteBtn} onClick={() => handleDelete(selected._id)}>🗑 Delete</button>
+                <button style={{ ...s.copyBtn, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }} onClick={() => copyUrl(selected.url)}><Copy size={14} strokeWidth={1.8} /> Copy URL</button>
+                <button style={{ ...s.deleteBtn, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }} onClick={() => handleDelete(selected._id)}><Trash2 size={14} strokeWidth={1.8} /> Delete</button>
               </div>
             </div>
           )}

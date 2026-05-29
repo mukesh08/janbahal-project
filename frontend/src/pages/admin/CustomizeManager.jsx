@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import { Save, Home, Image as ImageIcon, PenLine, FileText, Settings, FolderOpen, Link2, ExternalLink, Pencil, X } from 'lucide-react';
 
 const DEFAULT = { homePage: '', siteThumbnail: '', siteTagline: '' };
 
@@ -61,8 +62,8 @@ const CustomizeManager = () => {
           </div>
           <div style={s.headerRight}>
             {msg && <span style={{ ...s.msgTxt, color: msg.startsWith('✅') ? '#16a34a' : '#ef4444' }}>{msg}</span>}
-            <button style={s.saveBtn} onClick={handleSave} disabled={saving}>
-              {saving ? 'Saving…' : '💾 Save Changes'}
+            <button style={{ ...s.saveBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={handleSave} disabled={saving}>
+              {saving ? 'Saving…' : <><Save size={14} strokeWidth={1.8} /> Save Changes</>}
             </button>
           </div>
         </div>
@@ -73,7 +74,7 @@ const CustomizeManager = () => {
           {/* ── Card 1: Landing Page ── */}
           <div style={s.card}>
             <div style={s.cardHead}>
-              <div style={{ ...s.cardBadge, background: '#eef2ff', color: '#4f46e5' }}>🏠</div>
+              <div style={{ ...s.cardBadge, background: '#eef2ff', color: '#4f46e5' }}><Home size={18} strokeWidth={1.8} /></div>
               <div>
                 <div style={s.cardTitle}>Landing Page</div>
                 <div style={s.cardDesc}>Which page visitors see at <code style={s.code}>/</code></div>
@@ -94,7 +95,7 @@ const CustomizeManager = () => {
               {selectedPage ? (
                 <div style={s.statusBox}>
                   <div style={s.statusBoxLeft}>
-                    <div style={s.statusIcon}>📄</div>
+                    <div style={s.statusIcon}><FileText size={20} strokeWidth={1.8} color="#4f46e5" /></div>
                     <div>
                       <div style={s.statusTitle}>{selectedPage.title}</div>
                       <div style={s.statusSlug}>/{selectedPage.slug}</div>
@@ -107,7 +108,7 @@ const CustomizeManager = () => {
               ) : (
                 <div style={{ ...s.statusBox, border: '1px dashed #e2e8f0' }}>
                   <div style={s.statusBoxLeft}>
-                    <div style={s.statusIcon}>⚙️</div>
+                    <div style={s.statusIcon}><Settings size={20} strokeWidth={1.8} color="#94a3b8" /></div>
                     <div>
                       <div style={s.statusTitle}>Default layout</div>
                       <div style={s.statusSlug}>Built-in hero + features page</div>
@@ -120,11 +121,11 @@ const CustomizeManager = () => {
               <div style={s.cardFooter}>
                 {selectedPage && (
                   <>
-                    <button style={s.actionBtn} onClick={() => navigate(`/admin/editor/${selectedPage._id}`)}>
-                      ✏ Edit Page
+                    <button style={{ ...s.actionBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => navigate(`/admin/editor/${selectedPage._id}`)}>
+                      <Pencil size={13} strokeWidth={1.8} /> Edit Page
                     </button>
-                    <button style={s.ghostBtn} onClick={() => window.open(`/page/${selectedPage.slug}`, '_blank')}>
-                      ↗ Preview
+                    <button style={{ ...s.ghostBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => window.open(`/page/${selectedPage.slug}`, '_blank')}>
+                      <ExternalLink size={13} strokeWidth={1.8} /> Preview
                     </button>
                   </>
                 )}
@@ -139,7 +140,7 @@ const CustomizeManager = () => {
           {/* ── Card 2: Site Thumbnail ── */}
           <div style={s.card}>
             <div style={s.cardHead}>
-              <div style={{ ...s.cardBadge, background: '#fef3c7', color: '#d97706' }}>🖼</div>
+              <div style={{ ...s.cardBadge, background: '#fef3c7', color: '#d97706' }}><ImageIcon size={18} strokeWidth={1.8} /></div>
               <div>
                 <div style={s.cardTitle}>Site Thumbnail</div>
                 <div style={s.cardDesc}>Social sharing image (OG image)</div>
@@ -153,11 +154,11 @@ const CustomizeManager = () => {
                 {form.siteThumbnail ? (
                   <>
                     <img src={form.siteThumbnail} alt="thumbnail" style={s.thumbImg} />
-                    <button style={s.removeBtn} onClick={() => setForm(f => ({ ...f, siteThumbnail: '' }))}>✕ Remove</button>
+                    <button style={{ ...s.removeBtn, display: 'flex', alignItems: 'center', gap: '4px' }} onClick={() => setForm(f => ({ ...f, siteThumbnail: '' }))}><X size={11} strokeWidth={2} /> Remove</button>
                   </>
                 ) : (
                   <div style={s.thumbEmpty}>
-                    <span style={{ fontSize: '2rem', opacity: 0.3 }}>🖼</span>
+                    <ImageIcon size={32} strokeWidth={1.8} style={{ opacity: 0.3, color: '#64748b' }} />
                     <span style={{ fontSize: '0.75rem', color: '#b0bcc8' }}>No thumbnail set</span>
                   </div>
                 )}
@@ -175,8 +176,8 @@ const CustomizeManager = () => {
               </div>
 
               <div style={s.cardFooter}>
-                <button style={s.actionBtn} onClick={() => setShowPicker(true)}>
-                  📁 {form.siteThumbnail ? 'Change from Uploads' : 'Choose from Uploads'}
+                <button style={{ ...s.actionBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => setShowPicker(true)}>
+                  <FolderOpen size={13} strokeWidth={1.8} /> {form.siteThumbnail ? 'Change from Uploads' : 'Choose from Uploads'}
                 </button>
               </div>
 
@@ -186,7 +187,7 @@ const CustomizeManager = () => {
           {/* ── Card 3: Site Tagline ── */}
           <div style={s.card}>
             <div style={s.cardHead}>
-              <div style={{ ...s.cardBadge, background: '#f0fdf4', color: '#16a34a' }}>✍</div>
+              <div style={{ ...s.cardBadge, background: '#f0fdf4', color: '#16a34a' }}><PenLine size={18} strokeWidth={1.8} /></div>
               <div>
                 <div style={s.cardTitle}>Site Tagline</div>
                 <div style={s.cardDesc}>Shown in search results and browser tabs</div>
@@ -210,7 +211,7 @@ const CustomizeManager = () => {
               {/* Search result preview */}
               <div style={s.metaLabel}>Search preview</div>
               <div style={s.metaBox}>
-                <div style={s.metaUrl}>🔗 newacore.com</div>
+                <div style={{ ...s.metaUrl, display: 'flex', alignItems: 'center', gap: '4px' }}><Link2 size={12} strokeWidth={1.8} /> newacore.com</div>
                 <div style={s.metaTitle}>NewaCore</div>
                 <div style={s.metaDesc}>{form.siteTagline || 'Your site tagline will appear here…'}</div>
               </div>
@@ -229,7 +230,7 @@ const CustomizeManager = () => {
           <div style={s.modal} onClick={e => e.stopPropagation()}>
             <div style={s.modalHeader}>
               <span style={s.modalTitle}>Choose Thumbnail</span>
-              <button style={s.modalClose} onClick={() => setShowPicker(false)}>✕</button>
+              <button style={s.modalClose} onClick={() => setShowPicker(false)}><X size={16} strokeWidth={2} /></button>
             </div>
             {uploads.length === 0 ? (
               <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>

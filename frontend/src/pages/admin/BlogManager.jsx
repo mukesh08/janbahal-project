@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import { BookOpen, Rocket, Copy, Tag, Pencil, Globe, ArrowRight } from 'lucide-react';
 
 const BlogManager = () => {
   const navigate = useNavigate();
@@ -44,10 +45,10 @@ const BlogManager = () => {
         {/* Stats */}
         <div style={s.statsRow}>
           {[
-            { icon: '📝', label: 'Total Posts',  value: stats.total,     color: '#4f46e5', bg: '#eef2ff' },
-            { icon: '🚀', label: 'Published',     value: stats.published, color: '#16a34a', bg: '#dcfce7' },
-            { icon: '📋', label: 'Drafts',        value: stats.draft,     color: '#d97706', bg: '#fef3c7' },
-            { icon: '🏷',  label: 'Categories',   value: categories.length, color: '#0891b2', bg: '#e0f2fe' },
+            { icon: <BookOpen size={20} strokeWidth={1.8} />, label: 'Total Posts',  value: stats.total,     color: '#4f46e5', bg: '#eef2ff' },
+            { icon: <Rocket size={20} strokeWidth={1.8} />, label: 'Published',     value: stats.published, color: '#16a34a', bg: '#dcfce7' },
+            { icon: <Copy size={20} strokeWidth={1.8} />,   label: 'Drafts',        value: stats.draft,     color: '#d97706', bg: '#fef3c7' },
+            { icon: <Tag size={20} strokeWidth={1.8} />,    label: 'Categories',   value: categories.length, color: '#0891b2', bg: '#e0f2fe' },
           ].map(({ icon, label, value, color, bg }) => (
             <div key={label} style={s.statCard}>
               <div style={{ ...s.statIcon, background: bg, color }}>{icon}</div>
@@ -64,7 +65,7 @@ const BlogManager = () => {
           <div style={s.card}>
             <div style={s.cardHeader}>
               <span style={s.cardTitle}>Categories</span>
-              <button style={s.viewAllBtn} onClick={() => navigate('/admin/posts')}>View Posts →</button>
+              <button style={{ ...s.viewAllBtn, display: 'flex', alignItems: 'center', gap: '4px' }} onClick={() => navigate('/admin/posts')}>View Posts <ArrowRight size={12} strokeWidth={2} /></button>
             </div>
             {loading ? (
               <p style={s.loadingTxt}>Loading…</p>
@@ -86,13 +87,13 @@ const BlogManager = () => {
           <div style={s.card}>
             <div style={s.cardHeader}>
               <span style={s.cardTitle}>Recent Posts</span>
-              <button style={s.viewAllBtn} onClick={() => navigate('/admin/posts')}>All Posts →</button>
+              <button style={{ ...s.viewAllBtn, display: 'flex', alignItems: 'center', gap: '4px' }} onClick={() => navigate('/admin/posts')}>All Posts <ArrowRight size={12} strokeWidth={2} /></button>
             </div>
             {loading ? (
               <p style={s.loadingTxt}>Loading…</p>
             ) : recentPosts.length === 0 ? (
               <div style={s.emptyWrap}>
-                <span style={{ fontSize: '2.5rem' }}>✏️</span>
+                <Pencil size={40} strokeWidth={1.8} color="#94a3b8" />
                 <p style={s.emptyTxt}>No posts yet.</p>
                 <button style={s.newBtn} onClick={() => navigate('/admin/posts/new')}>Write First Post</button>
               </div>
@@ -104,8 +105,11 @@ const BlogManager = () => {
                       <span style={s.recentTitle}>{p.title}</span>
                       <span style={s.recentMeta}>{p.category} · {new Date(p.updatedAt).toLocaleDateString()}</span>
                     </div>
-                    <span style={{ ...s.statusDot, color: p.status === 'published' ? '#16a34a' : '#d97706' }}>
-                      {p.status === 'published' ? '●' : '○'}
+                    <span style={{ ...s.statusDot }}>
+                      {p.status === 'published'
+                        ? <span style={{width:6,height:6,borderRadius:'50%',background:'#16a34a',display:'inline-block'}} />
+                        : <span style={{width:6,height:6,borderRadius:'50%',background:'#d97706',display:'inline-block'}} />
+                      }
                     </span>
                   </div>
                 ))}
@@ -118,9 +122,9 @@ const BlogManager = () => {
         {/* Quick links */}
         <div style={s.quickLinks}>
           <span style={s.quickLabel}>Quick links:</span>
-          <button style={s.quickBtn} onClick={() => navigate('/admin/posts')}>📋 All Posts</button>
-          <button style={s.quickBtn} onClick={() => navigate('/admin/posts/new')}>✏️ Write Post</button>
-          <button style={s.quickBtn} onClick={() => window.open('/blog', '_blank')}>🌐 View Blog</button>
+          <button style={{ ...s.quickBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => navigate('/admin/posts')}><Copy size={14} strokeWidth={1.8} /> All Posts</button>
+          <button style={{ ...s.quickBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => navigate('/admin/posts/new')}><Pencil size={14} strokeWidth={1.8} /> Write Post</button>
+          <button style={{ ...s.quickBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => window.open('/blog', '_blank')}><Globe size={14} strokeWidth={1.8} /> View Blog</button>
         </div>
 
       </div>

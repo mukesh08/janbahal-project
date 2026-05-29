@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import { Save, FolderOpen, X } from 'lucide-react';
 
 const DEFAULT = {
   logoText: 'NewaCore', logoImage: '', tagline: '',
@@ -73,8 +74,8 @@ const HeaderManager = () => {
           </div>
           <div style={s.headerActions}>
             {msg && <span style={{ fontSize: '0.82rem', fontWeight: '600', color: msg.startsWith('✅') ? '#16a34a' : '#ef4444' }}>{msg}</span>}
-            <button style={s.saveBtn} onClick={handleSave} disabled={saving}>
-              {saving ? 'Saving…' : '💾 Save Changes'}
+            <button style={{ ...s.saveBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={handleSave} disabled={saving}>
+              {saving ? 'Saving…' : <><Save size={14} strokeWidth={1.8} /> Save Changes</>}
             </button>
           </div>
         </div>
@@ -133,11 +134,11 @@ const HeaderManager = () => {
                 {form.logoImage && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
                     <img src={form.logoImage} alt="logo" style={{ height: '40px', width: '40px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
-                    <button style={s.removeBtn} onClick={() => setForm(f => ({ ...f, logoImage: '' }))}>✕ Remove</button>
+                    <button style={{ ...s.removeBtn, display: 'flex', alignItems: 'center', gap: '4px' }} onClick={() => setForm(f => ({ ...f, logoImage: '' }))}><X size={11} strokeWidth={2} /> Remove</button>
                   </div>
                 )}
-                <button style={s.chooseBtn} onClick={() => setShowPicker(true)}>
-                  📁 {form.logoImage ? 'Change Image' : 'Choose from Uploads'}
+                <button style={{ ...s.chooseBtn, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }} onClick={() => setShowPicker(true)}>
+                  <FolderOpen size={13} strokeWidth={1.8} /> {form.logoImage ? 'Change Image' : 'Choose from Uploads'}
                 </button>
                 <div style={s.orRow}><span style={s.orLine}/><span style={s.orText}>or paste URL</span><span style={s.orLine}/></div>
                 <input style={s.input} value={form.logoImage} onChange={set('logoImage')} placeholder="https://example.com/logo.png" />
@@ -245,7 +246,7 @@ const HeaderManager = () => {
           <div style={s.modal} onClick={e => e.stopPropagation()}>
             <div style={s.modalHeader}>
               <span style={s.modalTitle}>Choose Logo Image</span>
-              <button style={s.modalClose} onClick={() => setShowPicker(false)}>✕</button>
+              <button style={s.modalClose} onClick={() => setShowPicker(false)}><X size={16} strokeWidth={2} /></button>
             </div>
             {uploads.length === 0 ? (
               <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>
