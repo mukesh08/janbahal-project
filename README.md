@@ -92,16 +92,22 @@ Frontend will run at: `http://localhost:3000`
 
 ---
 
-## 5. Default admin account
+## 5. Seed sample data (recommended)
 
-On first run the database is empty. Register an account via the admin login page or via the API:
+Run this once after the backend is started to populate the database with sample pages, menu, and blog posts:
 
+```bash
+cd backend
+npm run seed
 ```
-POST http://localhost:5001/api/auth/register
-Content-Type: application/json
 
-{ "name": "Admin", "email": "you@example.com", "password": "yourpassword" }
-```
+This creates:
+- **Admin account** — `admin@newacore.com` / `Admin@1234`
+- **Pages** — Home, About, Contact
+- **Menu** — Main Navigation with links
+- **Posts** — 3 sample blog posts
+
+> Safe to run multiple times — it skips anything that already exists.
 
 ---
 
