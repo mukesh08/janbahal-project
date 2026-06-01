@@ -64,41 +64,87 @@ async function seed() {
 </section>`,
     },
     {
-      title: 'About',
+      title: 'About Us',
       slug: 'about',
       published: true,
-      gjsHtml: `<section style="font-family:sans-serif;max-width:800px;margin:60px auto;padding:0 20px">
-  <h1 style="font-size:2.4rem;font-weight:800;color:#0f172a;margin-bottom:16px">About Janbahal</h1>
-  <p style="font-size:1.05rem;color:#475569;line-height:1.8;margin-bottom:20px">Janbahal is a historic neighbourhood located in the heart of Kathmandu. Known for its rich culture, ancient temples, and warm community spirit, it has been home to generations of families.</p>
-  <p style="font-size:1.05rem;color:#475569;line-height:1.8;margin-bottom:20px">This website is dedicated to sharing stories, news, and updates about our community — preserving the past while celebrating the present.</p>
-  <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;margin:40px 0 16px">Our Mission</h2>
-  <ul style="color:#475569;line-height:2;padding-left:20px">
-    <li>Preserve the cultural heritage of Janbahal</li>
-    <li>Keep the community informed with local news</li>
-    <li>Connect residents and organisations</li>
-    <li>Celebrate the stories and people of our neighbourhood</li>
-  </ul>
+      gjsHtml: `<section style="font-family:'Segoe UI',sans-serif;max-width:860px;margin:60px auto;padding:0 24px">
+  <h1 style="font-size:2.6rem;font-weight:800;color:#0f172a;margin-bottom:12px">About Us</h1>
+  <p style="font-size:1.1rem;color:#64748b;border-left:4px solid #4f46e5;padding-left:16px;margin-bottom:36px">Janbahal is more than a neighbourhood — it is a living legacy of culture, heritage, and community spirit.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:48px">
+    <div>
+      <h2 style="font-size:1.4rem;font-weight:700;color:#0f172a;margin-bottom:12px">Who We Are</h2>
+      <p style="color:#475569;line-height:1.8">We are a community-driven platform dedicated to the people of Janbahal, Kathmandu. Our mission is to preserve culture, share stories, and keep residents informed about everything happening in our neighbourhood.</p>
+    </div>
+    <div>
+      <h2 style="font-size:1.4rem;font-weight:700;color:#0f172a;margin-bottom:12px">Our Story</h2>
+      <p style="color:#475569;line-height:1.8">Born from the desire to connect Janbahal's residents in the digital age, this platform was built to bridge generations — honouring our past while embracing the future of our community.</p>
+    </div>
+  </div>
+  <div style="background:#eef2ff;border-radius:14px;padding:40px;margin-bottom:48px;text-align:center">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#4f46e5;margin-bottom:24px">Our Values</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+      <div><div style="font-size:2rem;margin-bottom:8px">🏛️</div><strong style="color:#0f172a">Heritage</strong><p style="color:#64748b;font-size:0.85rem;margin-top:6px">Preserving the rich cultural traditions of Janbahal</p></div>
+      <div><div style="font-size:2rem;margin-bottom:8px">🤝</div><strong style="color:#0f172a">Community</strong><p style="color:#64748b;font-size:0.85rem;margin-top:6px">Bringing people together with shared purpose</p></div>
+      <div><div style="font-size:2rem;margin-bottom:8px">📢</div><strong style="color:#0f172a">Voice</strong><p style="color:#64748b;font-size:0.85rem;margin-top:6px">Giving every resident a platform to be heard</p></div>
+    </div>
+  </div>
+  <div style="background:#f8fafc;border-radius:14px;padding:36px">
+    <h2 style="font-size:1.4rem;font-weight:700;color:#0f172a;margin-bottom:20px">Meet the Team</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+      <div style="text-align:center;background:#fff;border-radius:10px;padding:24px;border:1px solid #e2e8f0">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.2rem">R</div>
+        <strong style="color:#0f172a">Ram Shrestha</strong><p style="color:#94a3b8;font-size:0.8rem;margin:4px 0 0">Founder & Editor</p>
+      </div>
+      <div style="text-align:center;background:#fff;border-radius:10px;padding:24px;border:1px solid #e2e8f0">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,#0ea5e9,#06b6d4);border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.2rem">S</div>
+        <strong style="color:#0f172a">Sita Maharjan</strong><p style="color:#94a3b8;font-size:0.8rem;margin:4px 0 0">Community Manager</p>
+      </div>
+      <div style="text-align:center;background:#fff;border-radius:10px;padding:24px;border:1px solid #e2e8f0">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,#f59e0b,#f97316);border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.2rem">B</div>
+        <strong style="color:#0f172a">Bikash Tuladhar</strong><p style="color:#94a3b8;font-size:0.8rem;margin:4px 0 0">Content Writer</p>
+      </div>
+    </div>
+  </div>
 </section>`,
     },
     {
-      title: 'Contact',
+      title: 'Contact Us',
       slug: 'contact',
       published: true,
-      gjsHtml: `<section style="font-family:sans-serif;max-width:600px;margin:60px auto;padding:0 20px">
-  <h1 style="font-size:2.4rem;font-weight:800;color:#0f172a;margin-bottom:8px">Contact Us</h1>
-  <p style="color:#64748b;margin-bottom:40px">Have a story to share or want to get in touch? We'd love to hear from you.</p>
-  <div style="background:#f8fafc;border-radius:12px;padding:32px;border:1px solid #e2e8f0">
-    <div style="margin-bottom:20px">
-      <div style="font-weight:700;color:#0f172a;margin-bottom:4px">📍 Location</div>
-      <div style="color:#475569">Janbahal, Kathmandu, Nepal</div>
+      gjsHtml: `<section style="font-family:'Segoe UI',sans-serif;max-width:860px;margin:60px auto;padding:0 24px">
+  <h1 style="font-size:2.6rem;font-weight:800;color:#0f172a;margin-bottom:12px">Contact Us</h1>
+  <p style="font-size:1.1rem;color:#64748b;margin-bottom:48px">We'd love to hear from you. Reach out with news tips, stories, or general enquiries.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+    <div style="background:#f8fafc;border-radius:14px;padding:36px;border:1px solid #e2e8f0">
+      <h2 style="font-size:1.2rem;font-weight:700;color:#0f172a;margin-bottom:24px">Get In Touch</h2>
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div style="width:40px;height:40px;background:#eef2ff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">📍</div>
+          <div><strong style="color:#0f172a;display:block;margin-bottom:2px">Address</strong><span style="color:#64748b;font-size:0.9rem">Janbahal, Kathmandu 44600, Nepal</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div style="width:40px;height:40px;background:#eef2ff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">✉️</div>
+          <div><strong style="color:#0f172a;display:block;margin-bottom:2px">Email</strong><span style="color:#64748b;font-size:0.9rem">hello@janbahal.com</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div style="width:40px;height:40px;background:#eef2ff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">📞</div>
+          <div><strong style="color:#0f172a;display:block;margin-bottom:2px">Phone</strong><span style="color:#64748b;font-size:0.9rem">+977 1 4XXXXXX</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div style="width:40px;height:40px;background:#eef2ff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">🕐</div>
+          <div><strong style="color:#0f172a;display:block;margin-bottom:2px">Office Hours</strong><span style="color:#64748b;font-size:0.9rem">Sun – Fri &nbsp; 9:00am – 5:00pm</span></div>
+        </div>
+      </div>
     </div>
-    <div style="margin-bottom:20px">
-      <div style="font-weight:700;color:#0f172a;margin-bottom:4px">✉️ Email</div>
-      <div style="color:#475569">hello@janbahal.com</div>
-    </div>
-    <div>
-      <div style="font-weight:700;color:#0f172a;margin-bottom:4px">🕐 Office Hours</div>
-      <div style="color:#475569">Sunday – Friday, 9am – 5pm</div>
+    <div style="background:#fff;border-radius:14px;padding:36px;border:1px solid #e2e8f0;box-shadow:0 1px 8px rgba(0,0,0,0.05)">
+      <h2 style="font-size:1.2rem;font-weight:700;color:#0f172a;margin-bottom:24px">Send a Message</h2>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <input style="padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none" placeholder="Your Name" />
+        <input style="padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none" type="email" placeholder="Email Address" />
+        <input style="padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none" placeholder="Subject" />
+        <textarea style="padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;resize:vertical;min-height:100px" placeholder="Your message..."></textarea>
+        <button style="padding:12px;background:#4f46e5;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:0.95rem;cursor:pointer">Send Message</button>
+      </div>
     </div>
   </div>
 </section>`,
@@ -192,6 +238,46 @@ async function seed() {
 <p>The festival is a wonderful opportunity for residents and visitors alike to experience the vibrant culture of the Newar community.</p>`,
       category: 'Festival',
       tags: ['festival', 'indra jatra', 'culture', 'celebration'],
+      status: 'published',
+    },
+    {
+      title: 'Top 5 Places to Visit in Janbahal',
+      slug: 'top-5-places-janbahal',
+      excerpt: 'From ancient courtyards to hidden temples, here are the five must-visit spots in Janbahal that every visitor should explore.',
+      content: `<p>Janbahal is full of hidden gems. Whether you are a first-time visitor or a lifelong resident, these five spots are worth exploring.</p>
+<h2>1. Janbahal Courtyard (Bahal)</h2>
+<p>The historic central courtyard is the heart of the neighbourhood. Lined with traditional Newari architecture, it is a peaceful place to sit and soak in the atmosphere.</p>
+<h2>2. The Old Chaitya</h2>
+<p>A beautifully preserved Buddhist stupa tucked inside the bahal. Local residents regularly offer flowers and light butter lamps here in the mornings.</p>
+<h2>3. The Community Library</h2>
+<p>A small but well-stocked library run by volunteers. A great place to find books on Newar culture, history, and local stories.</p>
+<h2>4. The Street Food Lane</h2>
+<p>Every evening, the narrow lane on the eastern side comes alive with vendors selling <em>chatamari</em>, <em>bara</em>, and <em>samay baji</em> — traditional Newari snacks you shouldn't miss.</p>
+<h2>5. The Sunrise Viewpoint</h2>
+<p>A rooftop accessible from the northern end of the neighbourhood offers a stunning view of the Kathmandu skyline — especially beautiful at sunrise.</p>`,
+      category: 'Travel',
+      tags: ['travel', 'places', 'tourism', 'janbahal'],
+      status: 'published',
+    },
+    {
+      title: 'Community Clean-Up Drive This Weekend',
+      slug: 'community-clean-up-drive',
+      excerpt: 'Join us this Saturday as we come together to clean and beautify our neighbourhood streets and public spaces.',
+      content: `<p>We are calling all Janbahal residents to join our upcoming <strong>Community Clean-Up Drive</strong> this Saturday!</p>
+<h2>Event Details</h2>
+<ul>
+  <li><strong>Date:</strong> This Saturday</li>
+  <li><strong>Time:</strong> 7:00 AM – 10:00 AM</li>
+  <li><strong>Meeting Point:</strong> Janbahal Main Courtyard</li>
+  <li><strong>What to bring:</strong> Gloves, enthusiasm, and a friend!</li>
+</ul>
+<h2>Why It Matters</h2>
+<p>A clean neighbourhood is a proud neighbourhood. Together, we can make Janbahal a cleaner, greener, and more welcoming place for everyone who lives here and visits.</p>
+<h2>How to Join</h2>
+<p>Simply show up at the meeting point on Saturday morning. Cleaning supplies will be provided. Light refreshments will be served after the drive.</p>
+<p>Let us show what our community can do when we work together. See you there! 🌿</p>`,
+      category: 'Community',
+      tags: ['community', 'event', 'clean-up', 'environment'],
       status: 'published',
     },
   ];
