@@ -19,8 +19,9 @@ import PostEditor     from './pages/admin/PostEditor';
 import HeaderManager   from './pages/admin/HeaderManager';
 import CustomizeManager from './pages/admin/CustomizeManager';
 import UploadManager  from './pages/admin/UploadManager';
-import UsersManager   from './pages/admin/UsersManager';
-import AccountManager from './pages/admin/AccountManager';
+import UsersManager    from './pages/admin/UsersManager';
+import AccountManager  from './pages/admin/AccountManager';
+import PageTransition  from './components/PageTransition';
 
 const Guard = ({ children }) => (
   <ProtectedRoute>{children}</ProtectedRoute>
@@ -30,6 +31,7 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <PageTransition>
         <Routes>
           {/* ── Public ── */}
           <Route path="/"            element={<Landing />} />
@@ -57,6 +59,7 @@ function App() {
           {/* ── Fallback ── */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </PageTransition>
       </BrowserRouter>
     </AuthProvider>
   );
