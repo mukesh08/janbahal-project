@@ -19,6 +19,8 @@ import PostEditor     from './pages/admin/PostEditor';
 import HeaderManager   from './pages/admin/HeaderManager';
 import CustomizeManager from './pages/admin/CustomizeManager';
 import UploadManager  from './pages/admin/UploadManager';
+import UsersManager   from './pages/admin/UsersManager';
+import AccountManager from './pages/admin/AccountManager';
 
 const Guard = ({ children }) => (
   <ProtectedRoute>{children}</ProtectedRoute>
@@ -49,6 +51,8 @@ function App() {
           <Route path="/admin/posts/new"       element={<Guard><PostEditor /></Guard>} />
           <Route path="/admin/posts/:id/edit"  element={<Guard><PostEditor /></Guard>} />
           <Route path="/admin/upload"          element={<Guard><UploadManager /></Guard>} />
+          <Route path="/admin/users"           element={<Guard><UsersManager /></Guard>} />
+          <Route path="/admin/account"         element={<Guard><AccountManager /></Guard>} />
 
           {/* ── Fallback ── */}
           <Route path="*" element={<Navigate to="/" replace />} />

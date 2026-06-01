@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, FileText, Palette, Monitor,
   Menu, PanelBottom, BookOpen, PenLine, Upload,
+  Users, UserCircle,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -16,6 +17,8 @@ const NAV_ITEMS = [
   { to: '/admin/blog',      Icon: BookOpen,        label: 'Blog'      },
   { to: '/admin/posts',     Icon: PenLine,         label: 'Posts'     },
   { to: '/admin/upload',    Icon: Upload,          label: 'Upload'    },
+  { to: '/admin/users',     Icon: Users,           label: 'Users'     },
+  { to: '/admin/account',   Icon: UserCircle,      label: 'Account'   },
 ];
 
 const NavItemLink = ({ to, Icon, label, exact }) => {
