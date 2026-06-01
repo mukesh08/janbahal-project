@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminBar from './AdminBar';
 
@@ -14,12 +15,30 @@ const stripBodyWrapper = (html) => {
 const SiteHeader = ({ editHref, editLabel }) => {
   const [gjsHtml, setGjsHtml] = useState('');
   const [gjsCss,  setGjsCss]  = useState('');
+  const headerRef = useRef(null);
+  const navigate  = useNavigate();
 
   useEffect(() => {
     axios.get('/api/pages/header-content')
       .then(({ data }) => { setGjsHtml(data.gjsHtml || ''); setGjsCss(data.gjsCss || ''); })
       .catch(() => {});
   }, []);
+
+  // Intercept <a> clicks inside GrapesJS header — use React Router instead of full reload
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const handler = (e) => {
+      const a = e.target.closest('a');
+      if (!a) return;
+      const href = a.getAttribute('href');
+      if (!href || href === '#' || href.startsWith('http') || href.startsWith('mailto')) return;
+      e.preventDefault();
+      navigate(href);
+    };
+    el.addEventListener('click', handler);
+    return () => el.removeEventListener('click', handler);
+  }, [gjsHtml, navigate]);
 
   useEffect(() => {
     if (!gjsCss) return;
@@ -37,7 +56,7 @@ const SiteHeader = ({ editHref, editLabel }) => {
     <>
       <AdminBar editHref={editHref} editLabel={editLabel} />
       {gjsHtml
-        ? <div style={{ display: 'contents' }}
+        ? <div ref={headerRef} style={{ display: 'contents' }}
                dangerouslySetInnerHTML={{ __html: stripBodyWrapper(gjsHtml) }} />
         : <DefaultHeader />
       }
