@@ -15,6 +15,12 @@ const api = {
     });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) {
+      // Session expired or invalid — clear it and send the user back to login
+      if (res.status === 401 && !url.startsWith('/api/auth/login') && !url.startsWith('/api/auth/register')) {
+        localStorage.removeItem('newacore_user');
+        delete api.defaults.headers.common['Authorization'];
+        if (window.location.pathname !== '/login') window.location.href = '/login';
+      }
       const err = new Error(json.message || 'Request failed');
       err.response = { data: json, status: res.status };
       throw err;

@@ -3,6 +3,16 @@ import axios from 'axios';
 
 const AuthContext = createContext(null);
 
+// False when the JWT is malformed or past its exp claim
+const isTokenValid = (token) => {
+  try {
+    const { exp } = JSON.parse(atob(token.split('.')[1]));
+    return exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -12,8 +22,12 @@ export const AuthProvider = ({ children }) => {
     const stored = localStorage.getItem('newacore_user');
     if (stored) {
       const parsed = JSON.parse(stored);
-      setUser(parsed);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${parsed.token}`;
+      if (isTokenValid(parsed.token)) {
+        setUser(parsed);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${parsed.token}`;
+      } else {
+        localStorage.removeItem('newacore_user');
+      }
     }
     setLoading(false);
   }, []);

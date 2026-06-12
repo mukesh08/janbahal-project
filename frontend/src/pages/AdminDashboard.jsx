@@ -27,7 +27,10 @@ const AdminDashboard = () => {
       const { data: home } = await axios.get('/api/pages/ensure-home');
       await axios.put('/api/settings', { homePage: home._id });
       setHomePageId(home._id);
-
+    } catch (err) {
+      console.error(err);
+    }
+    try {
       const { data } = await axios.get('/api/pages');
       setPages(data);
     } catch (err) {
