@@ -69,7 +69,7 @@ const BlogList = () => {
         {/* Posts grid */}
         {loading ? (
           <div style={s.center}>
-            <div style={s.spinner}>⏳</div>
+            <div style={s.spinner} />
             <p style={s.loadingTxt}>Loading posts…</p>
           </div>
         ) : posts.length === 0 ? (
@@ -152,7 +152,13 @@ const s = {
   },
 
   center: { textAlign: 'center', padding: '5rem 0', color: '#94a3b8' },
-  spinner: { fontSize: '2.5rem', marginBottom: '1rem' },
+  spinner: {
+    width: '42px', height: '42px', borderRadius: '50%',
+    border: '3.5px solid rgba(79,70,229,0.15)',
+    borderTopColor: '#4f46e5',
+    animation: 'loaderSpin 0.65s linear infinite',
+    marginBottom: '1rem',
+  },
   loadingTxt: { color: '#94a3b8' },
 
   grid: {

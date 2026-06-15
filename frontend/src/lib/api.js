@@ -8,6 +8,12 @@ const api = {
       ...api.defaults.headers.common,
       ...(config.headers || {}),
     };
+    if (config.params) {
+      const qs = new URLSearchParams(
+        Object.entries(config.params).filter(([, v]) => v !== undefined && v !== null)
+      ).toString();
+      if (qs) url = url + (url.includes('?') ? '&' : '?') + qs;
+    }
     const res = await fetch(url, {
       method,
       headers,

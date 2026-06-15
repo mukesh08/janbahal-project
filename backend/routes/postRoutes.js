@@ -64,6 +64,7 @@ router.get('/all', protect, async (req, res) => {
 router.get('/categories', async (req, res) => {
   try {
     const cats = await Post.aggregate([
+      { $match: { status: 'published' } },
       { $group: { _id: '$category', count: { $sum: 1 } } },
       { $sort: { count: -1 } },
     ]);

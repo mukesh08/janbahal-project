@@ -87,3 +87,25 @@ button, input, select, textarea {
   from { opacity: 1; }
   to   { opacity: 0; }
 }
+
+/* ── Page loader spinner ── */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: none;
+}
+.page-loader-circle {
+  width: 42px;
+  height: 42px;
+  border: 3.5px solid rgba(79, 70, 229, 0.15);
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: loaderSpin 0.65s linear infinite;
+}
+@keyframes loaderSpin {
+  to { transform: rotate(360deg); }
+}

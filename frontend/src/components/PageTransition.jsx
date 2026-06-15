@@ -7,8 +7,10 @@ const PageTransition = ({ children }) => {
   const [stage, setStage] = useState('page-enter');
 
   useEffect(() => {
-    if (location.key !== displayLocation.key) {
+    if (location.pathname !== displayLocation.pathname) {
       setStage('page-exit');
+    } else {
+      setDisplayLocation(location);
     }
   }, [location]);
 
@@ -19,14 +21,20 @@ const PageTransition = ({ children }) => {
     }
   };
 
-  // Pass displayLocation to <Routes> so the old page stays visible during fade-out
   const child = Children.only(children);
   const routeWithLocation = cloneElement(child, { location: displayLocation });
 
   return (
-    <div className={stage} onAnimationEnd={handleAnimationEnd}>
-      {routeWithLocation}
-    </div>
+    <>
+      {stage === 'page-exit' && (
+        <div className="page-loader">
+          <div className="page-loader-circle" />
+        </div>
+      )}
+      <div className={stage} onAnimationEnd={handleAnimationEnd}>
+        {routeWithLocation}
+      </div>
+    </>
   );
 };
 

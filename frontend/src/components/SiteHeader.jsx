@@ -1,22 +1,46 @@
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import AdminBar from './AdminBar';
 
-/* GrapesJS wraps canvas output in <body id="xxx">…</body>.
-   Strip it so the header element sits in normal page flow,
-   giving position:sticky a full-height containing block. */
 const stripBodyWrapper = (html) => {
   if (!html) return '';
   const m = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
   return m ? m[1] : html;
 };
 
+const NAV_STYLES = `
+  #site-header-gjs a {
+    position: relative;
+    transition: opacity 0.2s ease;
+    text-decoration: none;
+  }
+  #site-header-gjs a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: width 0.25s ease, left 0.25s ease;
+  }
+  #site-header-gjs a:hover::after,
+  #site-header-gjs a.nav-active::after {
+    width: 100%;
+    left: 0;
+  }
+  #site-header-gjs a:hover { opacity: 0.7; }
+  #site-header-gjs a.nav-active { font-weight: 700; opacity: 1; }
+`;
+
 const SiteHeader = ({ editHref, editLabel }) => {
   const [gjsHtml, setGjsHtml] = useState('');
   const [gjsCss,  setGjsCss]  = useState('');
   const headerRef = useRef(null);
   const navigate  = useNavigate();
+  const location  = useLocation();
 
   useEffect(() => {
     axios.get('/api/pages/header-content')
@@ -40,6 +64,7 @@ const SiteHeader = ({ editHref, editLabel }) => {
     return () => el.removeEventListener('click', handler);
   }, [gjsHtml, navigate]);
 
+  // Inject GrapesJS page-builder CSS
   useEffect(() => {
     if (!gjsCss) return;
     let tag = document.getElementById('gjs-header-styles');
@@ -52,11 +77,33 @@ const SiteHeader = ({ editHref, editLabel }) => {
     return () => { document.getElementById('gjs-header-styles')?.remove(); };
   }, [gjsCss]);
 
+  // Inject nav hover/active animation CSS
+  useEffect(() => {
+    let tag = document.getElementById('gjs-header-nav-effects');
+    if (!tag) {
+      tag = document.createElement('style');
+      tag.id = 'gjs-header-nav-effects';
+      document.head.appendChild(tag);
+    }
+    tag.innerHTML = NAV_STYLES;
+    return () => { document.getElementById('gjs-header-nav-effects')?.remove(); };
+  }, []);
+
+  // Highlight active nav link whenever route changes
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el || !gjsHtml) return;
+    el.querySelectorAll('a').forEach(a => {
+      const href = a.getAttribute('href');
+      a.classList.toggle('nav-active', !!href && href === location.pathname);
+    });
+  }, [gjsHtml, location.pathname]);
+
   return (
     <>
       <AdminBar editHref={editHref} editLabel={editLabel} />
       {gjsHtml
-        ? <div ref={headerRef} style={{ display: 'contents' }}
+        ? <div id="site-header-gjs" ref={headerRef} style={{ display: 'contents' }}
                dangerouslySetInnerHTML={{ __html: stripBodyWrapper(gjsHtml) }} />
         : <DefaultHeader />
       }
@@ -64,7 +111,6 @@ const SiteHeader = ({ editHref, editLabel }) => {
   );
 };
 
-/* Shown only while header-content is loading or has no content yet */
 const DefaultHeader = () => (
   <nav style={{ display:'flex', alignItems:'center', gap:'12px', padding:'0 2rem', height:'56px', background:'#fff', borderBottom:'1px solid rgba(0,0,0,0.07)', position:'sticky', top:0, zIndex:100, boxShadow:'0 1px 6px rgba(0,0,0,0.06)', fontFamily:"'Poppins',sans-serif" }}>
     <span style={{ fontWeight:'800', fontSize:'0.95rem', color:'#4f46e5' }}>NewaCore</span>
