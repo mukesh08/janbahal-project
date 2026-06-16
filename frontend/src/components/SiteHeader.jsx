@@ -19,19 +19,18 @@ const NAV_STYLES = `
     content: '';
     position: absolute;
     bottom: -3px;
-    left: 50%;
+    left: 0;
     width: 0;
     height: 2px;
     background: currentColor;
     border-radius: 2px;
-    transition: width 0.25s ease, left 0.25s ease;
+    transition: width 0.28s cubic-bezier(0.65, 0, 0.35, 1);
   }
   #site-header-gjs a:hover::after,
   #site-header-gjs a.nav-active::after {
     width: 100%;
-    left: 0;
   }
-  #site-header-gjs a:hover { opacity: 0.7; }
+  #site-header-gjs a:hover { opacity: 0.85; }
   #site-header-gjs a.nav-active { font-weight: 700; opacity: 1; }
 `;
 

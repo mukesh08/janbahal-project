@@ -61,7 +61,7 @@ const PublicViewer = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="public-site" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <SiteHeader editHref={`/admin/editor/${page._id}`} editLabel="Edit Page" />
       <RenderedPage html={page.gjsHtml} style={{ flex: 1 }} />
       <SiteFooter />

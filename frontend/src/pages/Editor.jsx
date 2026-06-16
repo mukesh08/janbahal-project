@@ -42,7 +42,7 @@ const BLOCKS = [
     content: { type: 'image' }, activate: true },
   { id: 'button', category: 'Content',
     label: `<div class="blk-wrap"><span class="blk-ico">▶</span><span>Button</span></div>`,
-    content: `<a href="#" style="display:inline-block;padding:12px 28px;background:#4f46e5;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:1rem;">Click Me</a>` },
+    content: `<a href="#" class="fx-btn" style="display:inline-block;padding:12px 28px;background:#4f46e5;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:1rem;">Click Me</a>` },
   { id: 'list', category: 'Content',
     label: `<div class="blk-wrap"><span class="blk-ico">≡</span><span>List</span></div>`,
     content: `<ul style="padding-left:1.5rem;line-height:2;color:#334155;margin:0;"><li>First item</li><li>Second item</li><li>Third item</li></ul>` },
@@ -54,13 +54,13 @@ const BLOCKS = [
     content: `<div style="height:60px;width:100%;"></div>` },
   { id: 'hero', category: 'Sections',
     label: `<div class="blk-wrap"><span class="blk-ico">★</span><span>Hero</span></div>`,
-    content: `<section style="padding:80px 40px;text-align:center;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;"><h1 style="font-size:3rem;font-weight:800;margin:0 0 1rem;">Welcome to Our Site</h1><p style="font-size:1.2rem;margin:0 auto 2rem;max-width:600px;opacity:0.9;">A short description of your product.</p><a href="#" style="display:inline-block;padding:14px 32px;background:#fff;color:#4f46e5;border-radius:8px;text-decoration:none;font-weight:700;">Get Started</a></section>` },
+    content: `<section style="padding:80px 40px;text-align:center;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;"><h1 style="font-size:3rem;font-weight:800;margin:0 0 1rem;">Welcome to Our Site</h1><p style="font-size:1.2rem;margin:0 auto 2rem;max-width:600px;opacity:0.9;">A short description of your product.</p><a href="#" class="fx-btn" style="display:inline-block;padding:14px 32px;background:#fff;color:#4f46e5;border-radius:8px;text-decoration:none;font-weight:700;">Get Started</a></section>` },
   { id: 'features', category: 'Sections',
     label: `<div class="blk-wrap"><span class="blk-ico">⊞</span><span>Features</span></div>`,
     content: `<section style="padding:60px 40px;background:#f8fafc;"><h2 style="text-align:center;font-size:2rem;font-weight:800;color:#0f172a;margin:0 0 2.5rem;">Our Features</h2><div style="display:flex;gap:24px;flex-wrap:wrap;max-width:1100px;margin:0 auto;"><div style="flex:1;min-width:200px;background:#fff;border-radius:12px;padding:24px;text-align:center;border:1px solid #e2e8f0;"><div style="font-size:2rem;margin-bottom:12px;">⚡</div><h3 style="font-size:1.1rem;font-weight:700;margin:0 0 8px;color:#1e293b;">Feature One</h3><p style="color:#64748b;font-size:0.9rem;margin:0;">Describe your first feature here.</p></div><div style="flex:1;min-width:200px;background:#fff;border-radius:12px;padding:24px;text-align:center;border:1px solid #e2e8f0;"><div style="font-size:2rem;margin-bottom:12px;">🔒</div><h3 style="font-size:1.1rem;font-weight:700;margin:0 0 8px;color:#1e293b;">Feature Two</h3><p style="color:#64748b;font-size:0.9rem;margin:0;">Describe your second feature here.</p></div></div></section>` },
   { id: 'cta', category: 'Sections',
     label: `<div class="blk-wrap"><span class="blk-ico">📢</span><span>CTA</span></div>`,
-    content: `<section style="padding:60px 40px;text-align:center;background:#1e293b;color:#fff;"><h2 style="font-size:2rem;font-weight:800;margin:0 0 1rem;">Ready to get started?</h2><p style="margin:0 0 2rem;opacity:0.75;font-size:1.05rem;">Join thousands of users today.</p><a href="#" style="display:inline-block;padding:14px 32px;background:#4f46e5;color:#fff;border-radius:8px;text-decoration:none;font-weight:700;">Start Now</a></section>` },
+    content: `<section style="padding:60px 40px;text-align:center;background:#1e293b;color:#fff;"><h2 style="font-size:2rem;font-weight:800;margin:0 0 1rem;">Ready to get started?</h2><p style="margin:0 0 2rem;opacity:0.75;font-size:1.05rem;">Join thousands of users today.</p><a href="#" class="fx-btn" style="display:inline-block;padding:14px 32px;background:#4f46e5;color:#fff;border-radius:8px;text-decoration:none;font-weight:700;">Start Now</a></section>` },
 ];
 
 /* ─── Style sectors — use { value, name } for GrapesJS 0.21+ ─ */

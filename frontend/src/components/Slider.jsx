@@ -88,7 +88,7 @@ const Slider = ({ sliderId }) => {
             {slide.heading && <h2 style={s.heading}>{slide.heading}</h2>}
             {slide.subtext && <p style={s.subtext}>{slide.subtext}</p>}
             {slide.buttonLabel && slide.buttonUrl && (
-              <button style={s.cta} onClick={() => handleButton(slide)}>
+              <button className="fx-btn" style={s.cta} onClick={() => handleButton(slide)}>
                 {slide.buttonLabel}
               </button>
             )}

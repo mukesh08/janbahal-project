@@ -43,7 +43,7 @@ const Landing = () => {
   // If a custom home page is set, render it
   if (homePage?.gjsHtml) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className="public-site" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <SiteHeader editHref={`/admin/editor/${homePage._id}`} editLabel="Edit Page" />
         <RenderedPage html={homePage.gjsHtml} style={{ flex: 1 }} />
         <SiteFooter />
@@ -52,7 +52,7 @@ const Landing = () => {
   }
 
   return (
-    <div style={s.root}>
+    <div className="public-site" style={s.root}>
 
       <SiteHeader editHref="/admin/pages" editLabel="Edit Pages" />
 

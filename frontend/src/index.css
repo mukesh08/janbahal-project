@@ -72,6 +72,70 @@ button, input, select, textarea {
 .blog-content code { padding: 2px 6px; }
 .blog-content hr { border: none; border-top: 1px solid #e2e8f0; margin: 2rem 0; }
 
+/* ── Public site hover effects (scoped to .public-site so admin UI is untouched) ── */
+
+/* Buttons: lift + soft shadow + a diagonal shine sweep on hover.
+   Opt-in via the .fx-btn class (added to real buttons/CTAs), plus any inline-styled
+   button (anchor with a background) so freshly-dropped editor buttons get it too.
+   Using a class avoids hitting the slider's own arrow/dot <button> controls. */
+.public-site .fx-btn,
+.public-site a[style*="background"] {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease, filter 0.3s ease;
+}
+.public-site .fx-btn::after,
+.public-site a[style*="background"]::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%);
+  transform: translateX(-220%) skewX(-20deg);
+  transition: transform 0.65s ease;
+  pointer-events: none;
+}
+.public-site .fx-btn:hover,
+.public-site a[style*="background"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+  filter: brightness(1.06);
+}
+.public-site .fx-btn:hover::after,
+.public-site a[style*="background"]:hover::after {
+  transform: translateX(320%) skewX(-20deg);
+}
+.public-site .fx-btn:active,
+.public-site a[style*="background"]:active {
+  transform: translateY(-1px);
+}
+
+/* Text links: underline border that grows in from the left on hover.
+   The header's own nav rule (#site-header-gjs a) wins by specificity, so the
+   header keeps its dedicated animation; this covers content/footer links.
+   Excludes buttons (.fx-btn / inline-background anchors). */
+.public-site a:not(.fx-btn):not([style*="background"]) {
+  position: relative;
+}
+.public-site a:not(.fx-btn):not([style*="background"])::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: width 0.28s ease;
+}
+.public-site a:not(.fx-btn):not([style*="background"]):hover::after {
+  width: 100%;
+}
+
 /* ── Page transition ── */
 .page-enter {
   animation: pageFadeIn 0.3s ease both;
