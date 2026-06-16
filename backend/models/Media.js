@@ -7,6 +7,8 @@ const mediaSchema = new mongoose.Schema(
     mimetype:     { type: String, required: true },
     size:         { type: Number, required: true },
     url:          { type: String, required: true },
+    driveFileId:  { type: String, default: '' },   // Google Drive backup file id
+    driveLink:    { type: String, default: '' },   // Google Drive shareable link
     uploadedBy:   { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }
