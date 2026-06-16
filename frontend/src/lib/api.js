@@ -3,11 +3,16 @@ const api = {
   defaults: { headers: { common: {} } },
 
   async _request(method, url, data, config = {}) {
+    // File uploads send a FormData body — it must NOT be JSON-stringified, and the
+    // browser must set its own multipart Content-Type (with boundary) for multer to parse it.
+    const isFormData = typeof FormData !== 'undefined' && data instanceof FormData;
     const headers = {
-      'Content-Type': 'application/json',
+      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       ...api.defaults.headers.common,
       ...(config.headers || {}),
     };
+    // Never send an explicit Content-Type for multipart — the boundary is added by fetch.
+    if (isFormData) delete headers['Content-Type'];
     if (config.params) {
       const qs = new URLSearchParams(
         Object.entries(config.params).filter(([, v]) => v !== undefined && v !== null)
@@ -17,7 +22,7 @@ const api = {
     const res = await fetch(url, {
       method,
       headers,
-      body: data !== undefined ? JSON.stringify(data) : undefined,
+      body: data !== undefined ? (isFormData ? data : JSON.stringify(data)) : undefined,
     });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) {
