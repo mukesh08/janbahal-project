@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const slideSchema = new mongoose.Schema(
   {
+    slider:       { type: mongoose.Schema.Types.ObjectId, ref: 'Slider', index: true },
     image:        { type: String, default: '' },
     heading:      { type: String, default: '', trim: true },
     subtext:      { type: String, default: '', trim: true },

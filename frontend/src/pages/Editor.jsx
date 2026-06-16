@@ -481,11 +481,14 @@ const Editor = () => {
   useEffect(() => {
     if (!page || gjsRef.current) return;
 
-    axios.get('/api/upload')
-      .then(({ data }) => init(data.filter(f => f.mimetype?.startsWith('image/'))))
-      .catch(() => init([]));
+    Promise.all([
+      axios.get('/api/upload').then(r => r.data).catch(() => []),
+      axios.get('/api/slides/sliders').then(r => r.data).catch(() => []),
+    ]).then(([uploadsData, slidersData]) =>
+      init((uploadsData || []).filter(f => f.mimetype?.startsWith('image/')), slidersData || [])
+    );
 
-    function init(uploads) {
+    function init(uploads, sliders) {
       // Clear mount targets so GrapesJS doesn't double-append on StrictMode re-mount
       ['gjs-blocks', 'gjs-styles', 'gjs-layers', 'gjs-traits'].forEach(id => {
         const el = document.getElementById(id);
@@ -564,6 +567,50 @@ const Editor = () => {
           styles: ['https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'],
           scripts: [],
         },
+      });
+
+      /* ── Slider embed: a drag-drop block that references a named slider ──
+         Exports as <div data-slider="ID"></div>; the public site mounts the live
+         <Slider/> into it. In the editor it shows a labelled placeholder, and the
+         "Attrs" tab has a dropdown to pick which slider to display. */
+      const sliderOptions = (sliders || []).map(sl => ({ id: sl._id, name: sl.name }));
+      const placeholderHtml = (label) =>
+        `<div style="pointer-events:none;width:100%;min-height:200px;display:flex;align-items:center;justify-content:center;` +
+        `background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:2px dashed #c7d2fe;color:#4f46e5;` +
+        `font-family:'Poppins',sans-serif;font-weight:600;font-size:1rem;border-radius:8px;">🎞 Slider: ${label}</div>`;
+
+      editor.DomComponents.addType('slider-embed', {
+        isComponent: (el) =>
+          (el.nodeType === 1 && el.hasAttribute && el.hasAttribute('data-slider'))
+            ? { type: 'slider-embed' } : undefined,
+        model: {
+          defaults: {
+            name: 'Slider',
+            droppable: false,
+            editable: false,
+            attributes: { 'data-slider': '' },
+            traits: [{
+              type: 'select',
+              name: 'data-slider',
+              label: 'Slider',
+              options: sliderOptions.length ? sliderOptions : [{ id: '', name: 'No sliders — create one in admin' }],
+            }],
+          },
+        },
+        view: {
+          init() { this.listenTo(this.model, 'change:attributes:data-slider', this.render); },
+          onRender() {
+            const id = this.model.getAttributes()['data-slider'];
+            const found = (sliders || []).find(sl => sl._id === id);
+            this.el.innerHTML = placeholderHtml(found ? found.name : 'select one in the Attrs tab →');
+          },
+        },
+      });
+
+      editor.BlockManager.add('slider-embed', {
+        label: `<div class="blk-wrap"><span class="blk-ico">🎞</span><span>Slider</span></div>`,
+        category: 'Sections',
+        content: { type: 'slider-embed' },
       });
 
       /* Load saved content — prefer gjsComponents (native GrapesJS format, syncs style manager)
