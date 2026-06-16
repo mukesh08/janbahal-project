@@ -77,10 +77,10 @@ const SECTORS = [
         ] },
       { name: 'Margin', property: 'margin', type: 'composite', detached: true,
         properties: [
-          { name: 'Top',    property: 'margin-top',    type: 'integer', units: ['px','%','em','rem'], defaults: '0' },
-          { name: 'Right',  property: 'margin-right',  type: 'integer', units: ['px','%','em','rem'], defaults: '0' },
-          { name: 'Bottom', property: 'margin-bottom', type: 'integer', units: ['px','%','em','rem'], defaults: '0' },
-          { name: 'Left',   property: 'margin-left',   type: 'integer', units: ['px','%','em','rem'], defaults: '0' },
+          { name: 'Top',    property: 'margin-top',    type: 'integer', units: ['px','%','em','rem','auto'], defaults: '0' },
+          { name: 'Right',  property: 'margin-right',  type: 'integer', units: ['px','%','em','rem','auto'], defaults: '0' },
+          { name: 'Bottom', property: 'margin-bottom', type: 'integer', units: ['px','%','em','rem','auto'], defaults: '0' },
+          { name: 'Left',   property: 'margin-left',   type: 'integer', units: ['px','%','em','rem','auto'], defaults: '0' },
         ] },
     ],
   },
@@ -91,6 +91,12 @@ const SECTORS = [
       { name: 'Height',     property: 'height',     type: 'integer', units: ['px','%','vh','auto'] },
       { name: 'Min Height', property: 'min-height', type: 'integer', units: ['px','%','vh'] },
       { name: 'Max Width',  property: 'max-width',  type: 'integer', units: ['px','%'] },
+      { name: 'Object Fit', property: 'object-fit', type: 'select',
+        options: [
+          { value: 'fill',    name: 'Fill'    }, { value: 'cover',   name: 'Cover'   },
+          { value: 'contain', name: 'Contain' }, { value: 'none',    name: 'None'    },
+          { value: 'scale-down', name: 'Scale Down' },
+        ] },
     ],
   },
   {
@@ -319,6 +325,8 @@ const SECTORS = [
     properties: [
       { name: 'Display', property: 'display', type: 'select',
         options: [{ value: 'block', name: 'Block' }, { value: 'flex', name: 'Flex' }, { value: 'grid', name: 'Grid' }, { value: 'inline-block', name: 'Inline Block' }, { value: 'none', name: 'None' }] },
+      { name: 'Float (align image)', property: 'float', type: 'select',
+        options: [{ value: 'none', name: 'None' }, { value: 'left', name: '← Left' }, { value: 'right', name: 'Right →' }] },
       { name: 'Flex Direction', property: 'flex-direction', type: 'select',
         options: [{ value: 'row', name: 'Row →' }, { value: 'column', name: 'Column ↓' }, { value: 'row-reverse', name: 'Row ←' }, { value: 'column-reverse', name: 'Column ↑' }] },
       { name: 'Align Items', property: 'align-items', type: 'select',
@@ -486,6 +494,32 @@ const Editor = () => {
 
       const assets = uploads.map(f => ({ src: f.url, name: f.originalName, type: 'image' }));
 
+      /* Custom uploader: our /api/upload needs the Bearer header (added by the axios
+         wrapper) and returns an array of media docs — neither of which GrapesJS's
+         built-in uploader handles. We post the files ourselves and add the results
+         to the Asset Manager so they appear immediately and are selectable. */
+      const uploadAssets = async (ev) => {
+        const files = ev?.dataTransfer ? ev.dataTransfer.files : ev?.target?.files;
+        if (!files || !files.length) return;
+        const form = new FormData();
+        Array.from(files).forEach(f => form.append('files', f));
+        try {
+          const { data } = await axios.post('/api/upload', form);
+          const am = editor.AssetManager;
+          const urls = [];
+          (data || []).forEach(f => { am.add({ src: f.url, name: f.originalName, type: 'image' }); urls.push(f.url); });
+          // Apply the freshly uploaded image straight onto the selected image and
+          // close the picker — no extra "select" click needed.
+          const sel = editor.getSelected();
+          if (urls[0] && sel && sel.get('type') === 'image') {
+            sel.set('src', urls[0]);
+            editor.Modal.close();
+          }
+        } catch (err) {
+          alert(err.response?.data?.message || 'Image upload failed');
+        }
+      };
+
       const editor = grapesjs.init({
         container:      document.getElementById('gjs-canvas'),
         height:         '100%',
@@ -502,7 +536,16 @@ const Editor = () => {
           ],
         },
 
-        assetManager: { assets, upload: false },
+        assetManager: {
+          assets,
+          upload:      '/api/upload',   // presence enables the upload/drop UI
+          uploadName:  'files',
+          multiUpload: true,
+          autoAdd:     true,
+          dropzone:    true,
+          uploadText:  'Drop images here or click to upload',
+          uploadFile:  uploadAssets,
+        },
 
         blockManager: {
           appendTo: document.getElementById('gjs-blocks'),
@@ -587,6 +630,22 @@ const Editor = () => {
           doc.head.appendChild(anim);
         }
       });
+
+      /* Right sidebar: apply Style-manager edits live, no Enter needed.
+         GrapesJS number/text inputs normally commit only on blur/Enter; we re-emit
+         a 'change' shortly after typing pauses so edits apply automatically.
+         (Selects, radios, sliders and colors already update live.) */
+      const stylesEl = document.getElementById('gjs-styles');
+      if (stylesEl && !stylesEl._liveBound) {
+        stylesEl._liveBound = true;
+        let liveT;
+        stylesEl.addEventListener('input', (e) => {
+          const el = e.target;
+          if (!el || el.tagName !== 'INPUT' || el.type === 'color') return;
+          clearTimeout(liveT);
+          liveT = setTimeout(() => el.dispatchEvent(new Event('change', { bubbles: true })), 300);
+        });
+      }
 
       gjsRef.current = editor;
     }
