@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
-import { Loader2, Pencil, FileText, ArrowDown, Rocket, Trash2 } from 'lucide-react';
+import { Loader2, Pencil, FileText, ArrowDown, Rocket, Trash2, Search, X } from 'lucide-react';
 
 const STATUS_COLORS = {
   published: { bg: '#dcfce7', color: '#16a34a', border: '#bbf7d0' },
@@ -13,6 +13,8 @@ const PostsManager = () => {
   const navigate = useNavigate();
   const [posts,   setPosts]   = useState([]);
   const [filter,  setFilter]  = useState('all');   // all | published | draft
+  const [search,  setSearch]  = useState('');
+  const [category, setCategory] = useState('all'); // all | <category name>
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(null);
 
@@ -52,8 +54,9 @@ const PostsManager = () => {
     draft:     posts.filter(p => p.status === 'draft').length,
   };
 
-  /* Re-fetch totals without filter for the stat chips */
+  /* Re-fetch totals without filter for the stat chips + category list */
   const [totals, setTotals] = useState({ all: 0, published: 0, draft: 0 });
+  const [categories, setCategories] = useState([]);
   useEffect(() => {
     axios.get('/api/posts/all').then(({ data }) => {
       setTotals({
@@ -61,8 +64,21 @@ const PostsManager = () => {
         published: data.filter(p => p.status === 'published').length,
         draft:     data.filter(p => p.status === 'draft').length,
       });
+      setCategories([...new Set(data.map(p => p.category).filter(Boolean))].sort());
     }).catch(() => {});
   }, [posts]);
+
+  /* Apply search + category filters on top of the fetched (status-filtered) posts */
+  const visiblePosts = posts.filter(p => {
+    if (category !== 'all' && p.category !== category) return false;
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      const hay = `${p.title || ''} ${p.excerpt || ''} ${(p.tags || []).join(' ')}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  const isFiltering = search.trim() !== '' || category !== 'all';
 
   return (
     <AdminLayout>
@@ -95,6 +111,37 @@ const PostsManager = () => {
           ))}
         </div>
 
+        {/* ── Search + category filter ── */}
+        <div style={s.filterRow}>
+          <div style={s.searchWrap}>
+            <Search size={16} strokeWidth={1.8} color="#94a3b8" style={s.searchIcon} />
+            <input
+              style={s.searchInput}
+              type="text"
+              placeholder="Search by title, excerpt or tag…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+            {search && (
+              <button style={s.clearBtn} onClick={() => setSearch('')} aria-label="Clear search">
+                <X size={15} strokeWidth={2} />
+              </button>
+            )}
+          </div>
+          <select style={s.select} value={category} onChange={e => setCategory(e.target.value)}>
+            <option value="all">All categories</option>
+            {categories.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          {isFiltering && (
+            <button
+              style={s.resetBtn}
+              onClick={() => { setSearch(''); setCategory('all'); }}
+            >
+              Reset filters
+            </button>
+          )}
+        </div>
+
         {/* ── Posts list ── */}
         {loading ? (
           <div style={s.emptyBox}>
@@ -108,9 +155,16 @@ const PostsManager = () => {
             <p style={s.emptyTxt}>Click "＋ New Post" to write your first blog post.</p>
             <button style={s.newBtn} onClick={() => navigate('/admin/posts/new')}>＋ New Post</button>
           </div>
+        ) : visiblePosts.length === 0 ? (
+          <div style={s.emptyBox}>
+            <span style={s.emptyIcon}><Search size={48} strokeWidth={1.8} /></span>
+            <p style={s.emptyLabel}>No matching posts</p>
+            <p style={s.emptyTxt}>No posts match your current search or category filter.</p>
+            <button style={s.editBtn} onClick={() => { setSearch(''); setCategory('all'); }}>Reset filters</button>
+          </div>
         ) : (
           <div style={s.list}>
-            {posts.map(post => {
+            {visiblePosts.map(post => {
               const sc = STATUS_COLORS[post.status] || STATUS_COLORS.draft;
               return (
                 <div key={post._id} style={s.card}>
@@ -208,6 +262,30 @@ const s = {
     background: '#f1f5f9', color: '#64748b', borderRadius: '20px', fontSize: '0.72rem', fontWeight: '600',
   },
   tabBadgeActive: { background: '#eef2ff', color: '#4f46e5' },
+
+  /* Filter row */
+  filterRow: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.25rem', flexWrap: 'wrap' },
+  searchWrap: { position: 'relative', flex: 1, minWidth: '220px', display: 'flex', alignItems: 'center' },
+  searchIcon: { position: 'absolute', left: '12px', pointerEvents: 'none' },
+  searchInput: {
+    width: '100%', padding: '9px 34px 9px 36px', borderRadius: '8px',
+    border: '1px solid #e2e8f0', background: '#fff', fontSize: '0.85rem',
+    color: '#1e293b', fontFamily: "'Poppins', sans-serif", outline: 'none', boxSizing: 'border-box',
+  },
+  clearBtn: {
+    position: 'absolute', right: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: 'transparent', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: '2px',
+  },
+  select: {
+    padding: '9px 12px', borderRadius: '8px', border: '1px solid #e2e8f0',
+    background: '#fff', fontSize: '0.85rem', color: '#1e293b',
+    fontFamily: "'Poppins', sans-serif", cursor: 'pointer', outline: 'none', minWidth: '160px',
+  },
+  resetBtn: {
+    padding: '9px 14px', background: '#f8fafc', color: '#64748b',
+    border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer',
+    fontSize: '0.82rem', fontWeight: '600', fontFamily: "'Poppins', sans-serif", whiteSpace: 'nowrap',
+  },
 
   /* Empty */
   emptyBox: {
