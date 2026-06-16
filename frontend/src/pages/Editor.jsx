@@ -574,6 +574,12 @@ const Editor = () => {
          <Slider/> into it. In the editor it shows a labelled placeholder, and the
          "Attrs" tab has a dropdown to pick which slider to display. */
       const sliderOptions = (sliders || []).map(sl => ({ id: sl._id, name: sl.name }));
+      // Lead with an empty placeholder so the select's empty state maps to a real
+      // option — otherwise the browser shows the first slider while the value stays
+      // blank, and picking that already-shown option fires no change event.
+      const sliderTraitOptions = sliderOptions.length
+        ? [{ id: '', name: '— Select a slider —' }, ...sliderOptions]
+        : [{ id: '', name: 'No sliders — create one in admin first' }];
       const placeholderHtml = (label) =>
         `<div style="pointer-events:none;width:100%;min-height:200px;display:flex;align-items:center;justify-content:center;` +
         `background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:2px dashed #c7d2fe;color:#4f46e5;` +
@@ -593,7 +599,7 @@ const Editor = () => {
               type: 'select',
               name: 'data-slider',
               label: 'Slider',
-              options: sliderOptions.length ? sliderOptions : [{ id: '', name: 'No sliders — create one in admin' }],
+              options: sliderTraitOptions,
             }],
           },
         },
