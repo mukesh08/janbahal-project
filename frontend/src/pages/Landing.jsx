@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import SiteHeader from '../components/SiteHeader';
 import SiteFooter from '../components/SiteFooter';
+import Slider from '../components/Slider';
 
 const stripBody = (html) => {
   if (!html) return '';
@@ -50,6 +51,7 @@ const Landing = () => {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <SiteHeader editHref={`/admin/editor/${homePage._id}`} editLabel="Edit Page" />
+        <Slider />
         <div dangerouslySetInnerHTML={{ __html: stripBody(homePage.gjsHtml) }} style={{ flex: 1 }} />
         <SiteFooter />
       </div>
@@ -60,6 +62,9 @@ const Landing = () => {
     <div style={s.root}>
 
       <SiteHeader editHref="/admin/pages" editLabel="Edit Pages" />
+
+      {/* ── SLIDER (renders only when slides exist) ── */}
+      <Slider />
 
       {/* ── HERO ── */}
       <section style={s.hero}>

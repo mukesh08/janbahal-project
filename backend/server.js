@@ -21,6 +21,7 @@ const uploadRoutes   = require('./routes/uploadRoutes');
 const postRoutes     = require('./routes/postRoutes');
 const headerRoutes   = require('./routes/headerRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
+const sliderRoutes   = require('./routes/sliderRoutes');
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use('/api/upload',   uploadRoutes);
 app.use('/api/posts',    postRoutes);
 app.use('/api/header',   headerRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/slides',   sliderRoutes);
 
 app.use((req, res) => res.status(404).json({ message: `Route ${req.originalUrl} not found` }));
 

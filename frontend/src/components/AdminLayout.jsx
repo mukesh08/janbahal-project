@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, FileText, Palette, Monitor,
   Menu, PanelBottom, BookOpen, PenLine, Upload,
-  Users, UserCircle,
+  Users, UserCircle, GalleryHorizontal,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { to: '/admin/pages',     Icon: FileText,        label: 'Pages'     },
   { to: '/admin/customize', Icon: Palette,         label: 'Customize' },
   { to: '/admin/header',    Icon: Monitor,         label: 'Header'    },
+  { to: '/admin/slider',    Icon: GalleryHorizontal, label: 'Slider'  },
   { to: '/admin/menu',      Icon: Menu,            label: 'Menu'      },
   { to: '/admin/footer',    Icon: PanelBottom,     label: 'Footer'    },
   { to: '/admin/blog',      Icon: BookOpen,        label: 'Blog'      },

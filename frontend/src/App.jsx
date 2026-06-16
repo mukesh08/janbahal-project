@@ -17,6 +17,7 @@ import BlogManager    from './pages/admin/BlogManager';
 import PostsManager   from './pages/admin/PostsManager';
 import PostEditor     from './pages/admin/PostEditor';
 import HeaderManager   from './pages/admin/HeaderManager';
+import SliderManager   from './pages/admin/SliderManager';
 import CustomizeManager from './pages/admin/CustomizeManager';
 import UploadManager  from './pages/admin/UploadManager';
 import UsersManager    from './pages/admin/UsersManager';
@@ -48,6 +49,7 @@ function App() {
           <Route path="/admin/footer"        element={<Guard><FooterManager /></Guard>} />
           <Route path="/admin/customize"         element={<Guard><CustomizeManager /></Guard>} />
           <Route path="/admin/header"            element={<Guard><HeaderManager /></Guard>} />
+          <Route path="/admin/slider"            element={<Guard><SliderManager /></Guard>} />
           <Route path="/admin/blog"              element={<Guard><BlogManager /></Guard>} />
           <Route path="/admin/posts"           element={<Guard><PostsManager /></Guard>} />
           <Route path="/admin/posts/new"       element={<Guard><PostEditor /></Guard>} />
