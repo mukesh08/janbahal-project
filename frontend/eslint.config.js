@@ -17,5 +17,11 @@ export default defineConfig([
       globals: globals.browser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
+    rules: {
+      // We intentionally fetch data and setState inside effects (load-on-mount,
+      // re-fetch on filter change). This rule from react-hooks v7 is too strict
+      // for that legitimate pattern, so disable it project-wide.
+      'react-hooks/set-state-in-effect': 'off',
+    },
   },
 ])

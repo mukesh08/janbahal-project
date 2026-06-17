@@ -2,16 +2,16 @@ import { useState } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
 import { useAuth } from '../../context/AuthContext';
-import { UserCircle, Eye, EyeOff } from 'lucide-react';
+import PasswordInput from '../../components/ui/PasswordInput';
+import Alert from '../../components/ui/Alert';
+import PageHeader from '../../components/ui/PageHeader';
+import { UserCircle } from 'lucide-react';
 
 const AccountManager = () => {
-  const { user, login } = useAuth();
+  const { user } = useAuth();
 
   const [profile, setProfile]     = useState({ name: user?.name || '', email: user?.email || '' });
   const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
-  const [showCurrent, setShowCurrent] = useState(false);
-  const [showNew, setShowNew]         = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
 
   const [profileMsg, setProfileMsg]   = useState({ type: '', text: '' });
   const [passwordMsg, setPasswordMsg] = useState({ type: '', text: '' });
@@ -58,15 +58,11 @@ const AccountManager = () => {
       <div style={s.container}>
 
         {/* Page header */}
-        <div style={s.pageHeader}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={s.icon}><UserCircle size={20} strokeWidth={1.8} color="#4f46e5" /></div>
-            <div>
-              <h1 style={s.title}>My Account</h1>
-              <p style={s.sub}>Manage your profile and password</p>
-            </div>
-          </div>
-        </div>
+        <PageHeader
+          icon={<UserCircle size={20} strokeWidth={1.8} color="#4f46e5" />}
+          title="My Account"
+          subtitle="Manage your profile and password"
+        />
 
         <div style={s.grid}>
 
@@ -75,7 +71,7 @@ const AccountManager = () => {
             <h2 style={s.cardTitle}>Profile Information</h2>
 
             {profileMsg.text && (
-              <p style={profileMsg.type === 'success' ? s.success : s.error}>{profileMsg.text}</p>
+              <Alert type={profileMsg.type === 'success' ? 'success' : 'error'}>{profileMsg.text}</Alert>
             )}
 
             <form onSubmit={handleProfileSave} style={s.form}>
@@ -115,54 +111,33 @@ const AccountManager = () => {
             <h2 style={s.cardTitle}>Change Password</h2>
 
             {passwordMsg.text && (
-              <p style={passwordMsg.type === 'success' ? s.success : s.error}>{passwordMsg.text}</p>
+              <Alert type={passwordMsg.type === 'success' ? 'success' : 'error'}>{passwordMsg.text}</Alert>
             )}
 
             <form onSubmit={handlePasswordSave} style={s.form}>
               <label style={s.label}>Current Password</label>
-              <div style={s.pwWrap}>
-                <input
-                  style={{ ...s.input, paddingRight: '2.8rem', boxSizing: 'border-box', width: '100%' }}
-                  type={showCurrent ? 'text' : 'password'}
-                  placeholder="Current password"
-                  value={passwords.currentPassword}
-                  onChange={e => setPasswords({ ...passwords, currentPassword: e.target.value })}
-                  required
-                />
-                <button type="button" style={s.eyeBtn} onClick={() => setShowCurrent(!showCurrent)} tabIndex={-1}>
-                  {showCurrent ? <EyeOff size={16} color="#94a3b8" /> : <Eye size={16} color="#94a3b8" />}
-                </button>
-              </div>
+              <PasswordInput
+                placeholder="Current password"
+                value={passwords.currentPassword}
+                onChange={e => setPasswords({ ...passwords, currentPassword: e.target.value })}
+                required
+              />
 
               <label style={s.label}>New Password</label>
-              <div style={s.pwWrap}>
-                <input
-                  style={{ ...s.input, paddingRight: '2.8rem', boxSizing: 'border-box', width: '100%' }}
-                  type={showNew ? 'text' : 'password'}
-                  placeholder="New password"
-                  value={passwords.newPassword}
-                  onChange={e => setPasswords({ ...passwords, newPassword: e.target.value })}
-                  required
-                />
-                <button type="button" style={s.eyeBtn} onClick={() => setShowNew(!showNew)} tabIndex={-1}>
-                  {showNew ? <EyeOff size={16} color="#94a3b8" /> : <Eye size={16} color="#94a3b8" />}
-                </button>
-              </div>
+              <PasswordInput
+                placeholder="New password"
+                value={passwords.newPassword}
+                onChange={e => setPasswords({ ...passwords, newPassword: e.target.value })}
+                required
+              />
 
               <label style={s.label}>Confirm New Password</label>
-              <div style={s.pwWrap}>
-                <input
-                  style={{ ...s.input, paddingRight: '2.8rem', boxSizing: 'border-box', width: '100%' }}
-                  type={showConfirm ? 'text' : 'password'}
-                  placeholder="Confirm new password"
-                  value={passwords.confirmPassword}
-                  onChange={e => setPasswords({ ...passwords, confirmPassword: e.target.value })}
-                  required
-                />
-                <button type="button" style={s.eyeBtn} onClick={() => setShowConfirm(!showConfirm)} tabIndex={-1}>
-                  {showConfirm ? <EyeOff size={16} color="#94a3b8" /> : <Eye size={16} color="#94a3b8" />}
-                </button>
-              </div>
+              <PasswordInput
+                placeholder="Confirm new password"
+                value={passwords.confirmPassword}
+                onChange={e => setPasswords({ ...passwords, confirmPassword: e.target.value })}
+                required
+              />
 
               <button style={s.saveBtn} type="submit" disabled={saving}>
                 {saving ? 'Saving…' : 'Change Password'}
@@ -178,10 +153,6 @@ const AccountManager = () => {
 
 const s = {
   container: { padding: '2rem', fontFamily: "'Poppins', sans-serif", maxWidth: '1100px' },
-  pageHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' },
-  icon: { width: '44px', height: '44px', background: '#eef2ff', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  title: { fontSize: '1.5rem', fontWeight: '800', color: '#0f172a', margin: '0 0 2px' },
-  sub: { color: '#64748b', fontSize: '0.85rem', margin: 0 },
 
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1.5rem' },
   card: { background: '#fff', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.75rem', boxShadow: '0 1px 6px rgba(0,0,0,0.05)' },
@@ -193,12 +164,8 @@ const s = {
   form: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
   label: { fontSize: '0.78rem', fontWeight: '600', color: '#475569', marginTop: '0.5rem' },
   input: { padding: '0.65rem 0.9rem', fontSize: '0.9rem', border: '1px solid #e2e8f0', borderRadius: '8px', outline: 'none', fontFamily: "'Poppins', sans-serif", width: '100%', boxSizing: 'border-box' },
-  pwWrap: { position: 'relative', display: 'flex', alignItems: 'center' },
-  eyeBtn: { position: 'absolute', right: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' },
 
   saveBtn: { marginTop: '1rem', padding: '0.7rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '700', fontSize: '0.9rem', fontFamily: "'Poppins', sans-serif" },
-  error: { color: '#e53e3e', background: '#fff5f5', border: '1px solid #fecaca', padding: '0.6rem 0.9rem', borderRadius: '8px', fontSize: '0.85rem' },
-  success: { color: '#16a34a', background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '0.6rem 0.9rem', borderRadius: '8px', fontSize: '0.85rem' },
 };
 
 export default AccountManager;

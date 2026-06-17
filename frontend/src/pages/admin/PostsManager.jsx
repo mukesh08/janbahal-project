@@ -2,12 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import StatusBadge from '../../components/ui/StatusBadge';
+import FilterTabs from '../../components/ui/FilterTabs';
+import PageHeader from '../../components/ui/PageHeader';
 import { Loader2, Pencil, FileText, ArrowDown, Rocket, Trash2, Search, X } from 'lucide-react';
-
-const STATUS_COLORS = {
-  published: { bg: '#dcfce7', color: '#16a34a', border: '#bbf7d0' },
-  draft:     { bg: '#fef3c7', color: '#d97706', border: '#fde68a' },
-};
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -48,12 +46,6 @@ const PostsManager = () => {
     } catch { alert('Update failed'); }
   };
 
-  const stats = {
-    all:       posts.length + (filter !== 'all' ? 0 : 0),
-    published: posts.filter(p => p.status === 'published').length,
-    draft:     posts.filter(p => p.status === 'draft').length,
-  };
-
   /* Re-fetch totals without filter for the stat chips + category list */
   const [totals, setTotals] = useState({ all: 0, published: 0, draft: 0 });
   const [categories, setCategories] = useState([]);
@@ -85,31 +77,22 @@ const PostsManager = () => {
       <div style={s.container}>
 
         {/* ── Header ── */}
-        <div style={s.header}>
-          <div>
-            <h1 style={s.title}>Posts</h1>
-            <p style={s.sub}>Write and manage your blog posts</p>
-          </div>
-          <button style={s.newBtn} onClick={() => navigate('/admin/posts/new')}>
-            ＋ New Post
-          </button>
-        </div>
+        <PageHeader
+          title="Posts"
+          subtitle="Write and manage your blog posts"
+          actions={<button style={s.newBtn} onClick={() => navigate('/admin/posts/new')}>＋ New Post</button>}
+        />
 
         {/* ── Filter tabs ── */}
-        <div style={s.tabs}>
-          {[['all','All'], ['published','Published'], ['draft','Drafts']].map(([key, label]) => (
-            <button
-              key={key}
-              style={{ ...s.tab, ...(filter === key ? s.tabActive : {}) }}
-              onClick={() => setFilter(key)}
-            >
-              {label}
-              <span style={{ ...s.tabBadge, ...(filter === key ? s.tabBadgeActive : {}) }}>
-                {totals[key]}
-              </span>
-            </button>
-          ))}
-        </div>
+        <FilterTabs
+          active={filter}
+          onChange={setFilter}
+          tabs={[
+            { key: 'all', label: 'All', count: totals.all },
+            { key: 'published', label: 'Published', count: totals.published },
+            { key: 'draft', label: 'Drafts', count: totals.draft },
+          ]}
+        />
 
         {/* ── Search + category filter ── */}
         <div style={s.filterRow}>
@@ -165,7 +148,6 @@ const PostsManager = () => {
         ) : (
           <div style={s.list}>
             {visiblePosts.map(post => {
-              const sc = STATUS_COLORS[post.status] || STATUS_COLORS.draft;
               return (
                 <div key={post._id} style={s.card}>
 
@@ -178,12 +160,7 @@ const PostsManager = () => {
                   {/* Info */}
                   <div style={s.info}>
                     <div style={s.cardTop}>
-                      <span style={{ ...s.statusBadge, background: sc.bg, color: sc.color, border: `1px solid ${sc.border}` }}>
-                        {post.status === 'published'
-                        ? <><span style={{width:6,height:6,borderRadius:'50%',background:'#16a34a',display:'inline-block',marginRight:4}} />Published</>
-                        : <><span style={{width:6,height:6,borderRadius:'50%',background:'#d97706',display:'inline-block',marginRight:4}} />Draft</>
-                      }
-                      </span>
+                      <StatusBadge published={post.status === 'published'} />
                       <span style={s.category}>{post.category}</span>
                       {post.tags?.length > 0 && (
                         <span style={s.tags}>{post.tags.slice(0, 3).join(', ')}</span>
@@ -236,9 +213,6 @@ const PostsManager = () => {
 /* ── Styles ──────────────────────────────────────────────── */
 const s = {
   container: { padding: '2rem', fontFamily: "'Poppins', sans-serif" },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' },
-  title: { fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: '0 0 0.25rem' },
-  sub:   { color: '#64748b', fontSize: '0.9rem', margin: 0 },
   newBtn: {
     padding: '0.6rem 1.25rem', background: '#4f46e5', color: '#fff',
     border: 'none', borderRadius: '8px', cursor: 'pointer',
@@ -248,20 +222,6 @@ const s = {
 
   /* Tabs */
   tabs: { display: 'flex', gap: '4px', marginBottom: '1.25rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0' },
-  tab: {
-    display: 'flex', alignItems: 'center', gap: '6px',
-    padding: '8px 16px', background: 'transparent', border: 'none',
-    borderBottom: '2px solid transparent', cursor: 'pointer',
-    fontSize: '0.85rem', fontWeight: '500', color: '#64748b',
-    fontFamily: "'Poppins', sans-serif", marginBottom: '-1px', transition: 'all 0.15s',
-  },
-  tabActive: { color: '#4f46e5', borderBottomColor: '#4f46e5', fontWeight: '700' },
-  tabBadge: {
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-    minWidth: '20px', height: '20px', padding: '0 6px',
-    background: '#f1f5f9', color: '#64748b', borderRadius: '20px', fontSize: '0.72rem', fontWeight: '600',
-  },
-  tabBadgeActive: { background: '#eef2ff', color: '#4f46e5' },
 
   /* Filter row */
   filterRow: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.25rem', flexWrap: 'wrap' },
@@ -315,7 +275,6 @@ const s = {
 
   info: { flex: 1, minWidth: 0 },
   cardTop: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' },
-  statusBadge: { fontSize: '0.68rem', fontWeight: '700', padding: '2px 8px', borderRadius: '20px' },
   category: { fontSize: '0.72rem', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '20px' },
   tags: { fontSize: '0.7rem', color: '#94a3b8' },
 

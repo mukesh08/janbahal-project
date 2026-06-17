@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import PageHeader from '../../components/ui/PageHeader';
 import { Monitor, Pencil, RefreshCw } from 'lucide-react';
 
 const HeaderManager = () => {
@@ -36,22 +37,16 @@ const HeaderManager = () => {
       <div style={s.container}>
 
         {/* Page header */}
-        <div style={s.pageHeader}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={s.icon}><Monitor size={20} strokeWidth={1.8} color="#4f46e5" /></div>
-            <div>
-              <h1 style={s.title}>Header</h1>
-              <p style={s.sub}>Design your site-wide navigation header</p>
-            </div>
-          </div>
-          <button
-            style={s.editBtn}
-            onClick={() => page && navigate(`/admin/editor/${page._id}`)}
-            disabled={!page}
-          >
-            <Pencil size={14} strokeWidth={2} /> Open Visual Editor
-          </button>
-        </div>
+        <PageHeader
+          icon={<Monitor size={20} strokeWidth={1.8} color="#4f46e5" />}
+          title="Header"
+          subtitle="Design your site-wide navigation header"
+          actions={
+            <button style={s.editBtn} onClick={() => page && navigate(`/admin/editor/${page._id}`)} disabled={!page}>
+              <Pencil size={14} strokeWidth={2} /> Open Visual Editor
+            </button>
+          }
+        />
 
         {/* Preview card */}
         <div style={s.previewCard}>
@@ -95,10 +90,6 @@ const HeaderManager = () => {
 const s = {
   container: { padding: '2rem', fontFamily: "'Poppins', sans-serif", maxWidth: '1100px' },
 
-  pageHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' },
-  icon: { width: '44px', height: '44px', background: '#eef2ff', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  title: { fontSize: '1.5rem', fontWeight: '800', color: '#0f172a', margin: '0 0 2px' },
-  sub:   { color: '#64748b', fontSize: '0.85rem', margin: 0 },
 
   editBtn: { display: 'flex', alignItems: 'center', gap: '7px', padding: '0.65rem 1.4rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '700', fontSize: '0.88rem', fontFamily: "'Poppins', sans-serif", whiteSpace: 'nowrap' },
 

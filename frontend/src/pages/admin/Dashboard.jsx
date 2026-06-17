@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import StatusBadge from '../../components/ui/StatusBadge';
+import StatCard from '../../components/ui/StatCard';
+import PageHeader from '../../components/ui/PageHeader';
 import { FileText, Globe, Pencil, Newspaper, Plus, Palette, AlignJustify, Monitor, Upload, ArrowRight } from 'lucide-react';
 
 const Dashboard = () => {
@@ -79,35 +82,29 @@ const Dashboard = () => {
       <div style={s.container}>
 
         {/* Page header */}
-        <div style={s.pageHeader}>
-          <div>
-            <h1 style={s.title}>Dashboard</h1>
-            <p style={s.sub}>Welcome back — here's what's happening on your site</p>
-          </div>
-          <button style={{ ...s.newPageBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => navigate('/admin/pages')}>
-            <Plus size={14} strokeWidth={2} /> New Page
-          </button>
-        </div>
+        <PageHeader
+          title="Dashboard"
+          subtitle="Welcome back — here's what's happening on your site"
+          actions={
+            <button style={{ ...s.newPageBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => navigate('/admin/pages')}>
+              <Plus size={14} strokeWidth={2} /> New Page
+            </button>
+          }
+        />
 
         {/* Stat cards */}
         <div style={s.statsGrid}>
           {STAT_CARDS.map(card => (
-            <div
+            <StatCard
               key={card.label}
-              style={s.statCard}
+              icon={card.icon}
+              value={loading ? '—' : card.value}
+              label={card.label}
+              sub={loading ? '' : card.sub}
+              color={card.color}
+              bg={card.bg}
               onClick={() => navigate(card.href)}
-            >
-              <div style={{ ...s.statIcon, background: card.bg, color: card.color }}>
-                {card.icon}
-              </div>
-              <div style={s.statBody}>
-                <div style={{ ...s.statValue, color: card.color }}>
-                  {loading ? '—' : card.value}
-                </div>
-                <div style={s.statLabel}>{card.label}</div>
-                <div style={s.statSub}>{loading ? '' : card.sub}</div>
-              </div>
-            </div>
+            />
           ))}
         </div>
 
@@ -153,12 +150,7 @@ const Dashboard = () => {
                         <div style={s.recentRowSlug}>/{p.slug}</div>
                       </div>
                     </div>
-                    <span style={{
-                      ...s.badge,
-                      ...(p.published ? s.badgeGreen : s.badgeDim),
-                    }}>
-                      {p.published ? 'Published' : 'Draft'}
-                    </span>
+                    <StatusBadge published={p.published} />
                   </div>
                 ))}
               </div>
@@ -188,12 +180,7 @@ const Dashboard = () => {
                         <div style={s.recentRowSlug}>/blog/{p.slug}</div>
                       </div>
                     </div>
-                    <span style={{
-                      ...s.badge,
-                      ...(p.status === 'published' ? s.badgeGreen : s.badgeDim),
-                    }}>
-                      {p.status === 'published' ? 'Published' : 'Draft'}
-                    </span>
+                    <StatusBadge published={p.status === 'published'} />
                   </div>
                 ))}
               </div>
@@ -209,24 +196,10 @@ const Dashboard = () => {
 const s = {
   container: { padding: '2rem', fontFamily: "'Poppins', sans-serif" },
 
-  pageHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' },
-  title: { fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: '0 0 0.2rem' },
-  sub:   { color: '#64748b', fontSize: '0.88rem', margin: 0 },
   newPageBtn: { padding: '0.6rem 1.25rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.88rem', fontFamily: "'Poppins', sans-serif" },
 
   /* Stat cards */
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' },
-  statCard: {
-    background: '#fff', border: '1px solid #f1f5f9', borderRadius: '14px',
-    padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.05)', cursor: 'pointer',
-    transition: 'box-shadow 0.15s',
-  },
-  statIcon: { width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  statBody: { minWidth: 0 },
-  statValue: { fontSize: '1.8rem', fontWeight: '800', lineHeight: 1, marginBottom: '2px' },
-  statLabel: { fontSize: '0.8rem', fontWeight: '600', color: '#475569', marginBottom: '2px' },
-  statSub:   { fontSize: '0.7rem', color: '#94a3b8' },
 
   /* Quick actions */
   section: { marginBottom: '2rem' },
@@ -240,7 +213,6 @@ const s = {
     color: '#475569', fontFamily: "'Poppins', sans-serif",
     transition: 'border-color 0.15s, color 0.15s',
   },
-  actionIcon: { fontSize: '0.95rem' },
 
   /* Recent panels */
   recentGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' },
@@ -260,9 +232,6 @@ const s = {
   recentRowSlug:  { fontSize: '0.7rem', color: '#94a3b8', fontFamily: 'monospace', marginTop: '1px' },
   recentEmpty: { padding: '2rem', textAlign: 'center', color: '#b0bcc8', fontSize: '0.85rem' },
 
-  badge:      { fontSize: '0.65rem', fontWeight: '700', padding: '3px 8px', borderRadius: '20px', whiteSpace: 'nowrap', flexShrink: 0 },
-  badgeGreen: { background: '#dcfce7', color: '#16a34a' },
-  badgeDim:   { background: '#f1f5f9', color: '#94a3b8' },
 };
 
 export default Dashboard;

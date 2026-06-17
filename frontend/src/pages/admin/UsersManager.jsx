@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
-import { Users, Plus, Pencil, Trash2, X, Eye, EyeOff } from 'lucide-react';
+import { Users, Plus, Pencil, Trash2 } from 'lucide-react';
+import PasswordInput from '../../components/ui/PasswordInput';
+import Alert from '../../components/ui/Alert';
+import Modal from '../../components/ui/Modal';
+import ConfirmDialog from '../../components/ui/ConfirmDialog';
+import PageHeader from '../../components/ui/PageHeader';
 
 const ROLES = ['admin', 'viewer'];
 
@@ -13,7 +18,6 @@ const UsersManager = () => {
   const [modal, setModal]       = useState(null); // null | 'add' | 'edit'
   const [form, setForm]         = useState(emptyForm);
   const [editId, setEditId]     = useState(null);
-  const [showPass, setShowPass] = useState(false);
   const [saving, setSaving]     = useState(false);
   const [error, setError]       = useState('');
   const [deleteId, setDeleteId] = useState(null);
@@ -32,12 +36,12 @@ const UsersManager = () => {
   useEffect(() => { load(); }, []);
 
   const openAdd = () => {
-    setForm(emptyForm); setEditId(null); setError(''); setShowPass(false); setModal('add');
+    setForm(emptyForm); setEditId(null); setError(''); setModal('add');
   };
 
   const openEdit = (u) => {
     setForm({ name: u.name, email: u.email, password: '', role: u.role });
-    setEditId(u._id); setError(''); setShowPass(false); setModal('edit');
+    setEditId(u._id); setError(''); setModal('edit');
   };
 
   const closeModal = () => { setModal(null); setError(''); };
@@ -77,18 +81,12 @@ const UsersManager = () => {
       <div style={s.container}>
 
         {/* Header */}
-        <div style={s.pageHeader}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={s.icon}><Users size={20} strokeWidth={1.8} color="#4f46e5" /></div>
-            <div>
-              <h1 style={s.title}>Users</h1>
-              <p style={s.sub}>Manage admin accounts and roles</p>
-            </div>
-          </div>
-          <button style={s.addBtn} onClick={openAdd}>
-            <Plus size={15} strokeWidth={2.5} /> Add User
-          </button>
-        </div>
+        <PageHeader
+          icon={<Users size={20} strokeWidth={1.8} color="#4f46e5" />}
+          title="Users"
+          subtitle="Manage admin accounts and roles"
+          actions={<button style={s.addBtn} onClick={openAdd}><Plus size={15} strokeWidth={2.5} /> Add User</button>}
+        />
 
         {/* Table */}
         <div style={s.card}>
@@ -139,67 +137,48 @@ const UsersManager = () => {
 
         {/* Add / Edit Modal */}
         {modal && (
-          <div style={s.overlay}>
-            <div style={s.modal}>
-              <div style={s.modalHeader}>
-                <h3 style={s.modalTitle}>{modal === 'add' ? 'Add User' : 'Edit User'}</h3>
-                <button style={s.closeBtn} onClick={closeModal}><X size={18} /></button>
+          <Modal title={modal === 'add' ? 'Add User' : 'Edit User'} onClose={closeModal}>
+            {error && <Alert type="error" style={{ marginBottom: '0.5rem' }}>{error}</Alert>}
+
+            <form onSubmit={handleSave} style={s.form}>
+              <label style={s.label}>Full Name</label>
+              <input style={s.input} placeholder="Full Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
+
+              <label style={s.label}>Email</label>
+              <input style={s.input} type="email" placeholder="Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
+
+              <label style={s.label}>{modal === 'edit' ? 'New Password (leave blank to keep)' : 'Password'}</label>
+              <PasswordInput
+                style={{ marginBottom: 0 }}
+                placeholder={modal === 'edit' ? 'Leave blank to keep current' : 'Password'}
+                value={form.password}
+                onChange={e => setForm({ ...form, password: e.target.value })}
+                required={modal === 'add'}
+              />
+
+              <label style={s.label}>Role</label>
+              <select style={s.input} value={form.role} onChange={e => setForm({ ...form, role: e.target.value })}>
+                {ROLES.map(r => <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>)}
+              </select>
+
+              <div style={s.modalActions}>
+                <button type="button" style={s.cancelBtn} onClick={closeModal}>Cancel</button>
+                <button type="submit" style={s.saveBtn} disabled={saving}>
+                  {saving ? 'Saving…' : modal === 'add' ? 'Add User' : 'Save Changes'}
+                </button>
               </div>
-
-              {error && <p style={s.error}>{error}</p>}
-
-              <form onSubmit={handleSave} style={s.form}>
-                <label style={s.label}>Full Name</label>
-                <input style={s.input} placeholder="Full Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
-
-                <label style={s.label}>Email</label>
-                <input style={s.input} type="email" placeholder="Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
-
-                <label style={s.label}>{modal === 'edit' ? 'New Password (leave blank to keep)' : 'Password'}</label>
-                <div style={s.pwWrap}>
-                  <input
-                    style={{ ...s.input, marginBottom: 0, paddingRight: '2.8rem', width: '100%', boxSizing: 'border-box' }}
-                    type={showPass ? 'text' : 'password'}
-                    placeholder={modal === 'edit' ? 'Leave blank to keep current' : 'Password'}
-                    value={form.password}
-                    onChange={e => setForm({ ...form, password: e.target.value })}
-                    required={modal === 'add'}
-                  />
-                  <button type="button" style={s.eyeBtn} onClick={() => setShowPass(!showPass)} tabIndex={-1}>
-                    {showPass ? <EyeOff size={16} color="#94a3b8" /> : <Eye size={16} color="#94a3b8" />}
-                  </button>
-                </div>
-
-                <label style={s.label}>Role</label>
-                <select style={s.input} value={form.role} onChange={e => setForm({ ...form, role: e.target.value })}>
-                  {ROLES.map(r => <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>)}
-                </select>
-
-                <div style={s.modalActions}>
-                  <button type="button" style={s.cancelBtn} onClick={closeModal}>Cancel</button>
-                  <button type="submit" style={s.saveBtn} disabled={saving}>
-                    {saving ? 'Saving…' : modal === 'add' ? 'Add User' : 'Save Changes'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+            </form>
+          </Modal>
         )}
 
         {/* Delete Confirm */}
         {deleteId && (
-          <div style={s.overlay}>
-            <div style={{ ...s.modal, maxWidth: '380px' }}>
-              <h3 style={s.modalTitle}>Delete User?</h3>
-              <p style={{ color: '#64748b', margin: '0.5rem 0 1.5rem', fontSize: '0.9rem' }}>
-                This action cannot be undone.
-              </p>
-              <div style={s.modalActions}>
-                <button style={s.cancelBtn} onClick={() => setDeleteId(null)}>Cancel</button>
-                <button style={{ ...s.saveBtn, background: '#ef4444' }} onClick={handleDelete}>Delete</button>
-              </div>
-            </div>
-          </div>
+          <ConfirmDialog
+            title="Delete User?"
+            confirmLabel="Delete"
+            onConfirm={handleDelete}
+            onCancel={() => setDeleteId(null)}
+          />
         )}
 
       </div>
@@ -209,10 +188,6 @@ const UsersManager = () => {
 
 const s = {
   container: { padding: '2rem', fontFamily: "'Poppins', sans-serif", maxWidth: '1100px' },
-  pageHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' },
-  icon: { width: '44px', height: '44px', background: '#eef2ff', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  title: { fontSize: '1.5rem', fontWeight: '800', color: '#0f172a', margin: '0 0 2px' },
-  sub: { color: '#64748b', fontSize: '0.85rem', margin: 0 },
   addBtn: { display: 'flex', alignItems: 'center', gap: '7px', padding: '0.65rem 1.4rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '700', fontSize: '0.88rem', fontFamily: "'Poppins', sans-serif" },
 
   card: { background: '#fff', border: '1px solid #e2e8f0', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.05)' },
@@ -228,20 +203,12 @@ const s = {
   deleteBtn: { color: '#ef4444', borderColor: '#fecaca', background: '#fff5f5' },
   empty: { padding: '2rem', textAlign: 'center', color: '#94a3b8' },
 
-  overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
-  modal: { background: '#fff', borderRadius: '16px', padding: '1.75rem', width: '100%', maxWidth: '460px', boxShadow: '0 20px 60px rgba(0,0,0,0.15)' },
-  modalHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' },
-  modalTitle: { fontSize: '1.1rem', fontWeight: '700', color: '#0f172a', margin: 0 },
-  closeBtn: { background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', display: 'flex' },
   form: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
   label: { fontSize: '0.78rem', fontWeight: '600', color: '#475569', marginTop: '0.5rem' },
   input: { padding: '0.65rem 0.9rem', fontSize: '0.9rem', border: '1px solid #e2e8f0', borderRadius: '8px', outline: 'none', fontFamily: "'Poppins', sans-serif", width: '100%', boxSizing: 'border-box' },
-  pwWrap: { position: 'relative', display: 'flex', alignItems: 'center' },
-  eyeBtn: { position: 'absolute', right: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' },
   modalActions: { display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '1.25rem' },
   cancelBtn: { padding: '0.6rem 1.2rem', background: '#f1f5f9', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.88rem', fontFamily: "'Poppins', sans-serif", color: '#475569' },
   saveBtn: { padding: '0.6rem 1.4rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '700', fontSize: '0.88rem', fontFamily: "'Poppins', sans-serif" },
-  error: { color: '#e53e3e', background: '#fff5f5', border: '1px solid #fecaca', padding: '0.6rem 0.9rem', borderRadius: '8px', fontSize: '0.85rem', marginBottom: '0.5rem' },
 };
 
 export default UsersManager;

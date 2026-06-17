@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import ImagePicker from '../../components/ui/ImagePicker';
+import Alert from '../../components/ui/Alert';
+import PageHeader from '../../components/ui/PageHeader';
 import {
   Image as ImageIcon, Pencil, Trash2, ChevronUp, ChevronDown,
   Eye, EyeOff, X, FolderOpen, GalleryHorizontal,
@@ -45,6 +48,8 @@ const SliderManager = () => {
       .catch(() => {});
   }, []);
 
+  const resetForm = () => { setForm(EMPTY); setEditId(null); setSlideErr(''); };
+
   /* ── load slides whenever active slider changes ── */
   useEffect(() => {
     if (!activeSlider) { setSlides([]); return; }
@@ -56,7 +61,6 @@ const SliderManager = () => {
     resetForm();
   }, [activeSlider]);
 
-  const resetForm = () => { setForm(EMPTY); setEditId(null); setSlideErr(''); };
   const bumpCount = (id, delta) => setSliders(ss => ss.map(s => s._id === id ? { ...s, slideCount: (s.slideCount || 0) + delta } : s));
 
   /* ── slider CRUD ── */
@@ -165,12 +169,10 @@ const SliderManager = () => {
     <AdminLayout>
       <div style={s.container}>
 
-        <div style={s.pageHeader}>
-          <div>
-            <h1 style={s.title}>Sliders</h1>
-            <p style={s.sub}>Create named sliders, add slides, then drop them into pages from the editor</p>
-          </div>
-        </div>
+        <PageHeader
+          title="Sliders"
+          subtitle="Create named sliders, add slides, then drop them into pages from the editor"
+        />
 
         <div style={s.layout}>
 
@@ -207,7 +209,7 @@ const SliderManager = () => {
 
             <form onSubmit={handleCreateSlider} style={s.createForm}>
               <div style={s.sideTitle}>New Slider</div>
-              {sliderErr && <p style={s.error}>{sliderErr}</p>}
+              {sliderErr && <Alert type="error" style={{ marginBottom: '0.75rem' }}>{sliderErr}</Alert>}
               <input style={s.input} placeholder="e.g. Homepage Hero" value={newName} onChange={e => setNewName(e.target.value)} />
               <button style={s.createBtn} type="submit" disabled={creating || !newName.trim()}>
                 {creating ? 'Creating…' : '＋ Create Slider'}
@@ -248,7 +250,7 @@ const SliderManager = () => {
                   {/* Add / edit slide form */}
                   <div style={s.card}>
                     <div style={s.cardTitle}>{editId ? 'Edit Slide' : 'Add Slide'}</div>
-                    {slideErr && <p style={s.error}>{slideErr}</p>}
+                    {slideErr && <Alert type="error" style={{ marginBottom: '0.75rem' }}>{slideErr}</Alert>}
                     <form onSubmit={handleSaveSlide}>
                       <label style={s.label}>Image</label>
                       {form.image ? (
@@ -332,22 +334,14 @@ const SliderManager = () => {
 
         {/* Image picker modal */}
         {showPicker && (
-          <div style={s.modalOverlay} onClick={() => setShowPicker(false)}>
-            <div style={s.modal} onClick={e => e.stopPropagation()}>
-              <div style={s.modalHeader}><span style={s.modalTitle}>Choose an image</span><button style={s.iconBtn} onClick={() => setShowPicker(false)}><X size={18} /></button></div>
-              {uploads.length === 0 ? (
-                <p style={s.dimTxt}>No uploaded images. Upload some from the Upload page first.</p>
-              ) : (
-                <div style={s.imgGrid}>
-                  {uploads.map(img => (
-                    <div key={img._id} style={s.imgGridItem} onClick={() => { setForm(f => ({ ...f, image: img.url })); setShowPicker(false); }}>
-                      <img src={img.url} alt={img.originalName} style={s.imgGridImg} />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+          <ImagePicker
+            title="Choose an image"
+            uploads={uploads}
+            showName={false}
+            emptyText="No uploaded images. Upload some from the Upload page first."
+            onSelect={img => { setForm(f => ({ ...f, image: img.url })); setShowPicker(false); }}
+            onClose={() => setShowPicker(false)}
+          />
         )}
       </div>
     </AdminLayout>
@@ -356,9 +350,6 @@ const SliderManager = () => {
 
 const s = {
   container: { padding: '2rem', fontFamily: "'Poppins', sans-serif" },
-  pageHeader: { marginBottom: '1.75rem' },
-  title: { fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: '0 0 0.25rem' },
-  sub:   { color: '#64748b', fontSize: '0.9rem', margin: 0 },
 
   layout: { display: 'grid', gridTemplateColumns: '260px 1fr', gap: '1.5rem', alignItems: 'start' },
 
@@ -399,7 +390,6 @@ const s = {
   formActions: { display: 'flex', gap: '8px', marginTop: '1.25rem' },
   btnPrimary: { padding: '9px 18px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem', fontFamily: "'Poppins', sans-serif" },
   btnCancel: { padding: '9px 14px', background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontFamily: "'Poppins', sans-serif" },
-  error: { color: '#dc2626', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '0.5rem 0.85rem', fontSize: '0.82rem', marginBottom: '0.75rem' },
 
   imgPreviewWrap: { position: 'relative', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e2e8f0', marginBottom: '8px' },
   imgPreview: { width: '100%', height: '130px', objectFit: 'cover', display: 'block' },
@@ -422,14 +412,6 @@ const s = {
   slideSub: { fontSize: '0.75rem', color: '#64748b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   slideActions: { display: 'flex', gap: '4px', flexShrink: 0 },
   iconBtn: { background: 'transparent', border: 'none', cursor: 'pointer', padding: '5px', borderRadius: '6px', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-
-  modalOverlay: { position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '2rem' },
-  modal: { background: '#fff', borderRadius: '14px', padding: '1.25rem', width: '100%', maxWidth: '640px', maxHeight: '80vh', overflow: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' },
-  modalHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' },
-  modalTitle: { fontSize: '1rem', fontWeight: '700', color: '#0f172a' },
-  imgGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '10px' },
-  imgGridItem: { borderRadius: '8px', overflow: 'hidden', border: '1px solid #e2e8f0', cursor: 'pointer', aspectRatio: '4 / 3' },
-  imgGridImg: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
 };
 
 export default SliderManager;

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import PageHeader from '../../components/ui/PageHeader';
 import { Upload, FileText, Video, FolderOpen, Copy, Trash2, X } from 'lucide-react';
 
 const formatSize = (bytes) => {
@@ -65,15 +66,15 @@ const UploadManager = () => {
   return (
     <AdminLayout>
       <div style={s.container}>
-        <div style={s.header}>
-          <div>
-            <h1 style={s.title}>Upload</h1>
-            <p style={s.sub}>Media library — {files.length} file{files.length !== 1 ? 's' : ''}</p>
-          </div>
-          <button style={{ ...s.btnPrimary, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => inputRef.current?.click()}><Upload size={14} strokeWidth={1.8} /> Upload Files</button>
-          <input ref={inputRef} type="file" multiple accept="image/*,video/*,.pdf,.svg"
-            style={{ display: 'none' }} onChange={e => upload(e.target.files)} />
-        </div>
+        <PageHeader
+          title="Upload"
+          subtitle={`Media library — ${files.length} file${files.length !== 1 ? 's' : ''}`}
+          actions={<>
+            <button style={{ ...s.btnPrimary, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => inputRef.current?.click()}><Upload size={14} strokeWidth={1.8} /> Upload Files</button>
+            <input ref={inputRef} type="file" multiple accept="image/*,video/*,.pdf,.svg"
+              style={{ display: 'none' }} onChange={e => upload(e.target.files)} />
+          </>}
+        />
 
         {error && <p style={s.error}>{error}</p>}
 
@@ -155,9 +156,6 @@ const UploadManager = () => {
 
 const s = {
   container: { padding: '2rem' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' },
-  title: { fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: '0 0 0.25rem' },
-  sub: { color: '#64748b', fontSize: '0.9rem', margin: 0 },
   btnPrimary: { padding: '0.6rem 1.25rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.9rem' },
   error: { color: '#dc2626', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '0.6rem 0.85rem', fontSize: '0.85rem', marginBottom: '1rem' },
 

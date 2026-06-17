@@ -1,13 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Slider from './Slider';
-
-/* Strip a full <body> wrapper if GrapesJS exported one */
-const stripBody = (html) => {
-  if (!html) return '';
-  const m = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-  return m ? m[1] : html;
-};
+import { stripBody } from '../lib/stripBody';
 
 /*
  * Renders a GrapesJS page's HTML and mounts live <Slider> components into any

@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import ImagePicker from '../../components/ui/ImagePicker';
+import StatusBadge from '../../components/ui/StatusBadge';
 import { ArrowLeft, Save, ArrowDown, Rocket, Image as ImageIcon, FolderOpen, RefreshCw, ExternalLink, X } from 'lucide-react';
 
 const CATEGORIES = ['General', 'News', 'Tutorial', 'Opinion', 'Case Study', 'Announcement', 'Technology', 'Design'];
@@ -108,12 +110,7 @@ const PostEditor = () => {
           <div style={s.topLeft}>
             <button style={{ ...s.backBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => navigate('/admin/posts')}><ArrowLeft size={14} strokeWidth={1.8} /> Posts</button>
             <span style={s.topTitle}>{isNew ? 'New Post' : 'Edit Post'}</span>
-            <span style={{ ...s.statusPill, ...(isPublished ? s.pillPublished : s.pillDraft) }}>
-              {isPublished
-                ? <><span style={{width:6,height:6,borderRadius:'50%',background:'#16a34a',display:'inline-block',marginRight:4}} />Published</>
-                : <><span style={{width:6,height:6,borderRadius:'50%',background:'#d97706',display:'inline-block',marginRight:4}} />Draft</>
-              }
-            </span>
+            <StatusBadge published={isPublished} />
           </div>
           <div style={s.topRight}>
             {saveMsg && <span style={s.saveMsg}>{saveMsg}</span>}
@@ -275,29 +272,12 @@ const PostEditor = () => {
 
       {/* ── Image picker modal ── */}
       {showImgPicker && (
-        <div style={s.modalOverlay} onClick={() => setShowImgPicker(false)}>
-          <div style={s.modal} onClick={e => e.stopPropagation()}>
-            <div style={s.modalHeader}>
-              <span style={s.modalTitle}>Choose Image</span>
-              <button style={s.modalClose} onClick={() => setShowImgPicker(false)}><X size={16} strokeWidth={2} /></button>
-            </div>
-            {uploads.length === 0 ? (
-              <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>
-                <p>No images uploaded yet.</p>
-                <p style={{ fontSize: '0.8rem' }}>Go to Upload section to add images.</p>
-              </div>
-            ) : (
-              <div style={s.imgGrid}>
-                {uploads.map(img => (
-                  <div key={img._id} style={s.imgItem} onClick={() => { setForm(f => ({ ...f, featuredImage: img.url })); setShowImgPicker(false); }}>
-                    <img src={img.url} alt={img.originalName} style={s.imgThumb} />
-                    <span style={s.imgName}>{img.originalName?.slice(0, 20)}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+        <ImagePicker
+          title="Choose Image"
+          uploads={uploads}
+          onSelect={img => { setForm(f => ({ ...f, featuredImage: img.url })); setShowImgPicker(false); }}
+          onClose={() => setShowImgPicker(false)}
+        />
       )}
     </AdminLayout>
   );
@@ -322,9 +302,6 @@ const s = {
     fontSize: '0.8rem', fontWeight: '500', fontFamily: "'Poppins', sans-serif",
   },
   topTitle: { fontSize: '0.9rem', fontWeight: '700', color: '#1e293b' },
-  statusPill: { fontSize: '0.7rem', fontWeight: '700', padding: '3px 10px', borderRadius: '20px' },
-  pillPublished: { background: '#dcfce7', color: '#16a34a' },
-  pillDraft:     { background: '#fef3c7', color: '#d97706' },
   saveMsg:   { fontSize: '0.8rem', fontWeight: '600', color: '#16a34a' },
   saveDraftBtn: {
     padding: '7px 14px', background: '#f8fafc', color: '#1e293b',
@@ -410,37 +387,6 @@ const s = {
     background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '7px',
     fontFamily: "'Poppins', sans-serif", outline: 'none', boxSizing: 'border-box', cursor: 'pointer',
   },
-
-  /* Image picker modal */
-  modalOverlay: {
-    position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000,
-  },
-  modal: {
-    background: '#fff', borderRadius: '16px', width: '680px', maxWidth: '95vw',
-    maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
-    boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
-  },
-  modalHeader: {
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    padding: '16px 20px', borderBottom: '1px solid #f1f5f9',
-  },
-  modalTitle: { fontSize: '1rem', fontWeight: '700', color: '#1e293b' },
-  modalClose: {
-    background: 'transparent', border: 'none', cursor: 'pointer',
-    fontSize: '1rem', color: '#94a3b8', fontFamily: "'Poppins', sans-serif",
-  },
-  imgGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px',
-    padding: '16px', overflowY: 'auto',
-  },
-  imgItem: {
-    display: 'flex', flexDirection: 'column', gap: '4px', cursor: 'pointer',
-    borderRadius: '8px', overflow: 'hidden', border: '2px solid transparent',
-    transition: 'border-color 0.15s',
-  },
-  imgThumb: { width: '100%', aspectRatio: '1', objectFit: 'cover' },
-  imgName: { fontSize: '0.65rem', color: '#64748b', padding: '2px 4px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' },
 };
 
 export default PostEditor;

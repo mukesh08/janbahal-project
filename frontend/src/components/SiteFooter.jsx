@@ -1,12 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-const stripBodyWrapper = (html) => {
-  if (!html) return '';
-  const m = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-  return m ? m[1] : html;
-};
+import { stripBody } from '../lib/stripBody';
+import { useInjectCSS } from '../hooks/useInjectCSS';
+import { useInterceptLinks } from '../hooks/useInterceptLinks';
 
 const SiteFooter = () => {
   const [gjsHtml, setGjsHtml] = useState('');
@@ -20,38 +17,15 @@ const SiteFooter = () => {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    if (!gjsCss) return;
-    let tag = document.getElementById('gjs-footer-styles');
-    if (!tag) {
-      tag = document.createElement('style');
-      tag.id = 'gjs-footer-styles';
-      document.head.appendChild(tag);
-    }
-    tag.innerHTML = gjsCss;
-    return () => { document.getElementById('gjs-footer-styles')?.remove(); };
-  }, [gjsCss]);
+  useInjectCSS(gjsCss, 'gjs-footer-styles');
 
   // Intercept <a> clicks — use React Router instead of full reload
-  useEffect(() => {
-    const el = footerRef.current;
-    if (!el) return;
-    const handler = (e) => {
-      const a = e.target.closest('a');
-      if (!a) return;
-      const href = a.getAttribute('href');
-      if (!href || href === '#' || href.startsWith('http') || href.startsWith('mailto')) return;
-      e.preventDefault();
-      navigate(href);
-    };
-    el.addEventListener('click', handler);
-    return () => el.removeEventListener('click', handler);
-  }, [gjsHtml, navigate]);
+  useInterceptLinks(footerRef, navigate, [gjsHtml, navigate]);
 
   if (!gjsHtml) return null;
   return (
     <div ref={footerRef} style={{ display: 'contents' }}
-         dangerouslySetInnerHTML={{ __html: stripBodyWrapper(gjsHtml) }} />
+         dangerouslySetInnerHTML={{ __html: stripBody(gjsHtml) }} />
   );
 };
 

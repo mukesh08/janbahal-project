@@ -447,9 +447,6 @@ const Editor = () => {
 
   const contentDebounce = useRef(null);
 
-  /* Tags that show the content editor */
-  const TEXT_TAGS = new Set(['h1','h2','h3','h4','h5','h6','p','span','a','li','label','button','blockquote','figcaption','cite','td','th','dt','dd']);
-
   /* Live content update — debounced 120ms so canvas stays in sync as user types */
   const handleContentChange = useCallback((value) => {
     setEditContent(value);
@@ -460,8 +457,8 @@ const Editor = () => {
       try {
         // Replace children with a single plain-text node so HTML isn't injected
         sel.components([{ type: 'textnode', content: value }]);
-      } catch (_) {
-        try { sel.set('content', value); } catch (__) {}
+      } catch {
+        try { sel.set('content', value); } catch { /* ignore */ }
       }
     }, 120);
   }, []);
