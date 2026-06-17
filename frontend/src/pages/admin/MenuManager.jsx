@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import StatusBadge from '../../components/ui/StatusBadge';
+import Alert from '../../components/ui/Alert';
+import PageHeader from '../../components/ui/PageHeader';
 import { Pencil, Trash2, AlignJustify, FileText, ChevronUp, ChevronDown, Link2, X } from 'lucide-react';
 
 const EMPTY_ITEM = { label: '', url: '', target: '_self' };
@@ -78,7 +81,7 @@ const MenuManager = () => {
       const { data } = await axios.put(`/api/menu/${menu._id}`, { name: renameVal.trim() });
       setMenus(m => m.map(x => x._id === menu._id ? data : x));
       if (activeMenu?._id === menu._id) setActiveMenu(data);
-    } catch {}
+    } catch { /* ignore rename errors */ }
     setRenamingId(null);
   };
 
@@ -148,12 +151,10 @@ const MenuManager = () => {
       <div style={s.container}>
 
         {/* Header */}
-        <div style={s.pageHeader}>
-          <div>
-            <h1 style={s.title}>Menus</h1>
-            <p style={s.sub}>Create named menus and add navigation links to them</p>
-          </div>
-        </div>
+        <PageHeader
+          title="Menus"
+          subtitle="Create named menus and add navigation links to them"
+        />
 
         <div style={s.layout}>
 
@@ -198,7 +199,7 @@ const MenuManager = () => {
             {/* Create menu form */}
             <form onSubmit={handleCreateMenu} style={s.createMenuForm}>
               <div style={s.sideTitle}>New Menu</div>
-              {menuError && <p style={s.error}>{menuError}</p>}
+              {menuError && <Alert type="error" style={{ marginBottom: '0.75rem' }}>{menuError}</Alert>}
               <input
                 style={s.input}
                 placeholder="e.g. Main Menu"
@@ -279,9 +280,7 @@ const MenuManager = () => {
                                     <span style={s.pickerItemTitle}>{page.title}</span>
                                     <span style={s.pickerItemUrl}>/page/{page.slug}</span>
                                   </div>
-                                  <span style={{ ...s.pickerBadge, ...(page.published ? s.badgeGreen : s.badgeDim) }}>
-                                    {page.published ? 'Published' : 'Draft'}
-                                  </span>
+                                  <StatusBadge published={page.published} style={{ fontSize: '0.68rem', fontWeight: 600, padding: '2px 8px' }} />
                                   <span style={s.pickerSelect}>Select →</span>
                                 </div>
                               ));
@@ -303,9 +302,7 @@ const MenuManager = () => {
                                     <span style={s.pickerItemTitle}>{post.title}</span>
                                     <span style={s.pickerItemUrl}>/blog/{post.slug}</span>
                                   </div>
-                                  <span style={{ ...s.pickerBadge, ...(post.status === 'published' ? s.badgeGreen : s.badgeDim) }}>
-                                    {post.status === 'published' ? 'Published' : 'Draft'}
-                                  </span>
+                                  <StatusBadge published={post.status === 'published'} style={{ fontSize: '0.68rem', fontWeight: 600, padding: '2px 8px' }} />
                                   <span style={s.pickerSelect}>Select →</span>
                                 </div>
                               ));
@@ -314,7 +311,7 @@ const MenuManager = () => {
                     </div>
                   )}
 
-                  {itemError && <p style={s.error}>{itemError}</p>}
+                  {itemError && <Alert type="error" style={{ marginBottom: '0.75rem' }}>{itemError}</Alert>}
                   <form onSubmit={handleSaveItem}>
                     <div style={s.formRow}>
                       <div style={s.field}>
@@ -397,9 +394,6 @@ const MenuManager = () => {
 
 const s = {
   container: { padding: '2rem', fontFamily: "'Poppins', sans-serif" },
-  pageHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.75rem' },
-  title: { fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: '0 0 0.25rem' },
-  sub:   { color: '#64748b', fontSize: '0.9rem', margin: 0 },
 
   layout: { display: 'grid', gridTemplateColumns: '240px 1fr', gap: '1.5rem', alignItems: 'start' },
 
@@ -441,7 +435,6 @@ const s = {
   formActions: { display: 'flex', gap: '8px' },
   btnPrimary: { padding: '8px 18px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem', fontFamily: "'Poppins', sans-serif" },
   btnCancel:  { padding: '8px 14px', background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontFamily: "'Poppins', sans-serif" },
-  error: { color: '#dc2626', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '0.5rem 0.85rem', fontSize: '0.82rem', marginBottom: '0.75rem' },
 
   emptyLinks: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '2rem', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #e2e8f0' },
   itemList:   { display: 'flex', flexDirection: 'column', gap: '6px' },
@@ -494,8 +487,6 @@ const s = {
   pickerItemInfo: { flex: 1, display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0 },
   pickerItemTitle: { fontSize: '0.85rem', fontWeight: '600', color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   pickerItemUrl:   { fontSize: '0.72rem', color: '#94a3b8', fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  pickerBadge: { fontSize: '0.65rem', fontWeight: '700', padding: '2px 7px', borderRadius: '20px', whiteSpace: 'nowrap', flexShrink: 0 },
-  badgeDim:    { background: '#f1f5f9', color: '#94a3b8' },
   pickerSelect: { fontSize: '0.72rem', fontWeight: '600', color: '#4f46e5', whiteSpace: 'nowrap', flexShrink: 0 },
 };
 

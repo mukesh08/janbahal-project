@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import SiteHeader from '../components/SiteHeader';
-import SiteFooter from '../components/SiteFooter';
+import PublicPageShell from '../components/PublicPageShell';
+import BlogPostCard from '../components/BlogPostCard';
+import LoadingState from '../components/ui/LoadingState';
+import EmptyState from '../components/ui/EmptyState';
 
 const BlogList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -10,7 +12,6 @@ const BlogList = () => {
 
   const [posts,      setPosts]      = useState([]);
   const [categories, setCategories] = useState([]);
-  const [total,      setTotal]      = useState(0);
   const [page,       setPage]       = useState(1);
   const [pages,      setPages]      = useState(1);
   const [loading,    setLoading]    = useState(true);
@@ -21,7 +22,7 @@ const BlogList = () => {
     const params = { page, limit: LIMIT };
     if (currentCat) params.category = currentCat;
     axios.get('/api/posts', { params })
-      .then(({ data }) => { setPosts(data.posts); setTotal(data.total); setPages(data.pages); })
+      .then(({ data }) => { setPosts(data.posts); setPages(data.pages); })
       .catch(() => setPosts([]))
       .finally(() => setLoading(false));
   }, [page, currentCat]);
@@ -37,9 +38,7 @@ const BlogList = () => {
   };
 
   return (
-    <div style={s.shell}>
-
-      <SiteHeader editHref="/admin/posts" editLabel="Manage Posts" />
+    <PublicPageShell style={s.shell} editHref="/admin/posts" editLabel="Manage Posts">
 
       {/* Hero */}
       <div style={s.hero}>
@@ -68,38 +67,18 @@ const BlogList = () => {
 
         {/* Posts grid */}
         {loading ? (
-          <div style={s.center}>
-            <div style={s.spinner} />
-            <p style={s.loadingTxt}>Loading posts…</p>
-          </div>
+          <LoadingState text="Loading posts…" />
         ) : posts.length === 0 ? (
-          <div style={s.center}>
-            <span style={{ fontSize: '3rem' }}>📭</span>
+          <EmptyState icon="📭">
             <p style={{ color: '#64748b', marginTop: '1rem' }}>
               {currentCat ? `No posts in "${currentCat}" yet.` : 'No published posts yet.'}
             </p>
-          </div>
+          </EmptyState>
         ) : (
           <>
             <div style={s.grid}>
               {posts.map((post, i) => (
-                <Link key={post._id} to={`/blog/${post.slug}`} style={{ ...s.card, ...(i === 0 && !currentCat ? s.cardFeatured : {}) }}>
-                  {post.featuredImage && (
-                    <img src={post.featuredImage} alt={post.title} style={{ ...s.cardImg, ...(i === 0 && !currentCat ? s.cardImgFeatured : {}) }} />
-                  )}
-                  <div style={s.cardBody}>
-                    <div style={s.cardMeta}>
-                      <span style={s.cardCat}>{post.category}</span>
-                      <span style={s.cardDate}>{new Date(post.publishedAt || post.createdAt).toLocaleDateString('en-US', { day:'numeric', month:'short', year:'numeric' })}</span>
-                    </div>
-                    <h2 style={{ ...s.cardTitle, ...(i === 0 && !currentCat ? s.cardTitleFeatured : {}) }}>{post.title}</h2>
-                    {post.excerpt && <p style={s.cardExcerpt}>{post.excerpt}</p>}
-                    <div style={s.cardFooter}>
-                      <span style={s.cardAuthor}>By {post.author?.name || 'Admin'}</span>
-                      <span style={s.readMore}>Read more →</span>
-                    </div>
-                  </div>
-                </Link>
+                <BlogPostCard key={post._id} post={post} featured={i === 0 && !currentCat} />
               ))}
             </div>
 
@@ -120,8 +99,7 @@ const BlogList = () => {
         )}
       </div>
 
-      <SiteFooter />
-    </div>
+    </PublicPageShell>
   );
 };
 
@@ -151,43 +129,11 @@ const s = {
     borderRadius: '20px', padding: '1px 6px', fontSize: '0.7rem', fontWeight: '700',
   },
 
-  center: { textAlign: 'center', padding: '5rem 0', color: '#94a3b8' },
-  spinner: {
-    width: '42px', height: '42px', borderRadius: '50%',
-    border: '3.5px solid rgba(79,70,229,0.15)',
-    borderTopColor: '#4f46e5',
-    animation: 'loaderSpin 0.65s linear infinite',
-    marginBottom: '1rem',
-  },
-  loadingTxt: { color: '#94a3b8' },
-
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
     gap: '1.25rem',
   },
-  card: {
-    background: '#fff', borderRadius: '14px', overflow: 'hidden',
-    border: '1px solid #f1f5f9', textDecoration: 'none', color: 'inherit',
-    display: 'flex', flexDirection: 'column',
-    boxShadow: '0 1px 6px rgba(0,0,0,0.05)', transition: 'box-shadow 0.2s, transform 0.2s',
-  },
-  cardFeatured: { gridColumn: '1 / -1' },
-  cardImg: { width: '100%', height: '200px', objectFit: 'cover', display: 'block' },
-  cardImgFeatured: { height: '320px' },
-  cardBody: { padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 },
-  cardMeta: { display: 'flex', gap: '10px', alignItems: 'center' },
-  cardCat:  {
-    fontSize: '0.68rem', fontWeight: '700', color: '#4f46e5',
-    background: '#eef2ff', padding: '2px 8px', borderRadius: '20px', textTransform: 'uppercase',
-  },
-  cardDate: { fontSize: '0.72rem', color: '#94a3b8' },
-  cardTitle: { fontSize: '1.1rem', fontWeight: '700', color: '#0f172a', margin: 0, lineHeight: 1.3 },
-  cardTitleFeatured: { fontSize: '1.6rem' },
-  cardExcerpt: { fontSize: '0.85rem', color: '#64748b', lineHeight: 1.6, margin: 0, flex: 1 },
-  cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '8px', borderTop: '1px solid #f8fafc' },
-  cardAuthor: { fontSize: '0.75rem', color: '#94a3b8' },
-  readMore:   { fontSize: '0.78rem', fontWeight: '600', color: '#4f46e5' },
 
   pagination: { display: 'flex', gap: '6px', justifyContent: 'center', marginTop: '3rem', flexWrap: 'wrap' },
   pageBtn: {
@@ -197,7 +143,6 @@ const s = {
   },
   pageBtnActive: { background: '#4f46e5', color: '#fff', border: '1px solid #4f46e5' },
 
-  footer: { textAlign: 'center', padding: '2rem', color: '#94a3b8', fontSize: '0.82rem', borderTop: '1px solid #f1f5f9', marginTop: 'auto' },
 };
 
 export default BlogList;

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import SiteHeader from '../components/SiteHeader';
-import SiteFooter from '../components/SiteFooter';
+import PublicPageShell from '../components/PublicPageShell';
+import LoadingState from '../components/ui/LoadingState';
+import EmptyState from '../components/ui/EmptyState';
+import CategoryBadge from '../components/ui/CategoryBadge';
 
 const BlogPost = () => {
   const { slug }    = useParams();
@@ -23,26 +25,22 @@ const BlogPost = () => {
   }, [slug, navigate]);
 
   if (loading) return (
-    <div style={s.shell}>
-      <SiteHeader />
-      <div style={s.center}><p style={{ color: '#94a3b8' }}>Loading…</p></div>
-    </div>
+    <PublicPageShell style={s.shell} showFooter={false}>
+      <LoadingState text="Loading…" style={s.center} />
+    </PublicPageShell>
   );
 
   if (notFound) return (
-    <div style={s.shell}>
-      <SiteHeader editHref="/admin/posts" editLabel="Manage Posts" />
-      <div style={s.center}>
-        <span style={{ fontSize: '3rem' }}>📭</span>
+    <PublicPageShell style={s.shell} showFooter={false} editHref="/admin/posts" editLabel="Manage Posts">
+      <EmptyState icon="📭" style={s.center}>
         <h2 style={{ color: '#0f172a', marginTop: '1rem' }}>Post not found</h2>
         <Link to="/blog" style={s.backLink}>← Back to Blog</Link>
-      </div>
-    </div>
+      </EmptyState>
+    </PublicPageShell>
   );
 
   return (
-    <div style={s.shell}>
-      <SiteHeader editHref={`/admin/posts/${post._id}/edit`} editLabel="Edit Post" />
+    <PublicPageShell style={s.shell} editHref={`/admin/posts/${post._id}/edit`} editLabel="Edit Post">
 
       {/* Hero with featured image or gradient */}
       {post.featuredImage ? (
@@ -73,7 +71,7 @@ const BlogPost = () => {
               })}
             </span>
             <span style={s.dot}>·</span>
-            <span style={s.catPill}>{post.category}</span>
+            <CategoryBadge>{post.category}</CategoryBadge>
           </div>
 
           {post.tags?.length > 0 && (
@@ -98,8 +96,7 @@ const BlogPost = () => {
         </div>
       </div>
 
-      <SiteFooter />
-    </div>
+    </PublicPageShell>
   );
 };
 
@@ -146,7 +143,6 @@ const s = {
   author: { fontSize: '0.82rem', fontWeight: '600', color: '#334155' },
   dot:    { color: '#cbd5e1', fontSize: '0.8rem' },
   date:   { fontSize: '0.8rem', color: '#94a3b8' },
-  catPill: { fontSize: '0.68rem', fontWeight: '700', color: '#4f46e5', background: '#eef2ff', padding: '2px 8px', borderRadius: '20px', textTransform: 'uppercase' },
 
   tags: { display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '0.5rem' },
   tag:  { fontSize: '0.7rem', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '20px' },
@@ -161,7 +157,6 @@ const s = {
   footer: { marginTop: '1rem' },
   backLink: { fontSize: '0.85rem', color: '#4f46e5', fontWeight: '600', textDecoration: 'none' },
 
-  pageFooter: { textAlign: 'center', padding: '2rem', color: '#94a3b8', fontSize: '0.82rem', borderTop: '1px solid #f1f5f9', marginTop: 'auto' },
 };
 
 export default BlogPost;

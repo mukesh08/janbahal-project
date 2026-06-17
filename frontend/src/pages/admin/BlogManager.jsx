@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import StatCard from '../../components/ui/StatCard';
+import PageHeader from '../../components/ui/PageHeader';
 import { BookOpen, Rocket, Copy, Tag, Pencil, Globe, ArrowRight } from 'lucide-react';
 
 const BlogManager = () => {
@@ -32,15 +34,11 @@ const BlogManager = () => {
       <div style={s.container}>
 
         {/* Header */}
-        <div style={s.header}>
-          <div>
-            <h1 style={s.title}>Blog</h1>
-            <p style={s.sub}>Overview of your blog — posts, categories and activity</p>
-          </div>
-          <button style={s.newBtn} onClick={() => navigate('/admin/posts/new')}>
-            ＋ New Post
-          </button>
-        </div>
+        <PageHeader
+          title="Blog"
+          subtitle="Overview of your blog — posts, categories and activity"
+          actions={<button style={s.newBtn} onClick={() => navigate('/admin/posts/new')}>＋ New Post</button>}
+        />
 
         {/* Stats */}
         <div style={s.statsRow}>
@@ -50,11 +48,7 @@ const BlogManager = () => {
             { icon: <Copy size={20} strokeWidth={1.8} />,   label: 'Drafts',        value: stats.draft,     color: '#d97706', bg: '#fef3c7' },
             { icon: <Tag size={20} strokeWidth={1.8} />,    label: 'Categories',   value: categories.length, color: '#0891b2', bg: '#e0f2fe' },
           ].map(({ icon, label, value, color, bg }) => (
-            <div key={label} style={s.statCard}>
-              <div style={{ ...s.statIcon, background: bg, color }}>{icon}</div>
-              <div style={s.statValue}>{loading ? '…' : value}</div>
-              <div style={s.statLabel}>{label}</div>
-            </div>
+            <StatCard key={label} icon={icon} value={loading ? '…' : value} label={label} color={color} bg={bg} />
           ))}
         </div>
 
@@ -134,9 +128,6 @@ const BlogManager = () => {
 
 const s = {
   container: { padding: '2rem', fontFamily: "'Poppins', sans-serif" },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.75rem' },
-  title: { fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: '0 0 0.25rem' },
-  sub:   { color: '#64748b', fontSize: '0.9rem', margin: 0 },
   newBtn: {
     padding: '0.6rem 1.25rem', background: '#4f46e5', color: '#fff',
     border: 'none', borderRadius: '8px', cursor: 'pointer',
@@ -144,14 +135,6 @@ const s = {
   },
 
   statsRow: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' },
-  statCard: {
-    background: '#fff', borderRadius: '12px', padding: '1.25rem',
-    border: '1px solid #f1f5f9', textAlign: 'center',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-  },
-  statIcon:  { width: '44px', height: '44px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', margin: '0 auto 0.75rem' },
-  statValue: { fontSize: '1.8rem', fontWeight: '800', color: '#0f172a', lineHeight: 1 },
-  statLabel: { fontSize: '0.75rem', color: '#94a3b8', marginTop: '4px', fontWeight: '600' },
 
   cols: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' },
   card: { background: '#fff', borderRadius: '12px', border: '1px solid #f1f5f9', padding: '1.25rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' },

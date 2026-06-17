@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import SiteHeader from '../components/SiteHeader';
-import SiteFooter from '../components/SiteFooter';
+import PublicPageShell from '../components/PublicPageShell';
 import RenderedPage from '../components/RenderedPage';
+import LoadingState from '../components/ui/LoadingState';
+import EmptyState from '../components/ui/EmptyState';
+import { useInjectCSS } from '../hooks/useInjectCSS';
 
 const PublicViewer = () => {
   const { slug } = useParams();
@@ -25,47 +27,32 @@ const PublicViewer = () => {
     fetchPage();
   }, [slug]);
 
-  useEffect(() => {
-    if (page?.gjsCss) {
-      const styleTag = document.createElement('style');
-      styleTag.id = 'gjs-page-styles';
-      styleTag.innerHTML = page.gjsCss;
-      document.head.appendChild(styleTag);
-      return () => {
-        const existing = document.getElementById('gjs-page-styles');
-        if (existing) document.head.removeChild(existing);
-      };
-    }
-  }, [page]);
+  useInjectCSS(page?.gjsCss, 'gjs-page-styles');
 
   if (loading) {
     return (
-      <>
-        <SiteHeader />
-        <div style={styles.center}><p>Loading...</p></div>
-      </>
+      <PublicPageShell showFooter={false}>
+        <LoadingState text="Loading..." style={styles.center} />
+      </PublicPageShell>
     );
   }
 
   if (error) {
     return (
-      <>
-        <SiteHeader editHref="/admin/pages" editLabel="Edit Pages" />
-        <div style={styles.center}>
+      <PublicPageShell showFooter={false} editHref="/admin/pages" editLabel="Edit Pages">
+        <EmptyState style={styles.center}>
           <h2>404</h2>
           <p>{error}</p>
           <a href="/" style={styles.homeLink}>← Go Home</a>
-        </div>
-      </>
+        </EmptyState>
+      </PublicPageShell>
     );
   }
 
   return (
-    <div className="public-site" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <SiteHeader editHref={`/admin/editor/${page._id}`} editLabel="Edit Page" />
+    <PublicPageShell className="public-site" editHref={`/admin/editor/${page._id}`} editLabel="Edit Page">
       <RenderedPage html={page.gjsHtml} style={{ flex: 1 }} />
-      <SiteFooter />
-    </div>
+    </PublicPageShell>
   );
 };
 

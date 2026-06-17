@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Search, X, Home, FileText, Pencil, ExternalLink, MoreHorizontal, Copy, Trash2, Plus } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
+import FilterTabs from '../components/ui/FilterTabs';
+import PageHeader from '../components/ui/PageHeader';
 
 const fmt = (iso) => {
   if (!iso) return '—';
@@ -107,15 +109,15 @@ const AdminDashboard = () => {
       <div style={s.container}>
 
         {/* ── Header ── */}
-        <div style={s.pageHeader}>
-          <div>
-            <h1 style={s.title}>Pages</h1>
-            <p style={s.sub}>Create and manage your website pages</p>
-          </div>
-          <button style={s.newBtn} onClick={() => { setNewTitle(''); setShowModal(true); }}>
-            <Plus size={14} strokeWidth={2.5} /> New Page
-          </button>
-        </div>
+        <PageHeader
+          title="Pages"
+          subtitle="Create and manage your website pages"
+          actions={
+            <button style={s.newBtn} onClick={() => { setNewTitle(''); setShowModal(true); }}>
+              <Plus size={14} strokeWidth={2.5} /> New Page
+            </button>
+          }
+        />
 
         {/* ── Stats bar ── */}
         <div style={s.statsBar}>
@@ -137,20 +139,12 @@ const AdminDashboard = () => {
 
         {/* ── Toolbar: filter tabs + search ── */}
         <div style={s.toolbar}>
-          <div style={s.tabs}>
-            {FILTERS.map(f => (
-              <button
-                key={f.key}
-                style={{ ...s.tab, ...(filter === f.key ? s.tabActive : {}) }}
-                onClick={() => setFilter(f.key)}
-              >
-                {f.label}
-                <span style={{ ...s.tabCount, ...(filter === f.key ? s.tabCountActive : {}) }}>
-                  {f.count}
-                </span>
-              </button>
-            ))}
-          </div>
+          <FilterTabs
+            tabs={FILTERS}
+            active={filter}
+            onChange={setFilter}
+            style={{ marginBottom: 0, borderBottom: 'none' }}
+          />
           <div style={s.searchWrap}>
             <span style={s.searchIcon}><Search size={13} strokeWidth={2} /></span>
             <input
@@ -322,9 +316,6 @@ const AdminDashboard = () => {
 const s = {
   container: { padding: '2rem', fontFamily: "'Poppins', sans-serif", maxWidth: '1200px' },
 
-  pageHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' },
-  title: { fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: '0 0 0.2rem' },
-  sub:   { color: '#64748b', fontSize: '0.88rem', margin: 0 },
   newBtn: { display: 'flex', alignItems: 'center', gap: '6px', padding: '0.6rem 1.4rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '700', fontSize: '0.88rem', fontFamily: "'Poppins', sans-serif", whiteSpace: 'nowrap' },
 
   /* Stats bar */
@@ -336,11 +327,6 @@ const s = {
 
   /* Toolbar */
   toolbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0', gap: '1rem', flexWrap: 'wrap' },
-  tabs: { display: 'flex', gap: '4px' },
-  tab: { padding: '0.45rem 0.9rem', background: 'transparent', border: '1px solid transparent', borderRadius: '8px', cursor: 'pointer', fontSize: '0.82rem', fontWeight: '600', color: '#64748b', fontFamily: "'Poppins', sans-serif", display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.12s' },
-  tabActive: { background: '#eef2ff', border: '1px solid #c7d2fe', color: '#4f46e5' },
-  tabCount: { background: '#f1f5f9', color: '#64748b', borderRadius: '20px', padding: '1px 7px', fontSize: '0.72rem', fontWeight: '700' },
-  tabCountActive: { background: '#c7d2fe', color: '#4f46e5' },
 
   searchWrap: { position: 'relative', display: 'flex', alignItems: 'center' },
   searchIcon: { position: 'absolute', left: '10px', fontSize: '0.85rem', pointerEvents: 'none' },

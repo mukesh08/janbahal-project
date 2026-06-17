@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
+import ImagePicker from '../../components/ui/ImagePicker';
+import StatusBadge from '../../components/ui/StatusBadge';
+import PageHeader from '../../components/ui/PageHeader';
 import { Save, Home, Image as ImageIcon, PenLine, FileText, Settings, FolderOpen, Link2, ExternalLink, Pencil, X } from 'lucide-react';
 
 const DEFAULT = { homePage: '', siteThumbnail: '', siteTagline: '' };
@@ -55,18 +58,16 @@ const CustomizeManager = () => {
       <div style={s.container}>
 
         {/* Page header */}
-        <div style={s.pageHeader}>
-          <div>
-            <h1 style={s.title}>Customize</h1>
-            <p style={s.sub}>Control your site's landing page, thumbnail and tagline</p>
-          </div>
-          <div style={s.headerRight}>
+        <PageHeader
+          title="Customize"
+          subtitle="Control your site's landing page, thumbnail and tagline"
+          actions={<>
             {msg && <span style={{ ...s.msgTxt, color: msg.startsWith('✅') ? '#16a34a' : '#ef4444' }}>{msg}</span>}
             <button style={{ ...s.saveBtn, display: 'flex', alignItems: 'center', gap: '6px' }} onClick={handleSave} disabled={saving}>
               {saving ? 'Saving…' : <><Save size={14} strokeWidth={1.8} /> Save Changes</>}
             </button>
-          </div>
-        </div>
+          </>}
+        />
 
         {/* Equal-height 3-column grid */}
         <div style={s.grid}>
@@ -101,9 +102,7 @@ const CustomizeManager = () => {
                       <div style={s.statusSlug}>/{selectedPage.slug}</div>
                     </div>
                   </div>
-                  <span style={{ ...s.badge, ...(selectedPage.published ? s.badgeGreen : s.badgeDim) }}>
-                    {selectedPage.published ? 'Published' : 'Draft'}
-                  </span>
+                  <StatusBadge published={selectedPage.published} />
                 </div>
               ) : (
                 <div style={{ ...s.statusBox, border: '1px dashed #e2e8f0' }}>
@@ -226,33 +225,12 @@ const CustomizeManager = () => {
 
       {/* Image picker modal */}
       {showPicker && (
-        <div style={s.overlay} onClick={() => setShowPicker(false)}>
-          <div style={s.modal} onClick={e => e.stopPropagation()}>
-            <div style={s.modalHeader}>
-              <span style={s.modalTitle}>Choose Thumbnail</span>
-              <button style={s.modalClose} onClick={() => setShowPicker(false)}><X size={16} strokeWidth={2} /></button>
-            </div>
-            {uploads.length === 0 ? (
-              <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>
-                <p>No images uploaded yet.</p>
-                <p style={{ fontSize: '0.8rem', marginTop: '6px' }}>Go to Upload section to add images.</p>
-              </div>
-            ) : (
-              <div style={s.imgGrid}>
-                {uploads.map(img => (
-                  <div key={img._id} style={s.imgItem}
-                    onClick={() => { setForm(f => ({ ...f, siteThumbnail: img.url })); setShowPicker(false); }}
-                    onMouseEnter={e => e.currentTarget.style.borderColor = '#4f46e5'}
-                    onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}
-                  >
-                    <img src={img.url} alt={img.originalName} style={s.imgThumb} />
-                    <span style={s.imgName}>{img.originalName?.slice(0, 18)}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+        <ImagePicker
+          title="Choose Thumbnail"
+          uploads={uploads}
+          onSelect={img => { setForm(f => ({ ...f, siteThumbnail: img.url })); setShowPicker(false); }}
+          onClose={() => setShowPicker(false)}
+        />
       )}
     </AdminLayout>
   );
@@ -261,10 +239,6 @@ const CustomizeManager = () => {
 const s = {
   container: { padding: '2rem', fontFamily: "'Poppins', sans-serif" },
 
-  pageHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' },
-  title: { fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: '0 0 0.2rem' },
-  sub:   { color: '#64748b', fontSize: '0.88rem', margin: 0 },
-  headerRight: { display: 'flex', alignItems: 'center', gap: '12px' },
   msgTxt:  { fontSize: '0.82rem', fontWeight: '600' },
   saveBtn: { padding: '0.6rem 1.25rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.88rem', fontFamily: "'Poppins', sans-serif", whiteSpace: 'nowrap' },
 
@@ -317,9 +291,6 @@ const s = {
   statusIcon:  { fontSize: '1.2rem', flexShrink: 0 },
   statusTitle: { fontSize: '0.85rem', fontWeight: '700', color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   statusSlug:  { fontSize: '0.72rem', color: '#94a3b8', fontFamily: 'monospace', marginTop: '1px' },
-  badge:      { fontSize: '0.65rem', fontWeight: '700', padding: '3px 8px', borderRadius: '20px', whiteSpace: 'nowrap', flexShrink: 0 },
-  badgeGreen: { background: '#dcfce7', color: '#16a34a' },
-  badgeDim:   { background: '#f1f5f9', color: '#94a3b8' },
 
   /* Thumbnail */
   thumbWrap:  { position: 'relative', borderRadius: '10px', overflow: 'hidden', border: '1px solid #e2e8f0', height: '140px', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' },
@@ -337,17 +308,6 @@ const s = {
   metaUrl:   { fontSize: '0.7rem', color: '#16a34a', marginBottom: '3px' },
   metaTitle: { fontSize: '0.92rem', fontWeight: '700', color: '#1a0dab', marginBottom: '3px' },
   metaDesc:  { fontSize: '0.77rem', color: '#4d5156', lineHeight: 1.5 },
-
-  /* Modal */
-  overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
-  modal:   { background: '#fff', borderRadius: '16px', width: '680px', maxWidth: '95vw', maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' },
-  modalHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid #f1f5f9' },
-  modalTitle:  { fontSize: '1rem', fontWeight: '700', color: '#1e293b' },
-  modalClose:  { background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1rem', color: '#94a3b8', fontFamily: "'Poppins', sans-serif" },
-  imgGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', padding: '16px', overflowY: 'auto' },
-  imgItem: { display: 'flex', flexDirection: 'column', gap: '4px', cursor: 'pointer', borderRadius: '8px', overflow: 'hidden', border: '2px solid transparent', transition: 'border-color 0.15s' },
-  imgThumb: { width: '100%', aspectRatio: '1', objectFit: 'cover' },
-  imgName:  { fontSize: '0.65rem', color: '#64748b', padding: '2px 4px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' },
 };
 
 export default CustomizeManager;

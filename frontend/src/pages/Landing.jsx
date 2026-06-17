@@ -4,6 +4,8 @@ import axios from 'axios';
 import SiteHeader from '../components/SiteHeader';
 import SiteFooter from '../components/SiteFooter';
 import RenderedPage from '../components/RenderedPage';
+import PublicPageShell from '../components/PublicPageShell';
+import { useInjectCSS } from '../hooks/useInjectCSS';
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -26,14 +28,7 @@ const Landing = () => {
   }, []);
 
   // Inject GrapesJS CSS for home page
-  useEffect(() => {
-    if (!homeCSS) return;
-    const tag = document.createElement('style');
-    tag.id = 'home-page-css';
-    tag.innerHTML = homeCSS;
-    document.head.appendChild(tag);
-    return () => { document.getElementById('home-page-css')?.remove(); };
-  }, [homeCSS]);
+  useInjectCSS(homeCSS, 'home-page-css');
 
   // Inject tagline into document title
   useEffect(() => {
@@ -43,11 +38,9 @@ const Landing = () => {
   // If a custom home page is set, render it
   if (homePage?.gjsHtml) {
     return (
-      <div className="public-site" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <SiteHeader editHref={`/admin/editor/${homePage._id}`} editLabel="Edit Page" />
+      <PublicPageShell className="public-site" editHref={`/admin/editor/${homePage._id}`} editLabel="Edit Page">
         <RenderedPage html={homePage.gjsHtml} style={{ flex: 1 }} />
-        <SiteFooter />
-      </div>
+      </PublicPageShell>
     );
   }
 
@@ -148,7 +141,6 @@ const s = {
   heroAccent: { color: '#4f46e5' },
   heroSub: { fontSize: '1.15rem', color: '#64748b', lineHeight: 1.7, maxWidth: '560px', margin: '0 auto 2rem' },
   heroBtns: { display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' },
-  btnPrimary: { padding: '0.85rem 2rem', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '700', fontSize: '1rem', boxShadow: '0 4px 14px rgba(79,70,229,0.35)' },
   btnGhost: { padding: '0.85rem 1.8rem', background: 'transparent', color: '#4f46e5', border: '2px solid #c7d2fe', borderRadius: '10px', cursor: 'pointer', fontWeight: '600', fontSize: '1rem' },
   blob: { position: 'absolute', width: '400px', height: '400px', borderRadius: '50%', filter: 'blur(60px)', pointerEvents: 'none' },
 
@@ -175,12 +167,9 @@ const s = {
   cta: { background: 'linear-gradient(135deg, #4f46e5, #7c3aed)', padding: '5rem 2rem', textAlign: 'center', color: '#fff' },
   ctaTitle: { fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: '800', marginBottom: '0.75rem' },
   ctaSub: { fontSize: '1.05rem', opacity: 0.85, marginBottom: '2rem' },
-  btnWhite: { padding: '0.85rem 2rem', background: '#fff', color: '#4f46e5', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '700', fontSize: '1rem' },
 
   /* footer */
   footer: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2.5rem', borderTop: '1px solid #f1f5f9', flexWrap: 'wrap', gap: '0.5rem' },
-  footerLogo: { fontWeight: '800', color: '#4f46e5', fontSize: '1.1rem' },
-  footerText: { color: '#94a3b8', fontSize: '0.85rem' },
 };
 
 export default Landing;

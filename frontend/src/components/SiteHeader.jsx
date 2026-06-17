@@ -2,12 +2,9 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import AdminBar from './AdminBar';
-
-const stripBodyWrapper = (html) => {
-  if (!html) return '';
-  const m = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-  return m ? m[1] : html;
-};
+import { stripBody } from '../lib/stripBody';
+import { useInjectCSS } from '../hooks/useInjectCSS';
+import { useInterceptLinks } from '../hooks/useInterceptLinks';
 
 const NAV_STYLES = `
   #site-header-gjs a {
@@ -48,45 +45,11 @@ const SiteHeader = ({ editHref, editLabel }) => {
   }, []);
 
   // Intercept <a> clicks inside GrapesJS header — use React Router instead of full reload
-  useEffect(() => {
-    const el = headerRef.current;
-    if (!el) return;
-    const handler = (e) => {
-      const a = e.target.closest('a');
-      if (!a) return;
-      const href = a.getAttribute('href');
-      if (!href || href === '#' || href.startsWith('http') || href.startsWith('mailto')) return;
-      e.preventDefault();
-      navigate(href);
-    };
-    el.addEventListener('click', handler);
-    return () => el.removeEventListener('click', handler);
-  }, [gjsHtml, navigate]);
+  useInterceptLinks(headerRef, navigate, [gjsHtml, navigate]);
 
-  // Inject GrapesJS page-builder CSS
-  useEffect(() => {
-    if (!gjsCss) return;
-    let tag = document.getElementById('gjs-header-styles');
-    if (!tag) {
-      tag = document.createElement('style');
-      tag.id = 'gjs-header-styles';
-      document.head.appendChild(tag);
-    }
-    tag.innerHTML = gjsCss;
-    return () => { document.getElementById('gjs-header-styles')?.remove(); };
-  }, [gjsCss]);
-
-  // Inject nav hover/active animation CSS
-  useEffect(() => {
-    let tag = document.getElementById('gjs-header-nav-effects');
-    if (!tag) {
-      tag = document.createElement('style');
-      tag.id = 'gjs-header-nav-effects';
-      document.head.appendChild(tag);
-    }
-    tag.innerHTML = NAV_STYLES;
-    return () => { document.getElementById('gjs-header-nav-effects')?.remove(); };
-  }, []);
+  // Inject GrapesJS page-builder CSS + nav hover/active animation CSS
+  useInjectCSS(gjsCss, 'gjs-header-styles');
+  useInjectCSS(NAV_STYLES, 'gjs-header-nav-effects');
 
   // Highlight active nav link whenever route changes
   useEffect(() => {
@@ -103,7 +66,7 @@ const SiteHeader = ({ editHref, editLabel }) => {
       <AdminBar editHref={editHref} editLabel={editLabel} />
       {gjsHtml
         ? <div id="site-header-gjs" ref={headerRef} style={{ display: 'contents' }}
-               dangerouslySetInnerHTML={{ __html: stripBodyWrapper(gjsHtml) }} />
+               dangerouslySetInnerHTML={{ __html: stripBody(gjsHtml) }} />
         : <DefaultHeader />
       }
     </>

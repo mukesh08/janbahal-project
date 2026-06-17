@@ -12,7 +12,7 @@ const PageTransition = ({ children }) => {
     } else {
       setDisplayLocation(location);
     }
-  }, [location]);
+  }, [location, displayLocation.pathname]);
 
   const handleAnimationEnd = () => {
     if (stage === 'page-exit') {
